@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Charset -->
+  <meta charset="UTF-8" />
+
+  <!-- Viewport (mobile-first) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Primary Meta -->
+  <title>Heroverse — Superheroes Showcase</title>
+  <meta name="description" content="Heroverse — a bold encyclopedia of superheroes, villains, teams, and legendary stories. Built with HTML, TailwindCSS, and JavaScript." />
+  <meta name="keywords" content="Heroverse, Superheroes, Villains, Marvel, DC, Powers, Weaknesses, Teams, Comics, Movies" />
+  <meta name="author" content="Henry Osuagwu" />
+  <link rel="canonical" href="https://impulsible.github.io/hero" />
+  <meta name="theme-color" content="#121212" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Heroverse — Superheroes Showcase" />
+  <meta property="og:description" content="Dive into the Heroverse: origins, powers, weaknesses, allies, enemies, and stories." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://impulsible.github.io/hero" />
+  <meta property="og:image" content="images/heroverse.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Heroverse — Superheroes Showcase" />
+  <meta name="twitter:description" content="Explore an encyclopedia of superheroes, villains, teams, and legendary stories." />
+  <meta name="twitter:image" content="images/heroverse.png" />
+
+  <!-- Favicon & PWA icons -->
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
+<link rel="icon" href="images/favicon.ico">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+
+
+<!-- pinned tabs -->
+<link rel="icon" type="image/png" sizes="192x192" href="images/android-chrome-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="images/android-chrome-512x512.png">
+
+
+
+  <!-- Fonts (mobile-first perf: preconnects) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- TailwindCSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Bangers', 'cursive'],
+            sans: ['Poppins', 'ui-sans-serif', 'system-ui'],
+          },
+          colors: {
+            hero: '#E50914',
+            primary: '#0055FF',
+            gold: '#FFD700',
+            dark: '#0d0f13',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    .comic-shadow { box-shadow: 0 10px 25px rgba(0,0,0,.25), 0 2px 8px rgba(0,0,0,.1); }
+    .grid-auto { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+
+    body::before {
+      content: "";
+      position: fixed; inset: 0; z-index: -1;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,215,0,.06), transparent 40%),
+        radial-gradient(circle at 80% 0%, rgba(229,9,20,.05), transparent 35%),
+        radial-gradient(circle at 0% 100%, rgba(0,85,255,.06), transparent 40%),
+        repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,.04), rgba(255,255,255,.04) 2px, transparent 3px, transparent 6px);
+      background-color: #0d0f13;
+    }
+
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.show { opacity: 1; transform: translateY(0); }
+
+    .carousel { position: relative; }
+    .carousel-slide { position: absolute; inset: 0; opacity: 0; transform: scale(.98); transition: opacity .6s ease, transform .6s ease; }
+    .carousel-slide.active { position: relative; opacity: 1; transform: scale(1); }
+
+    .glow-hover:hover { text-shadow: 0 0 10px rgba(255,215,0,.7), 0 0 20px rgba(255,215,0,.5); }
+
+    .carousel { position: relative; }
+.carousel-slide {
+  position: absolute; inset: 0;
+  opacity: 0; transform: scale(.985);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.carousel-slide.active {
+  position: relative; opacity: 1; transform: scale(1);
+}
+
+  </style>
+  
+</head>
+<body id="top" class="bg-dark text-white">
+  <!-- Skip link (a11y) -->
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 bg-gold text-dark px-3 py-2 rounded">Skip to content</a>
+
+  <!-- NAV -->
+  <header class="sticky top-0 z-40 bg-dark/70 backdrop-blur border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <span class="text-2xl sm:text-3xl font-display tracking-widest text-gold drop-shadow">Heroverse</span>
+      </a>
+
+      <!-- Mobile hamburger -->
+      <button id="navToggle" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-white/20 hover:bg-white/10" aria-label="Open menu" aria-expanded="false">
+        <span class="sr-only">Menu</span> ☰
+      </button>
+
+      <!-- Desktop nav -->
+      <nav class="hidden md:flex items-center gap-5 sm:gap-6 text-sm" aria-label="Primary">
+        <a class="hover:text-gold" href="heroes.html">Hall of Heroes</a>
+        <a class="hover:text-gold" href="villains.html">Rogues Gallery</a>
+        <a class="hover:text-gold" href="teams.html">Teams</a>
+        <a class="hover:text-gold" href="stories.html">Stories</a>
+        <a class="hover:text-gold" href="rankings.html">Rankings</a>
+        <a class="hover:text-gold" href="news.html">News</a>
+        <a class="hover:text-gold" href="about.html">About</a>
+        <a class="hover:text-gold" href="contact.html">Contact</a>
+      </nav>
+
+      <a href="heroes.html" class="hidden sm:inline-flex items-center gap-2 bg-hero text-white px-3 sm:px-4 py-2 rounded-xl hover:brightness-110 transition">
+        🎲 Random Hero
+      </a>
+    </div>
+
+    <!-- Mobile nav drawer -->
+<nav id="mobileNav" class="md:hidden hidden border-t border-gold/20 bg-gradient-to-b from-[#0b0f19] via-[#0c1324] to-[#0b0f19]">
+  <div class="max-w-7xl mx-auto px-4 py-3 grid grid-cols-2 gap-3 text-sm">
+    <a class="rounded-lg p-3 border border-red-400/40 bg-red-500/15 hover:bg-red-500/25 transition" href="heroes.html">
+      Hall of Heroes
+    </a>
+    <a class="rounded-lg p-3 border border-purple-400/40 bg-purple-500/15 hover:bg-purple-500/25 transition" href="villains.html">
+      Rogues Gallery
+    </a>
+    <a class="rounded-lg p-3 border border-yellow-400/40 bg-yellow-500/20 text-white hover:bg-yellow-500/30 transition" href="teams.html">
+      Teams
+    </a>
+    <a class="rounded-lg p-3 border border-blue-400/40 bg-blue-500/15 hover:bg-blue-500/25 transition" href="stories.html">
+      Stories
+    </a>
+    <a class="rounded-lg p-3 border border-green-400/40 bg-green-500/15 hover:bg-green-500/25 transition" href="rankings.html">
+      Rankings
+    </a>
+    <a class="rounded-lg p-3 border border-pink-400/40 bg-pink-500/15 hover:bg-pink-500/25 transition" href="news.html">
+      News
+    </a>
+    <a class="rounded-lg p-3 border border-cyan-400/40 bg-cyan-500/15 hover:bg-cyan-500/25 transition" href="about.html">
+      About
+    </a>
+    <a class="rounded-lg p-3 border border-orange-400/40 bg-orange-500/15 hover:bg-orange-500/25 transition" href="contact.html">
+      Contact
+    </a>
+  </div>
+</nav>
+
+  </header>
+
+  <main id="main">
+    <!-- HERO BANNER -->
+    <section class="relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-hero via-primary to-hero opacity-20"></div>
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24">
+        <div class="grid md:grid-cols-2 gap-8 md:gap-10 items-center">
+          <div class="reveal">
+            <h1 class="font-display text-4xl sm:text-5xl md:text-6xl leading-tight text-center md:text-left">
+              Welcome to the <span class="text-gold">Heroverse</span>
+            </h1>
+            <p class="mt-3 sm:mt-4 text-white/80 max-w-2xl text-center md:text-left mx-auto md:mx-0">
+              A living universe of heroes, villains, teams, and legendary stories. Dive into origins, powers, weaknesses, allies, enemies—and more.
+            </p>
+            <div class="mt-5 sm:mt-6 flex flex-wrap gap-3 justify-center md:justify-start">
+              <a href="heroes.html" class="bg-primary px-4 sm:px-5 py-2.5 rounded-xl font-semibold hover:brightness-110 transition">Browse Hall of Heroes</a>
+              <a href="villains.html" class="bg-white text-dark px-4 sm:px-5 py-2.5 rounded-xl font-semibold hover:bg-gold transition">See Rogues Gallery</a>
+              <a href="stories.html" class="px-4 sm:px-5 py-2.5 rounded-xl font-semibold border border-white/20 hover:border-gold transition">Explore Stories</a>
+              <a href="heroes.html" class="px-4 sm:px-5 py-2.5 rounded-xl font-semibold border border-white/20 hover:border-gold transition">🎲 Random Hero</a>
+            </div>
+          </div>
+<!-- FEATURED CAROUSEL -->
+<div id="featured-heroes" class="bg-white/5 p-3 sm:p-4 rounded-3xl comic-shadow reveal w-full">
+  <h3 class="font-display text-2xl text-gold mb-3 text-center">Featured Heroes</h3>
+
+  <div class="carousel relative rounded-2xl overflow-hidden h-64 sm:h-80 bg-dark w-full">
+    <!-- Slides will be injected here -->
+  </div>
+
+  <!-- Dots -->
+  <div class="dots flex justify-center gap-2 mt-3"></div>
+</div>
+
+<script>
+  const HEROES = [
+    { name: "Gal Gadot", src: "images/gal.webp", alt: "Wonder Woman" },
+    { name: "Barry Allen", src: "images/barry.webp", alt: "The Flash" },
+    { name: "Tobey Maguire", src: "images/toby.webp", alt: "Spider-Man" },
+    { name: "Dinah Drake", src: "images/dinah.webp", alt: "Black Canary" },
+    { name: "Tyler Hoechlin", src: "images/tyler.webp", alt: "Superman" },
+    { name: "Matt Murdock", src: "images/matt.webp", alt: "Daredevil" },
+    { name: "Benedict Cumberbatch", src: "images/ben.webp", alt: "Doctor Strange" },
+    { name: "Scarlett Johansson", src: "images/scar.webp", alt: "Black Widow" },
+    { name: "Oliver Queen", src: "images/oliver.webp", alt: "Green Arrow" },
+    { name: "Elizabeth Olsen", src: "images/elizabeth.webp", alt: "Scarlet Witch" },
+  ];
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  (function buildFeaturedCarousel() {
+    const root = document.getElementById("featured-heroes");
+    const carousel = root.querySelector(".carousel");
+    const dotsBar  = root.querySelector(".dots");
+
+    const shuffled = shuffle(HEROES);
+
+    shuffled.forEach((hero, idx) => {
+      const slide = document.createElement("div");
+      slide.className = "carousel-slide w-full h-full" + (idx === 0 ? " active" : "");
+      slide.innerHTML = `
+        <div class="relative w-full h-full p-2">
+          <!-- Card frame -->
+          <div class="w-full h-full bg-white/5 rounded-xl border border-white/10 flex items-center justify-center">
+            <!-- Image always fully visible -->
+            <img loading="lazy" src="${hero.src}" alt="${hero.alt}"
+                 class="h-full w-full object-contain rounded-lg pointer-events-none" />
+          </div>
+          <!-- Name overlay -->
+          <div class="absolute inset-x-2 bottom-2">
+            <div class="rounded-xl overflow-hidden border border-white/10">
+              <div class="bg-gradient-to-t from-black/70 to-black/10 px-3 py-2">
+                <p class="text-center font-semibold tracking-wide">
+                  ${hero.name}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      carousel.appendChild(slide);
+    });
+
+    shuffled.forEach((_, idx) => {
+      const btn = document.createElement("button");
+      btn.setAttribute("data-dot", idx);
+      btn.setAttribute("aria-label", `Slide ${idx + 1}`);
+      btn.className = "w-2.5 h-2.5 rounded-full " + (idx === 0 ? "bg-gold/80" : "bg-white/40 hover:bg-white/70 transition");
+      dotsBar.appendChild(btn);
+    });
+
+    const slides = Array.from(carousel.querySelectorAll(".carousel-slide"));
+    const dots   = Array.from(dotsBar.querySelectorAll("[data-dot]"));
+
+    function activate(index) {
+      slides.forEach((s, i) => s.classList.toggle("active", i === index));
+      dots.forEach((d, i) => d.className =
+        "w-2.5 h-2.5 rounded-full " + (i === index ? "bg-gold/80" : "bg-white/40 hover:bg-white/70 transition")
+      );
+    }
+
+    dots.forEach(d => d.addEventListener("click", () => activate(+d.dataset.dot)));
+  })();
+</script>
+
+        <!-- QUICK LINKS -->
+        <div class="mt-8 sm:mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-center">
+          <a href="heroes.html" class="bg-white/5 rounded-2xl p-3 hover:bg-white/10 transition reveal flex items-center justify-center gap-2">🦸 <span>Hall of Heroes</span></a>
+          <a href="villains.html" class="bg-white/5 rounded-2xl p-3 hover:bg-white/10 transition reveal flex items-center justify-center gap-2">🦹 <span>Rogues Gallery</span></a>
+          <a href="teams.html" class="bg-white/5 rounded-2xl p-3 hover:bg-white/10 transition reveal flex items-center justify-center gap-2">🛡️ <span>Teams</span></a>
+          <a href="stories.html" class="bg-white/5 rounded-2xl p-3 hover:bg-white/10 transition reveal flex items-center justify-center gap-2">📖 <span>Stories</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-14 sm:mt-16 pb-4">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-center">
+        <div class="bg-white/5 rounded-2xl p-5 sm:p-6 comic-shadow reveal">
+          <div class="text-3xl sm:text-4xl font-display text-gold"><span class="count" data-to="200">0</span>+</div>
+          <p class="text-white/70">Heroes</p>
+        </div>
+        <div class="bg-white/5 rounded-2xl p-5 sm:p-6 comic-shadow reveal">
+          <div class="text-3xl sm:text-4xl font-display text-gold"><span class="count" data-to="150">0</span>+</div>
+          <p class="text-white/70">Villains</p>
+        </div>
+        <div class="bg-white/5 rounded-2xl p-5 sm:p-6 comic-shadow reveal">
+          <div class="text-3xl sm:text-4xl font-display text-gold"><span class="count" data-to="50">0</span>+</div>
+          <p class="text-white/70">Teams</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEWS -->
+    <!-- NEWS -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-14">
+  <header class="text-center mb-6 sm:mb-8 reveal">
+    <h2 class="font-display text-3xl sm:text-4xl">News & Updates</h2>
+    <p class="text-white/70">Latest movies, comics, and series chatter</p>
+  </header>
+
+  <!-- Dynamic news will render here -->
+  <div id="featuredNews" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+
+  <div class="text-center mt-7 reveal">
+    <a href="news.html" class="inline-block bg-primary px-5 py-2.5 rounded-xl font-semibold hover:brightness-110 transition">See all news</a>
+  </div>
+</section>
+
+<!-- Scripts -->
+<script src="assets/news-data.js"></script>
+<script>
+  (function(){
+    // Pick 3 random news items from shared data
+    const items = window.HeroverseNews.pickRandom(3);
+    const container = document.getElementById('featuredNews');
+
+    // Render the cards
+    container.innerHTML = items.map(n => `
+      <article class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:translate-y-[-2px] hover:bg-white/10 transition comic-shadow reveal">
+        <img loading="lazy" src="${n.img}" alt="${n.title}" class="w-full h-40 sm:h-48 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">${n.title}</h3>
+          <p class="text-white/70 text-sm mt-1">${n.summary}</p>
+          <a href="news.html#${n.id}" class="inline-block mt-3 text-gold hover:underline">Read more →</a>
+        </div>
+      </article>
+    `).join('');
+  })();
+</script>
+
+
+    <!-- CTA -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 sm:pb-16">
+      <div class="bg-gradient-to-r from-primary/30 via-hero/30 to-gold/30 rounded-3xl p-7 sm:p-8 md:p-10 comic-shadow reveal">
+        <div class="text-center">
+          <h3 class="font-display text-2xl sm:text-3xl">Join the Heroverse</h3>
+          <p class="text-white/80 mt-2">Suggest heroes, villains, or stories—and help expand the universe.</p>
+          <a href="contact.html" class="inline-block mt-4 bg-gold text-dark font-semibold rounded-xl px-5 py-2.5 hover:brightness-110 transition">Contribute Now</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Floating “Skip to Top” button -->
+  <a id="toTop" href="#top"
+     class="hidden fixed bottom-4 right-4 z-50 rounded-full bg-gold text-dark px-3 py-2 shadow-lg border border-white/20
+            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gold"
+     aria-label="Skip to top">↑ Top</a>
+
+  <!-- Footer -->
+  <footer class="border-t border-white/10 py-8 text-center text-white/60">
+    <p>© <span id="year"></span> Heroverse. All rights reserved.</p>
+    <p>Last modified: <span id="lastModified"></span></p>
+    <p class="mt-2 flex justify-center items-center gap-2">
+      <span class="text-xl">⚡</span>
+      <span class="text-gold font-semibold glow-hover">Henry Osuagwu</span>
+      <span class="text-xl">🦸</span>
+    </p>
+  </footer>
+
+  <!-- Minimal JS -->
+  <script>
+    // Footer dynamics
+    document.getElementById("year").textContent = new Date().getFullYear();
+    document.getElementById("lastModified").textContent = document.lastModified;
+
+    // Mobile menu toggle
+    const navToggle = document.getElementById('navToggle');
+    const mobileNav = document.getElementById('mobileNav');
+    if (navToggle && mobileNav) {
+      navToggle.addEventListener('click', () => {
+        const isHidden = mobileNav.classList.toggle('hidden');
+        navToggle.setAttribute('aria-expanded', (!isHidden).toString());
+      });
+    }
+
+    // Reveal
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    // Count-up
+    function animateCount(el) {
+      const end = +el.dataset.to || 0;
+      const dur = 1200;
+      const start = performance.now();
+      function tick(now){
+        const p = Math.min(1, (now - start)/dur);
+        el.textContent = Math.floor(p * end);
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+    document.querySelectorAll('.count').forEach(el => {
+      const obs = new IntersectionObserver(es => {
+        es.forEach(x => { if (x.isIntersecting){ animateCount(el); obs.disconnect(); }});
+      }, { threshold: 0.6 });
+      obs.observe(el);
+    });
+
+    // Simple carousel
+    const slides = Array.from(document.querySelectorAll('.carousel-slide'));
+    const dots = Array.from(document.querySelectorAll('[data-dot]'));
+    let idx = 0;
+    function show(i){
+      slides.forEach((s,j)=> s.classList.toggle('active', j===i));
+      dots.forEach((d,j)=> d.style.backgroundColor = j===i ? 'rgba(255,215,0,.8)' : 'rgba(255,255,255,.4)');
+      idx = i;
+    }
+    function next(){ show((idx + 1) % slides.length); }
+    let timer = setInterval(next, 3500);
+    dots.forEach(d => {
+      d.addEventListener('click', () => { clearInterval(timer); show(+d.dataset.dot); timer = setInterval(next, 3500); });
+    });
+
+    // Show “Skip to top” button after scrolling
+    const toTop = document.getElementById('toTop');
+    const toggleToTop = () => {
+      if (window.scrollY > 400) toTop.classList.remove('hidden');
+      else toTop.classList.add('hidden');
+    };
+    toggleToTop();
+    window.addEventListener('scroll', toggleToTop, { passive: true });
+  </script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Rankings & Stats — Heroverse</title>
+  <meta name="description" content="Top 10 strongest heroes plus fun categories: fastest, smartest, most appearances. Fan-voted or preset rankings." />
+  <link rel="icon" href="favicon.ico" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Bangers','cursive'],
+            sans: ['Poppins','ui-sans-serif','system-ui'],
+          },
+          colors: {
+            hero:'#E50914',
+            primary:'#0055FF',
+            gold:'#FFD700',
+            dark:'#0d0f13'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body::before{
+      content:"";position:fixed;inset:0;z-index:-1;background:
+      radial-gradient(circle at 20% 20%, rgba(0,85,255,.06), transparent 40%),
+      radial-gradient(circle at 80% 0%, rgba(229,9,20,.05), transparent 35%),
+      radial-gradient(circle at 0% 100%, rgba(255,215,0,.06), transparent 40%);
+      background-color:#0d0f13;
+    }
+    .active-nav{
+      background:linear-gradient(90deg,#FFD70022,#E5091422);
+      border-color:#FFD700;
+      color:#FFD700 !important;
+    }
+  </style>
+</head>
+<body class="bg-dark text-white">
+  <!-- NAV -->
+  <header class="sticky top-0 z-40 bg-dark/70 backdrop-blur border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+      <a href="index.html" class="text-2xl sm:text-3xl font-display tracking-widest text-gold">Heroverse</a>
+      <nav class="hidden md:flex items-center gap-4 text-sm">
+        <a href="heroes.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Hall of Heroes</a>
+        <a href="villains.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Rogues Gallery</a>
+        <a href="teams.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Teams</a>
+        <a href="stories.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Stories</a>
+        <a href="ratings.html" class="px-3 py-2 rounded-lg border active-nav" aria-current="page">Rankings</a>
+        <a href="news.html" class="px-3 py-2 rounded-lg hover:bg-white/10">News</a>
+        <a href="about.html" class="px-3 py-2 rounded-lg hover:bg-white/10">About</a>
+        <a href="contact.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <header class="text-center mb-8">
+      <h1 class="font-display text-4xl sm:text-5xl">Rankings & Stats</h1>
+      <p class="text-white/70 max-w-2xl mx-auto mt-2">Explore the strongest heroes and fun categories — fan-voted or preset.</p>
+    </header>
+
+    <!-- Toggle -->
+    <section class="mb-6 flex justify-center">
+      <label class="flex items-center gap-2 cursor-pointer">
+        <span>Preset</span>
+        <input id="modeToggle" type="checkbox" class="sr-only">
+        <div class="w-14 h-8 bg-white/20 rounded-full relative">
+          <div id="toggleKnob" class="w-6 h-6 bg-gold rounded-full absolute left-1 top-1 transition"></div>
+        </div>
+        <span>Fan-Voted</span>
+      </label>
+    </section>
+
+    <!-- Top 10 -->
+    <section class="mb-12">
+      <h2 class="font-display text-3xl text-gold mb-4">Top 10 Strongest Heroes</h2>
+      <div class="overflow-x-auto rounded-2xl border border-white/10 bg-white/5">
+        <table class="min-w-full text-sm">
+          <thead class="text-white/70">
+            <tr class="border-b border-white/10">
+              <th class="p-3 text-left">#</th>
+              <th class="p-3 text-left">Hero</th>
+              <th class="p-3 text-left">Universe</th>
+              <th class="p-3 text-left">Score</th>
+              <th class="p-3 text-left">Votes</th>
+              <th class="p-3 text-left">Action</th>
+            </tr>
+          </thead>
+          <tbody id="rankTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Categories -->
+    <section>
+      <h2 class="font-display text-3xl text-gold mb-4">Fun Categories</h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <h3 class="text-lg font-semibold">⚡ Fastest Hero</h3>
+          <p id="fastest" class="mt-2 text-white/80"></p>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <h3 class="text-lg font-semibold">🧠 Smartest Hero</h3>
+          <p id="smartest" class="mt-2 text-white/80"></p>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <h3 class="text-lg font-semibold">🎥 Most Appearances</h3>
+          <p id="appearances" class="mt-2 text-white/80"></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-white/10 py-8 text-center text-white/60">
+    <p>© <span id="year"></span> Heroverse</p>
+  </footer>
+
+  <script>
+    // Footer year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Heroes data
+    const HEROES = [
+      {id:'superman',name:'Superman',universe:'DC',power:98,speed:99,int:85,apps:1400},
+      {id:'flash',name:'The Flash',universe:'DC',power:92,speed:100,int:82,apps:1100},
+      {id:'batman',name:'Batman',universe:'DC',power:88,speed:70,int:98,apps:2000},
+      {id:'thor',name:'Thor',universe:'Marvel',power:96,speed:85,int:78,apps:1200},
+      {id:'hulk',name:'Hulk',universe:'Marvel',power:97,speed:70,int:75,apps:1150},
+      {id:'captain-marvel',name:'Captain Marvel',universe:'Marvel',power:95,speed:90,int:82,apps:500},
+      {id:'scarlet-witch',name:'Scarlet Witch',universe:'Marvel',power:96,speed:78,int:88,apps:650},
+      {id:'doctor-strange',name:'Doctor Strange',universe:'Marvel',power:93,speed:72,int:95,apps:800},
+      {id:'wonder-woman',name:'Wonder Woman',universe:'DC',power:94,speed:92,int:84,apps:900},
+      {id:'silver-surfer',name:'Silver Surfer',universe:'Marvel',power:97,speed:98,int:90,apps:450}
+    ];
+
+    // Votes storage
+    const VOTE_KEY = 'heroverse_votes';
+    const votes = JSON.parse(localStorage.getItem(VOTE_KEY) || '{}');
+    const toggle = document.getElementById('modeToggle');
+    const knob = document.getElementById('toggleKnob');
+    const table = document.getElementById('rankTable');
+
+    function score(h){
+      const base = h.power;
+      return toggle.checked ? base + (votes[h.id]||0)*0.5 : base;
+    }
+
+    function renderTable(){
+      const sorted = HEROES.slice().sort((a,b)=>score(b)-score(a)).slice(0,10);
+      table.innerHTML = sorted.map((h,i)=>`
+        <tr class="border-b border-white/10 hover:bg-white/5">
+          <td class="p-3">${i+1}</td>
+          <td class="p-3">${h.name}</td>
+          <td class="p-3">${h.universe}</td>
+          <td class="p-3">${score(h).toFixed(1)}</td>
+          <td class="p-3">${votes[h.id]||0}</td>
+          <td class="p-3"><button data-vote="${h.id}" class="px-3 py-1.5 bg-hero rounded-lg">+1 Vote</button></td>
+        </tr>`).join('');
+    }
+
+    // Voting
+    document.addEventListener('click', e=>{
+      if(e.target.dataset.vote){
+        const id=e.target.dataset.vote;
+        votes[id]=(votes[id]||0)+1;
+        localStorage.setItem(VOTE_KEY,JSON.stringify(votes));
+        renderTable();
+      }
+    });
+
+    // Toggle fan/preset
+    toggle.addEventListener('change',()=>{
+      knob.style.transform=toggle.checked?'translateX(24px)':'translateX(0)';
+      renderTable();
+    });
+
+    // Categories
+    document.getElementById('fastest').textContent = HEROES.reduce((a,b)=>a.speed>b.speed?a:b).name;
+    document.getElementById('smartest').textContent = HEROES.reduce((a,b)=>a.int>b.int?a:b).name;
+    document.getElementById('appearances').textContent = HEROES.reduce((a,b)=>a.apps>b.apps?a:b).name;
+
+    renderTable();
+  </script>
+</body>
+</html>

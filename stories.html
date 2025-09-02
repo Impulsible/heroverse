@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Stories & Timelines — Heroverse</title>
+  <meta name="description" content="Iconic comic book events across DC, Marvel, and beyond — quick summaries, timelines, and highlights." />
+  <meta name="author" content="Henry Osuagwu" />
+  
+  <!-- Favicon & PWA icons -->
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
+<link rel="icon" href="images/favicon.ico">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+
+
+<!-- pinned tabs -->
+<link rel="icon" type="image/png" sizes="192x192" href="images/android-chrome-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="images/android-chrome-512x512.png">
+
+
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { display: ['Bangers','cursive'], sans: ['Poppins','ui-sans-serif','system-ui'] },
+          colors: { hero:'#E50914', primary:'#0055FF', gold:'#FFD700', dark:'#0d0f13' }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html{scroll-behavior:smooth}
+    .comic-shadow{box-shadow:0 10px 25px rgba(0,0,0,.25),0 2px 8px rgba(0,0,0,.1)}
+    .grid-auto{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+    body::before{
+      content:"";position:fixed;inset:0;z-index:-1;background:
+      radial-gradient(circle at 20% 20%, rgba(0,85,255,.06), transparent 40%),
+      radial-gradient(circle at 80% 0%, rgba(229,9,20,.05), transparent 35%),
+      radial-gradient(circle at 0% 100%, rgba(255,215,0,.06), transparent 40%),
+      repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,.04), rgba(255,255,255,.04) 2px, transparent 3px, transparent 6px);
+      background-color:#0d0f13;
+    }
+    .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+    .reveal.show{opacity:1;transform:translateY(0)}
+    .selectish{
+      appearance:none;
+      background-image:
+        linear-gradient(135deg,transparent 50%,#ffd700 50%),
+        linear-gradient(45deg,#ffd700 50%,transparent 50%);
+      background-position:right 12px top 55%, right 6px top 55%;
+      background-size:6px 6px,6px 6px;
+      background-repeat:no-repeat;
+      padding-right:2.25rem
+    }
+
+     .active-nav{
+      background:linear-gradient(90deg,#FFD70022,#E5091422);
+      border-color:#FFD700;
+      color:#FFD700 !important;
+    }
+    .card-img{height:140px}
+    .modal{position:fixed;inset:0;display:none}
+    .modal.open{display:block}
+
+    .progress-track{height:8px;border-radius:9999px;background:rgba(255,255,255,.08);overflow:hidden}
+    .progress-bar{height:8px;border-radius:9999px;background:linear-gradient(90deg,#FFD700,#E50914);width:0%;transition:width .35s ease}
+  </style>
+</head>
+<body class="bg-dark text-white">
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 bg-gold text-dark px-3 py-2 rounded">Skip to content</a>
+
+  <!-- NAV -->
+  <header class="sticky top-0 z-40 bg-dark/70 backdrop-blur border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <span class="text-2xl sm:text-3xl font-display tracking-widest text-gold drop-shadow">Heroverse</span>
+      </a>
+
+      <button id="navToggle" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-white/20 hover:bg-white/10" aria-label="Open menu" aria-expanded="false">☰</button>
+
+      <nav class="hidden md:flex items-center gap-4 text-sm">
+        <a href="heroes.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Hall of Heroes</a>
+        <a href="villains.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Rogues Gallery</a>
+        <a href="teams.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Teams</a>
+        <a href="stories.html" class="px-3 py-2 rounded-lg border active-nav" aria-current="page">Stories</a>
+        <a href="rankings.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Rankings</a>
+        <a href="news.html" class="px-3 py-2 rounded-lg hover:bg-white/10">News</a>
+        <a href="about.html" class="px-3 py-2 rounded-lg hover:bg-white/10">About</a>
+        <a href="contact.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Contact</a>
+      </nav>
+    </div>
+
+    <!-- Mobile nav drawer -->
+<nav id="mobileNav" class="md:hidden hidden border-t border-gold/20 bg-gradient-to-b from-[#0b0f19] via-[#0c1324] to-[#0b0f19]">
+  <div class="max-w-7xl mx-auto px-4 py-3 grid grid-cols-2 gap-3 text-sm">
+    <a class="rounded-lg p-3 border border-red-400/40 bg-red-500/15 hover:bg-red-500/25 transition" href="heroes.html">
+      Hall of Heroes
+    </a>
+    <a class="rounded-lg p-3 border border-purple-400/40 bg-purple-500/15 hover:bg-purple-500/25 transition" href="villains.html">
+      Rogues Gallery
+    </a>
+    <a class="rounded-lg p-3 border border-yellow-400/40 bg-yellow-500/20 text-white hover:bg-yellow-500/30 transition" href="teams.html">
+      Teams
+    </a>
+    <a class="rounded-lg p-3 border border-blue-400/40 bg-blue-500/15 hover:bg-blue-500/25 transition" href="stories.html">
+      Stories
+    </a>
+    <a class="rounded-lg p-3 border border-green-400/40 bg-green-500/15 hover:bg-green-500/25 transition" href="rankings.html">
+      Rankings
+    </a>
+    <a class="rounded-lg p-3 border border-pink-400/40 bg-pink-500/15 hover:bg-pink-500/25 transition" href="news.html">
+      News
+    </a>
+    <a class="rounded-lg p-3 border border-cyan-400/40 bg-cyan-500/15 hover:bg-cyan-500/25 transition" href="about.html">
+      About
+    </a>
+    <a class="rounded-lg p-3 border border-orange-400/40 bg-orange-500/15 hover:bg-orange-500/25 transition" href="contact.html">
+      Contact
+    </a>
+  </div>
+</nav>
+  </header>
+
+  <main id="main" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+    <header class="text-center mb-6 reveal">
+      <h1 class="font-display text-4xl sm:text-5xl">Stories & Timelines</h1>
+      <p class="text-white/70 max-w-2xl mx-auto mt-2">The biggest events from DC, Marvel, and beyond — quick, cinematic summaries you can dive into fast.</p>
+    </header>
+
+    <!-- Filters -->
+    <section class="reveal">
+      <div class="rounded-2xl border border-gold/25 bg-gradient-to-r from-[#0f1320] via-[#12172a] to-[#0f1320] p-4 sm:p-5 comic-shadow">
+        <div class="grid gap-3 sm:gap-4 md:grid-cols-12 items-end">
+          <div class="md:col-span-6">
+            <label class="text-xs uppercase tracking-wide text-white/85">Search</label>
+            <input id="search" type="text" placeholder="title, year, key term…" class="mt-1 w-full rounded-2xl bg-[#141824]/90 border border-gold/30 text-white placeholder-white/60 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold selectish">
+          </div>
+          <div class="md:col-span-3">
+            <label class="text-xs uppercase tracking-wide text-white/85">Universe</label>
+            <select id="universe" class="mt-1 w-full rounded-2xl bg-[#141824]/90 border border-gold/30 text-white px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold selectish">
+              <option value="all">All</option>
+              <option>DC</option>
+              <option>Marvel</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="md:col-span-3">
+            <label class="text-xs uppercase tracking-wide text-white/85">Era</label>
+            <select id="era" class="mt-1 w-full rounded-2xl bg-[#141824]/90 border border-gold/30 text-white px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold selectish">
+              <option value="all">All</option>
+              <option>1980s</option>
+              <option>1990s</option>
+              <option>2000s</option>
+              <option>2010s</option>
+              <option>2020s</option>
+            </select>
+          </div>
+          <div class="md:col-span-12 flex flex-wrap gap-2 pt-2">
+            <button id="clearFilters" class="px-4 py-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/20">Clear</button>
+          </div>
+        </div>
+        <p id="summary" class="mt-3 text-sm text-white/85">Loading…</p>
+      </div>
+    </section>
+
+    <!-- Grid -->
+    <section class="mt-6">
+      <div id="grid" class="grid grid-auto gap-6 sm:gap-7"></div>
+      <p id="noResults" class="hidden text-center text-white/60 mt-6">No stories match your filters.</p>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-white/10 py-8 text-center text-white/60">
+    <p>© <span id="year"></span> Heroverse. All rights reserved.</p>
+    <p>Last modified: <span id="lastModified"></span></p>
+  </footer>
+
+  <!-- STORY MODAL -->
+  <div id="modal" class="modal z-50">
+    <div class="absolute inset-0 bg-black/70" data-close></div>
+    <div class="relative max-w-3xl mx-auto mt-8 sm:mt-10 bg-dark border border-white/10 rounded-3xl comic-shadow p-6">
+      <button class="absolute top-2 right-3 text-white/70 hover:text-white" data-close aria-label="Close">✕</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    /* ---------- Utility & UI ---------- */
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('lastModified').textContent = document.lastModified;
+
+    const navToggle = document.getElementById('navToggle');
+    const mobileNav = document.getElementById('mobileNav');
+    if (navToggle && mobileNav) {
+      navToggle.addEventListener('click', () => {
+        const hidden = mobileNav.classList.toggle('hidden');
+        navToggle.setAttribute('aria-expanded', (!hidden).toString());
+      });
+    }
+    const io = new IntersectionObserver((entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); }), { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    /* ---------- Data helpers ---------- */
+    const makeId = s => s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+    const img = seed => `https://picsum.photos/seed/${encodeURIComponent(seed)}/800/450`;
+    const eraFrom = years => {
+      const y = (years.match(/\d{4}/) || [null])[0];
+      if (!y) return 'Unknown';
+      if (y < 1990) return '1980s';
+      if (y < 2000) return '1990s';
+      if (y < 2010) return '2000s';
+      if (y < 2020) return '2010s';
+      return '2020s';
+    };
+
+    /* ---------- Stories ---------- */
+    const RAW = [
+      /* DC, MARVEL, OTHER … */
+      {title:'Crisis on Infinite Earths', years:'1985–86', universe:'DC', summary:[
+        'The Anti-Monitor devours universes.','Worlds collide and vanish.','Heroes unite across realities.','Sacrifices rewrite the timeline.','One Earth rises from ruins.'
+      ]},
+      {title:'Infinite Crisis', years:'2005–06', universe:'DC', summary:[
+        'Old Earths claw back into being.','Alexander Luthor rebuilds reality.','Superboy-Prime shatters boundaries.','Alliances fracture under pressure.','Hope survives, scarred but burning.'
+      ]},
+      {title:'Final Crisis', years:'2008–09', universe:'DC', summary:[
+        'Darkseid wins with Anti-Life.','Free will falls to a whisper.','Heroes fight in broken time.','A god-bullet changes destiny.','Reality sings and reboots.'
+      ]},
+      {title:'Zero Hour: Crisis in Time', years:'1994', universe:'DC', summary:[
+        'Time unravels like thread.','Histories overlap and glitch.','Paradoxes birth impossible echoes.','A new timeline is knotted.','Memory becomes the battlefield.'
+      ]},
+      {title:'Blackest Night', years:'2009–10', universe:'DC', summary:[
+        'The dead rise, ring-bearers of void.','Emotions become cosmic armies.','Love and fear clash in space.','Heroes face fallen friends.','Light outshines endless black.'
+      ]},
+      {title:'Brightest Day', years:'2010–11', universe:'DC', summary:[
+        'Resurrection has a price.','Second chances test souls.','White Light sets trials.','Secrets bloom from rebirth.','Balance demands hard choices.'
+      ]},
+      {title:'Flashpoint', years:'2011', universe:'DC', summary:[
+        'One rescue breaks everything.','Atlantis and Themyscira war.',"Batman isn’t who you expect.",'History drowns in ripples.','A run restores the world.'
+      ]},
+      {title:'Identity Crisis', years:'2004', universe:'DC', summary:[
+        'A murder cracks the League.','Secrets rot the foundation.','Trust shatters between friends.','Memory itself was edited.','Justice turns painfully personal.'
+      ]},
+      {title:'Forever Evil', years:'2013–14', universe:'DC', summary:[
+        'The Crime Syndicate invades.','Villains rule the night.','Lex Luthor builds a team.','Evil fights greater evil.','Humanity finds unlikely saviors.'
+      ]},
+      {title:'Dark Nights: Metal', years:'2017', universe:'DC', summary:[
+        'A dark multiverse opens.','Nightmares wear bat-cowls.','Mystic metals sing doom.','Hawk myths map salvation.','Hope rides a cosmic riff.'
+      ]},
+      {title:'Dark Nights: Death Metal', years:'2020', universe:'DC', summary:[
+        'Reality remixed like vinyl.','The Batman Who Laughs ascends.','Worlds melt and fuse.','Anthems power rebellion.','A final chord resets possibility.'
+      ]},
+      {title:'Kingdom Come', years:'1996', universe:'DC', summary:[
+        'Legends grow old and wary.','New metahumans run wild.','A pastor seeks meaning.','Ideals clash with extremism.','Grace tempers raw power.'
+      ]},
+      {title:'No Man’s Land', years:'1999–2000', universe:'DC', summary:[
+        'Quakes cut Gotham off.','Gangs redraw the city.','Batman rebuilds from nothing.','Territory means survival nightly.','Community becomes the hero.'
+      ]},
+      {title:'Knightfall', years:'1993–94', universe:'DC', summary:[
+        'Bane breaks the Bat.','A new knight rises.','Gotham learns hard lessons.','Icons can fail, brutally.','Bruce must become more.'
+      ]},
+      {title:'Death of Superman', years:'1992', universe:'DC', summary:[
+        'A monster hits Metropolis.','Two titans fall together.','The world mourns hope.','Pretenders fill the cape.','A symbol returns renewed.'
+      ]},
+      {title:'Rebirth', years:'2016', universe:'DC', summary:[
+        'Hope returns to continuity.','Memories reconnect missing years.','Legacy steps into spotlight.','Mystery watches from beyond.','Hearts realign with purpose.'
+      ]},
+      {title:'Sinestro Corps War', years:'2007–08', universe:'DC', summary:[
+        'Fear wears a yellow ring.','War erupts across sectors.','Lanterns face deepest doubts.','Oa itself trembles fiercely.','Willpower burns back night.'
+      ]},
+      {title:'Black Adam: The Dark Age', years:'2007–08', universe:'DC', summary:[
+        'A fallen king grieves.','Power seeks redemption’s path.','Kahndaq bears heavy history.','Love drives dangerous choices.','Myth and mercy wrestle.'
+      ]},
+      {title:'52', years:'2006–07', universe:'DC', summary:[
+        'No Trinity. Just world.','Heroes evolve weekly, raw.','Ordinary courage fills gaps.','Mystery threads bind destinies.','A year changes everything.'
+      ]},
+      {title:'Doomsday Clock', years:'2017–19', universe:'DC', summary:[
+        'Watchmen meet DC legends.','Truth collides with hope.','Manhattan tests meaning itself.','Faith rewrites cold logic.','Stories choose a future.'
+      ]},
+      {title:'Secret Wars (1984–85)', years:'1984–85', universe:'Marvel', summary:[
+        'Beyonder grabs the toys.','Heroes, villains on Battleworld.','Desire becomes a weapon.','Alliances shift like sand.','Everyone learns their truth.'
+      ]},
+      {title:'Secret Wars (2015)', years:'2015', universe:'Marvel', summary:[
+        'Universes die screaming.','Doom becomes a god.','A patchwork world persists.','Reed remembers what was.','Love rebuilds the multiverse.'
+      ]},
+      {title:'Civil War', years:'2006–07', universe:'Marvel', summary:[
+        'Masks face registration laws.','Iron Man opposes Captain America.','Friends become battlefield foes.','Freedom duels with safety.','The cost scars everyone.'
+      ]},
+      {title:'Civil War II', years:'2016', universe:'Marvel', summary:[
+        'Crime predicted before action.','Captain Marvel draws a line.','Iron Man says not yet.','Futures fork and bleed.','Justice turns preemptive, perilous.'
+      ]},
+      {title:'Infinity Gauntlet', years:'1991', universe:'Marvel', summary:[
+        'Thanos loves Death literally.','Six gems crown a god.','Half the universe fades.','Heroes charge the impossible.','A hand unclenches mercy.'
+      ]},
+      {title:'Infinity (2013)', years:'2013', universe:'Marvel', summary:[
+        'Builders threaten existence.','Thanos hunts his blood.','Earth stands unprotected.','Allies rise among stars.','War reshapes cosmic balance.'
+      ]},
+      {title:'Infinity War', years:'1992', universe:'Marvel', summary:[
+        'Magus doubles the players.','Reflections turn murderous.','Trust fractures, again.','Power splits like light.','Identity proves the key.'
+      ]},
+      {title:'Infinity Crusade', years:'1993', universe:'Marvel', summary:[
+        'The Goddess seeks purity.','Sinless worlds cost souls.','Faith faces free will.','Temptation wears holy robes.','Balance defeats fanatic peace.'
+      ]},
+      {title:'Secret Invasion', years:'2008–09', universe:'Marvel', summary:[
+        'Skrulls live among us.','Who do you trust?','Reveals shatter every team.','Queens fall; empires pivot.','Paranoia becomes policy.'
+      ]},
+      {title:'Avengers vs. X-Men', years:'2012', universe:'Marvel', summary:[
+        'The Phoenix returns blazing.','Hope Summers holds destiny.','Friends split by fear.','Power corrupts, beautifully terrifying.','Unity requires hard repentance.'
+      ]},
+      {title:'House of M', years:'2005', universe:'Marvel', summary:[
+        'Wanda remakes reality kinder.','Magneto’s dynasty reigns.','Dream lives become prisons.','Truth breaks the spell.','"No more mutants" echoes.'
+      ]},
+      {title:'Decimation (M-Day)', years:'2005', universe:'Marvel', summary:[
+        'Mutants drop to hundreds.','Extinction anxiety sets in.','Communities close ranks tightly.','Powerless heroes find identity.','Hope becomes the currency.'
+      ]},
+      {title:'Age of Apocalypse', years:'1995–96', universe:'Marvel', summary:[
+        'One death changes everything.','Apocalypse rules mercilessly.','Heroes become hard killers.','Light flickers in ruins.','A choice restores possibility.'
+      ]},
+      {title:'Onslaught Saga', years:'1996–97', universe:'Marvel', summary:[
+        'Psychic darkness gains body.','Ideals fused into monster.','The X-Men break hearts.','Sacrifice births new beginnings.','Shadows linger in minds.'
+      ]},
+      {title:'Maximum Carnage', years:'1993', universe:'Marvel', summary:[
+        'Carnage forms a family.','New York bleeds fear.','Spider-heroes push limits.','Morality bends under horror.','Mercy matters, even now.'
+      ]},
+      {title:'Spider-Verse', years:'2014–15', universe:'Marvel', summary:[
+        'Totems hunted across realities.','Every Spider answers destiny.','Family forms from variants.','Prophecy weaves a web.','Hope swings multiversal strong.'
+      ]},
+      {title:'Clone Saga', years:'1994–96', universe:'Marvel', summary:[
+        'Another Peter walks in.','Truth unravels identity.','Love triangles multiply.','Masks hide aching hearts.','Choice defines the real.'
+      ]},
+      {title:'Planet Hulk', years:'2006–07', universe:'Marvel', summary:[
+        'Exile breeds a gladiator.','Hulk finds love, home.','Warriors crown a king.','Peace explodes in tragedy.','Grief points toward Earth.'
+      ]},
+      {title:'World War Hulk', years:'2007', universe:'Marvel', summary:[
+        'The Green King returns.','Vengeance fuels unstoppable rage.','Earth’s mightiest pay dearly.','Truth complicates punishment.','Forgiveness wrestles with fury.'
+      ]},
+      {title:'Fear Itself', years:'2011', universe:'Marvel', summary:[
+        'An ancient fear wakes.','Hammers fall to Earth.','Worthy become terrifying weapons.','Courage forges new arms.','Faith steadies shaking worlds.'
+      ]},
+      {title:'Watchmen', years:'1986–87', universe:'Other', summary:[
+        'Masks face real consequences.','A murder starts the spiral.','Power questions moral ends.','Love breaks under pressure.','Who watches the watchmen?'
+      ]},
+      {title:'The Dark Knight Returns', years:'1986', universe:'Other', summary:[
+        'An older Batman rises.','Gotham drowns in chaos.','Myth collides with media.','Ideology wears capes, too.','Legends end on purpose.'
+      ]},
+      {title:'All-Star Superman', years:'2005–08', universe:'Other', summary:[
+        'A dying sun within.','Superman completes twelve labors.','Love becomes quiet strength.','Enemies receive unexpected grace.','Legacy outlives the body.'
+      ]},
+      {title:'The Sandman Saga', years:'1989–96', universe:'Other', summary:[
+        'Dream escapes, then rebuilds.','Gods and mortals mingle.','Stories birth worlds nightly.','Responsibility remakes a king.','Endings arrive like lullabies.'
+      ]},
+      {title:'Crisis on Earth-X', years:'1973', universe:'Other', summary:[
+        'Nazis rule a world.','Alliances cross dimensions.','Courage refuses brutal fate.','History bends to heroes.','Freedom costs, always dearly.'
+      ]},
+      {title:'Amalgam Comics', years:'1996–97', universe:'Other', summary:[
+        'Worlds mash into one.','Icons blend identities wildly.','New myths feel familiar.','Playful, strange, glorious.','Then it all unmashes.'
+      ]},
+      {title:'JLA/Avengers', years:'2003–04', universe:'Other', summary:[
+        'Universes mirror and argue.','Champions trade worlds briefly.','Values clash, then harmonize.','A contest crowns meaning.','Wonder outweighs rivalry.'
+      ]},
+      {title:'Hellboy: Seed of Destruction', years:'1994', universe:'Other', summary:[
+        'A demon boy investigates destiny.','Folklore gnashes with pulp.','Family matters, blood or not.','Fate tempts with crowns.','Choice rejects monstrous heritage.'
+      ]},
+      {title:'Spawn: Armageddon Saga', years:'1990s–2000s', universe:'Other', summary:[
+        'Heaven and Hell maneuver.','A soldier breaks the board.','City streets hide apocalypses.','Love anchors a lost soul.','War ends within, first.'
+      ]},
+      {title:'Injustice: Gods Among Us', years:'2013–16', universe:'Other', summary:[
+        'Tragedy breaks Superman’s heart.','Order becomes iron tyranny.','Friends become resistance fighters.','Batman bets on hope.','Freedom crawls back, scarred.'
+      ]}
+    ].map(s => ({ id: makeId(s.title), image: img(s.title), era: eraFrom(s.years), ...s }));
+
+    /* ---------- Rendering + Modal w/ navigation ---------- */
+    const elGrid = document.getElementById('grid');
+    const elSummary = document.getElementById('summary');
+    const elNoResults = document.getElementById('noResults');
+    const elSearch = document.getElementById('search');
+    const elUniverse = document.getElementById('universe');
+    const elEra = document.getElementById('era');
+
+    let currentList = [];
+    let currentIndex = 0;
+
+    function storyCard(s){
+      return `
+        <article class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:-translate-y-0.5 hover:bg-white/10 transition comic-shadow">
+          <div class="card-img bg-white/5 overflow-hidden">
+            <img src="${s.image}" alt="${s.title}" class="w-full h-full object-cover">
+          </div>
+          <div class="p-4">
+            <h3 class="font-display text-2xl text-gold">${s.title}</h3>
+            <p class="text-white/70">${s.universe} • ${s.years} • ${s.era}</p>
+            <button class="mt-3 bg-primary px-4 py-2 rounded-xl hover:brightness-110" data-open="${s.id}" type="button">Enter the saga</button>
+          </div>
+        </article>
+      `;
+    }
+
+    function applyFilters(){
+      const q = (elSearch.value || '').trim().toLowerCase();
+      const u = elUniverse.value;
+      const e = elEra.value;
+
+      const list = RAW.filter(s=>{
+        const text = [s.title, s.universe, s.years, s.era, ...(s.summary||[])].join(' ').toLowerCase();
+        const matchQ = !q || text.includes(q);
+        const matchU = (u==='all') || (s.universe===u);
+        const matchE = (e==='all') || (s.era===e);
+        return matchQ && matchU && matchE;
+      });
+
+      currentList = list.slice();
+
+      elSummary.textContent = `${list.length} stor${list.length===1?'y':'ies'} • ${u==='all'?'All universes':u} • ${e==='all'?'All eras':e}`;
+      elGrid.innerHTML = list.map(storyCard).join('');
+      elNoResults.classList.toggle('hidden', list.length>0);
+
+      document.querySelectorAll('[data-open]').forEach(btn=>{
+        btn.addEventListener('click', ()=> openStory( RAW.find(s=>s.id===btn.dataset.open) ));
+      });
+    }
+
+    /* ---------- Modal ---------- */
+    const modal = document.getElementById('modal');
+    const modalBody = document.getElementById('modalBody');
+
+    function openModal(){ modal.classList.add('open'); document.body.style.overflow='hidden'; }
+    function closeModal(){ modal.classList.remove('open'); document.body.style.overflow=''; }
+
+    // Close via overlay or X
+    modal.addEventListener('click', (e)=>{ if (e.target.dataset.close !== undefined) closeModal(); });
+    document.querySelectorAll('[data-close]').forEach(x=> x.addEventListener('click', closeModal));
+
+    // Delegate button actions ON THE MODAL
+    modal.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-action]');
+      if (!btn) return;
+      const act = btn.dataset.action;
+      if (act === 'next')   nextSaga();
+      if (act === 'prev')   prevSaga();
+      if (act === 'random') randomSaga();
+    });
+
+    function storyHTML(s){
+      const paragraph = (s.summary||[]).join(' ');
+      return `
+        <header class="mb-4">
+          <h2 class="font-display text-3xl text-gold">${s.title}</h2>
+          <p class="text-white/70">${s.universe} • ${s.years} • ${s.era}</p>
+        </header>
+
+        <div class="bg-white/5 rounded-2xl overflow-hidden border border-white/10 comic-shadow">
+          <img src="${s.image}" alt="${s.title}" class="w-full h-64 object-cover">
+        </div>
+
+        <div class="mt-4 progress-track">
+          <div id="progressBar" class="progress-bar"></div>
+        </div>
+
+        <p class="mt-4 text-white/85 leading-relaxed">${paragraph}</p>
+
+        <div class="mt-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <div class="text-white/60 text-sm">
+            <span id="sagaIndex"></span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button data-action="prev"   type="button" class="px-4 py-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/20">‹ Previous</button>
+            <button data-action="random" type="button" class="px-4 py-2 rounded-xl bg-hero border border-white/20 hover:brightness-110">🎲 Random</button>
+            <button data-action="next"   type="button" class="px-4 py-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/20">Next ›</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function updateProgress(){
+      const idxEl = document.getElementById('sagaIndex');
+      const pb = document.getElementById('progressBar');
+      if (!idxEl || !pb) return;
+      const total = Math.max(currentList.length, 1);
+      idxEl.textContent = `Saga ${currentIndex + 1} of ${total}`;
+      pb.style.width = (((currentIndex + 1) / total) * 100) + '%';
+    }
+
+    function openStoryByIndex(idx){
+      if (!currentList.length) { currentList = RAW.slice(); }
+      currentIndex = ((idx % currentList.length) + currentList.length) % currentList.length;
+      const s = currentList[currentIndex];
+      if (!s) return;
+      modalBody.innerHTML = storyHTML(s);
+      openModal();
+      updateProgress();
+    }
+
+    function openStory(s){
+      const idx = currentList.findIndex(x => x.id === s.id);
+      openStoryByIndex(idx >= 0 ? idx : 0);
+    }
+    function nextSaga(){ if (currentList.length) openStoryByIndex(currentIndex + 1); }
+    function prevSaga(){ if (currentList.length) openStoryByIndex(currentIndex - 1); }
+    function randomSaga(){ if (currentList.length) openStoryByIndex(Math.floor(Math.random()*currentList.length)); }
+
+    // Keyboard nav
+    window.addEventListener('keydown', (e)=>{
+      if (!modal.classList.contains('open')) return;
+      if (e.key === 'Escape') closeModal();
+      if (e.key === 'ArrowRight') nextSaga();
+      if (e.key === 'ArrowLeft')  prevSaga();
+    });
+
+    // Swipe nav on the MODAL (no pointer capture)
+    let startX = null;
+    modal.addEventListener('pointerdown', e => {
+      if (!modal.classList.contains('open')) return;
+      startX = e.clientX;
+    });
+    modal.addEventListener('pointerup', e => {
+      if (startX == null) return;
+      const dx = e.clientX - startX; startX = null;
+      if (dx > 40)  prevSaga();
+      if (dx < -40) nextSaga();
+    });
+
+    /* ---------- Wire up ---------- */
+    applyFilters();
+    [elSearch, elUniverse, elEra].forEach(el=>{
+      el.addEventListener('input', applyFilters);
+      el.addEventListener('change', applyFilters);
+    });
+    document.getElementById('clearFilters').addEventListener('click', ()=>{
+      elSearch.value=''; elUniverse.value='all'; elEra.value='all'; applyFilters();
+    });
+  </script>
+</body>
+</html>

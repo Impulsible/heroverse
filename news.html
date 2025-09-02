@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>News — Heroverse</title>
+  <meta name="description" content="Latest superhero movie announcements, comic releases, and fan theories across the Heroverse." />
+  <meta name="author" content="Your Name" />
+  <link rel="icon" href="favicon.ico" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Bangers','cursive'],
+            sans: ['Poppins','ui-sans-serif','system-ui'],
+          },
+          colors: {
+            hero:'#E50914',
+            primary:'#0055FF',
+            gold:'#FFD700',
+            dark:'#0d0f13',
+            dark2:'#111521'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html{scroll-behavior:smooth}
+    .comic-shadow{box-shadow:0 10px 25px rgba(0,0,0,.25),0 2px 8px rgba(0,0,0,.1)}
+    body::before{
+      content:"";position:fixed;inset:0;z-index:-1;background:
+      radial-gradient(circle at 20% 20%, rgba(255,215,0,.06), transparent 40%),
+      radial-gradient(circle at 80% 0%, rgba(229,9,20,.05), transparent 35%),
+      radial-gradient(circle at 0% 100%, rgba(0,85,255,.06), transparent 40%),
+      repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,.04), rgba(255,255,255,.04) 2px, transparent 3px, transparent 6px);
+      background-color:#0d0f13;
+    }
+    .grid-auto{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+    .selectish{
+      appearance:none;
+      background-image:
+        linear-gradient(135deg,transparent 50%,#ffd700 50%),
+        linear-gradient(45deg,#ffd700 50%,transparent 50%);
+      background-position:right 12px top 55%, right 6px top 55%;
+      background-size:6px 6px,6px 6px;
+      background-repeat:no-repeat;
+      padding-right:2.25rem
+    }
+    .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+    .reveal.show{opacity:1;transform:translateY(0)}
+
+    .tag{font-size:.72rem}
+    .badge{
+      display:inline-flex;align-items:center;gap:.4rem;
+      padding:.25rem .5rem;border-radius:.65rem;border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.06)
+    }
+    .card-img{height:160px}
+    @media (min-width:640px){ .card-img{height:190px} }
+
+    .modal{position:fixed;inset:0;display:none}
+    .modal.open{display:block}
+  </style>
+</head>
+<body class="bg-dark text-white">
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 bg-gold text-dark px-3 py-2 rounded">Skip to content</a>
+
+  <!-- NAV -->
+  <header class="sticky top-0 z-40 bg-dark/70 backdrop-blur border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <span class="text-2xl sm:text-3xl font-display tracking-widest text-gold drop-shadow">Heroverse</span>
+      </a>
+
+      <button id="navToggle" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-white/20 hover:bg-white/10" aria-label="Open menu" aria-expanded="false">☰</button>
+
+      <nav class="hidden md:flex items-center gap-5 sm:gap-6 text-sm" aria-label="Primary">
+        <a class="hover:text-gold" href="heroes.html">Hall of Heroes</a>
+        <a class="hover:text-gold" href="villains.html">Rogues Gallery</a>
+        <a class="hover:text-gold" href="teams.html">Teams</a>
+        <a class="hover:text-gold" href="stories.html">Stories</a>
+        <a class="hover:text-gold" href="rankings.html">Rankings</a>
+        <a class="hover:text-gold" href="news.html" aria-current="page">News</a>
+        <a class="hover:text-gold" href="about.html">About</a>
+        <a class="hover:text-gold" href="contact.html">Contact</a>
+      </nav>
+    </div>
+
+    <!-- Mobile drawer -->
+    <nav id="mobileNav" class="md:hidden hidden border-t border-gold/20 bg-gradient-to-b from-[#0b0f19] via-[#0c1324] to-[#0b0f19]">
+      <div class="max-w-7xl mx-auto px-4 py-3 grid grid-cols-2 gap-3 text-sm">
+        <a class="rounded-lg p-3 border border-primary/30 bg-primary/15 hover:bg-primary/25 transition" href="heroes.html">Hall of Heroes</a>
+        <a class="rounded-lg p-3 border border-primary/30 bg-primary/15 hover:bg-primary/25 transition" href="villains.html">Rogues Gallery</a>
+        <a class="rounded-lg p-3 border border-primary/30 bg-primary/15 hover:bg-primary/25 transition" href="teams.html">Teams</a>
+        <a class="rounded-lg p-3 border border-primary/30 bg-primary/15 hover:bg-primary/25 transition" href="stories.html">Stories</a>
+        <a class="rounded-lg p-3 border border-primary/30 bg-primary/15 hover:bg-primary/25 transition" href="rankings.html">Rankings</a>
+        <a class="rounded-lg p-3 border border-primary/30 bg-primary/15 hover:bg-primary/25 transition" href="news.html">News</a>
+        <a class="rounded-lg p-3 border border-primary/30 bg-primary/15 hover:bg-primary/25 transition" href="about.html">About</a>
+        <a class="rounded-lg p-3 border border-primary/30 bg-primary/15 hover:bg-primary/25 transition" href="contact.html">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+    <header class="text-center mb-6 reveal">
+      <h1 class="font-display text-4xl sm:text-5xl">Heroverse News</h1>
+      <p class="text-white/70 max-w-2xl mx-auto mt-2">Latest superhero <span class="text-white">movie announcements</span>, <span class="text-white">comic releases</span>, and wild-yet-plausible <span class="text-white">fan theories</span>.</p>
+    </header>
+
+    <!-- Controls -->
+    <section class="reveal">
+      <div class="rounded-2xl border border-gold/25 bg-gradient-to-r from-[#0f1320] via-[#12172a] to-[#0f1320] p-4 sm:p-5 comic-shadow">
+        <div class="grid gap-3 sm:gap-4 md:grid-cols-12 items-end">
+          <div class="md:col-span-5">
+            <label class="text-xs uppercase tracking-wide text-white/85">Search</label>
+            <input id="search" type="text" placeholder="title, character, rumor, creator…" class="mt-1 w-full rounded-2xl bg-[#141824]/90 border border-gold/30 text-white placeholder-white/60 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold selectish">
+          </div>
+          <div class="md:col-span-3">
+            <label class="text-xs uppercase tracking-wide text-white/85">Universe</label>
+            <select id="universe" class="mt-1 w-full rounded-2xl bg-[#141824]/90 border border-gold/30 text-white px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold selectish">
+              <option value="all">All</option>
+              <option>Marvel</option>
+              <option>DC</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="md:col-span-3">
+            <label class="text-xs uppercase tracking-wide text-white/85">Type</label>
+            <select id="type" class="mt-1 w-full rounded-2xl bg-[#141824]/90 border border-gold/30 text-white px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold selectish">
+              <option value="all">All</option>
+              <option>Movie</option>
+              <option>Comics</option>
+              <option>Theory</option>
+              <option>Series</option>
+            </select>
+          </div>
+          <div class="md:col-span-1">
+            <label class="text-xs uppercase tracking-wide text-white/85">Sort</label>
+            <select id="sort" class="mt-1 w-full rounded-2xl bg-[#141824]/90 border border-gold/30 text-white px-3 py-2.5 selectish">
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
+              <option value="bookmarked">Bookmarked</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mt-3 flex flex-wrap items-center gap-2 text-sm">
+          <span class="badge">Quick Filters:</span>
+          <button data-qf="Movie" class="badge hover:bg-white/15">🎬 Movies</button>
+          <button data-qf="Comics" class="badge hover:bg-white/15">📚 Comics</button>
+          <button data-qf="Theory" class="badge hover:bg-white/15">🧠 Fan Theories</button>
+          <button data-qf="Series" class="badge hover:bg-white/15">📺 Series</button>
+          <button id="clearFilters" class="ml-auto px-3 py-1.5 rounded-lg bg-white/10 border border-white/20 hover:bg-white/20">Clear</button>
+        </div>
+
+        <p id="summary" class="mt-3 text-sm text-white/85">Loading…</p>
+      </div>
+    </section>
+
+    <!-- Grid -->
+    <section class="mt-6">
+      <div id="grid" class="grid grid-auto gap-6 sm:gap-7"></div>
+      <p id="noResults" class="hidden text-center text-white/60 mt-6">No news match your filters.</p>
+      <div class="mt-8 text-center">
+        <button id="loadMore" class="px-5 py-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/20 hidden">Load more</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-white/10 py-8 text-center text-white/60">
+    <p>© <span id="year"></span> Heroverse. All rights reserved.</p>
+    <p>Last modified: <span id="lastModified"></span></p>
+  </footer>
+
+  <!-- NEWS MODAL -->
+  <div id="modal" class="modal z-50">
+    <div class="absolute inset-0 bg-black/70" data-close></div>
+    <div class="relative max-w-3xl mx-auto mt-8 sm:mt-10 bg-dark border border-white/10 rounded-3xl comic-shadow p-6">
+      <button class="absolute top-2 right-3 text-white/70 hover:text-white" data-close>✕</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- Load shared news data BEFORE your page script -->
+  <script src="assets/news-data.js"></script>
+
+  <script>
+    /* ---------- Utility & UI ---------- */
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('lastModified').textContent = document.lastModified;
+
+    const navToggle = document.getElementById('navToggle');
+    const mobileNav = document.getElementById('mobileNav');
+    if (navToggle && mobileNav) {
+      navToggle.addEventListener('click', () => {
+        const hidden = mobileNav.classList.toggle('hidden');
+        navToggle.setAttribute('aria-expanded', (!hidden).toString());
+      });
+    }
+
+    const io = new IntersectionObserver((entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); }), { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    const fmtDate = iso => {
+      const d = new Date(iso);
+      return d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});
+    };
+    const relTime = iso => {
+      const rtf = new Intl.RelativeTimeFormat(undefined,{numeric:'auto'});
+      const now = new Date();
+      const then = new Date(iso);
+      const diff = (then - now);
+      const sec = Math.round(diff / 1000);
+      const min = Math.round(sec / 60);
+      const hr  = Math.round(min / 60);
+      const day = Math.round(hr / 24);
+      if (Math.abs(day)) return rtf.format(day, 'day');
+      if (Math.abs(hr)) return rtf.format(hr, 'hour');
+      if (Math.abs(min)) return rtf.format(min, 'minute');
+      return rtf.format(sec, 'second');
+    };
+
+    /* ---------- Data (shared or fallback) ---------- */
+    const IMG = (seed,w=800,h=450)=>`https://picsum.photos/seed/${encodeURIComponent(seed)}/${w}/${h}`;
+    const FALLBACK_ITEMS = [
+      {id:'m1', type:'Movie', uni:'Marvel',  date:'2025-08-05', title:'Spider-Man: Web of Realities announced', img:IMG('sm-web'), src:'#',
+        summary:'Sony/Marvel unveil a live-action multiversal Spidey thriller with grounded NYC stakes and a cameo rumor that has fandom buzzing.'
+      },
+      {id:'m2', type:'Movie', uni:'DC',      date:'2025-07-21', title:'Wonder Woman: Themyscira Rises casting update', img:IMG('ww-cast'),
+        src:'#', summary:'Amazonian politics meet mythic warfare as new cast members suggest a story spanning eras before Diana.'
+      },
+      {id:'s1', type:'Series', uni:'DC',     date:'2025-09-02', title:'Peacemaker Season 2 released', img:IMG('peacemaker-s2',1200,675), src:'#',
+        summary:'The long-awaited sophomore season drops with bigger missions and even louder helmets.',
+        details:`James Gunn returns with a chaotic cocktail of heart, hair metal, and hard choices as Christopher Smith (John Cena) faces a new conspiracy that tests his definition of “peace at any cost.” Expect deeper arcs for Harcourt and Adebayo, needle-drop mayhem, and post-credit breadcrumbs tying into the evolving DCU slate.`
+      }
+    ];
+    const ITEMS = (window.NEWS_ITEMS && Array.isArray(window.NEWS_ITEMS)) ? window.NEWS_ITEMS : FALLBACK_ITEMS;
+
+    /* ---------- LocalStorage (Bookmarks) ---------- */
+    const BK_KEY = 'heroverse_news_bookmarks_v1';
+    const loadBookmarks = () => { try { return JSON.parse(localStorage.getItem(BK_KEY)) || {}; } catch { return {}; } };
+    const saveBookmarks = v => localStorage.setItem(BK_KEY, JSON.stringify(v));
+    function toggleBookmark(id){
+      const b = loadBookmarks();
+      b[id] = !b[id];
+      saveBookmarks(b);
+      apply();
+    }
+
+    /* ---------- Elements ---------- */
+    const elGrid = document.getElementById('grid');
+    const elSummary = document.getElementById('summary');
+    const elNoResults = document.getElementById('noResults');
+    const elLoadMore = document.getElementById('loadMore');
+
+    const elSearch = document.getElementById('search');
+    const elUni = document.getElementById('universe');
+    const elType = document.getElementById('type');
+    const elSort = document.getElementById('sort');
+
+    document.querySelectorAll('[data-qf]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{ elType.value = btn.dataset.qf; apply(true); });
+    });
+    document.getElementById('clearFilters').addEventListener('click', ()=>{
+      elSearch.value=''; elUni.value='all'; elType.value='all'; elSort.value='newest'; apply(true);
+    });
+
+    ;[elSearch, elUni, elType, elSort].forEach(el=>{
+      el.addEventListener('input', ()=>apply(true));
+      el.addEventListener('change', ()=>apply(true));
+    });
+
+    /* ---------- Pagination (Load more) ---------- */
+    const PAGE_SIZE = 6;
+    let page = 1;
+    function resetPaging(){ page = 1; }
+    function nextPage(){ page += 1; }
+
+    /* ---------- Rendering ---------- */
+    function card(n, bookmarked){
+      const tag = `<span class="tag badge">${n.type}</span>`;
+      const uni = `<span class="tag badge">${n.uni}</span>`;
+      return `
+      <article class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:-translate-y-0.5 hover:bg-white/10 transition comic-shadow">
+        <div class="card-img bg-white/5 overflow-hidden">
+          <img src="${n.img}" alt="${n.title}" class="w-full h-full object-cover">
+        </div>
+        <div class="p-4 flex flex-col gap-2">
+          <div class="flex items-start justify-between gap-3">
+            <h3 class="font-display text-2xl text-gold leading-tight">${n.title}</h3>
+            <button class="shrink-0 px-2 py-1 rounded-lg border border-white/15 ${bookmarked?'bg-gold/20':'bg-white/10'} hover:bg-white/20"
+                    title="${bookmarked?'Remove bookmark':'Bookmark'}"
+                    data-bm="${n.id}">★</button>
+          </div>
+          <p class="text-white/70 text-sm">${n.uni} • ${n.type} • <span title="${fmtDate(n.date)}">${relTime(n.date)}</span></p>
+          <p class="text-white/85 line-clamp-3">${n.summary}</p>
+          <div class="flex items-center gap-2 mt-1">${tag}${uni}</div>
+          <div class="pt-1">
+            <button class="bg-primary px-4 py-2 rounded-xl hover:brightness-110" data-open="${n.id}">Read more</button>
+          </div>
+        </div>
+      </article>`;
+    }
+
+    function apply(reset=false){
+      if (reset) resetPaging();
+      const q = (elSearch.value||'').toLowerCase().trim();
+      const u = elUni.value;
+      const t = elType.value;
+      const sort = elSort.value;
+      const bookmarks = loadBookmarks();
+
+      let list = ITEMS.slice();
+
+      // filter
+      list = list.filter(n=>{
+        const hay = [n.title, n.summary, n.type, n.uni].join(' ').toLowerCase();
+        const mq = !q || hay.includes(q);
+        const mu = (u==='all') || (n.uni===u);
+        const mt = (t==='all') || (n.type===t);
+        return mq && mu && mt;
+      });
+
+      // sort
+      if (sort === 'newest'){
+        list.sort((a,b)=> new Date(b.date) - new Date(a.date));
+      } else if (sort === 'oldest'){
+        list.sort((a,b)=> new Date(a.date) - new Date(b.date));
+      } else if (sort === 'bookmarked'){
+        list.sort((a,b)=> ((bookmarks[b.id]?1:0) - (bookmarks[a.id]?1:0)) || (new Date(b.date)-new Date(a.date)));
+      }
+
+      // paging
+      const total = list.length;
+      const end = Math.min(total, page * PAGE_SIZE);
+      const slice = list.slice(0, end);
+
+      // render
+      elGrid.innerHTML = slice.map(n => card(n, !!bookmarks[n.id])).join('');
+      elNoResults.classList.toggle('hidden', slice.length>0);
+      elLoadMore.classList.toggle('hidden', end < total);
+
+      elSummary.textContent =
+        `${total} item${total===1?'':'s'} • ${u==='all'?'All universes':u} • ${t==='all'?'All types':t} • ${sort}`;
+
+      // wire modal + bookmarks + load more
+      document.querySelectorAll('[data-open]').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const it = ITEMS.find(x=>x.id===btn.dataset.open);
+          if (it) openModal(it);
+        });
+      });
+      document.querySelectorAll('[data-bm]').forEach(btn=>{
+        btn.addEventListener('click', ()=> toggleBookmark(btn.dataset.bm));
+      });
+    }
+
+    elLoadMore.addEventListener('click', ()=>{ nextPage(); apply(false); });
+
+    /* ---------- Modal ---------- */
+    const modal = document.getElementById('modal');
+    const modalBody = document.getElementById('modalBody');
+    modal.addEventListener('click', (e)=>{ if (e.target.dataset.close!==undefined) closeModal(); });
+    document.querySelectorAll('[data-close]').forEach(x=> x.addEventListener('click', closeModal));
+    function openModal(n){
+      const body = n.details ? `<p class="mb-3">${n.summary}</p><p>${n.details}</p>` : `<p>${n.summary}</p>`;
+      modalBody.innerHTML = `
+        <header class="mb-3">
+          <h2 class="font-display text-3xl text-gold">${n.title}</h2>
+          <p class="text-white/70">${n.uni} • ${n.type} • ${fmtDate(n.date)}</p>
+        </header>
+        <div class="bg-white/5 rounded-2xl overflow-hidden border border-white/10">
+          <img src="${n.img}" alt="${n.title} cover image" class="w-full h-64 object-cover">
+        </div>
+        <article class="prose prose-invert prose-p:leading-relaxed max-w-none mt-4">${body}</article>
+        <div class="mt-4 flex gap-2">
+          <a href="${n.src}" target="_blank" rel="noopener noreferrer"
+             class="bg-primary px-4 py-2 rounded-xl hover:brightness-110">Open source</a>
+          <button class="px-4 py-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/20" data-close>Close</button>
+        </div>
+      `;
+      modal.classList.add('open');
+      document.body.style.overflow='hidden';
+    }
+    function closeModal(){ modal.classList.remove('open'); document.body.style.overflow=''; }
+
+    // ---------- Init render ----------
+    apply(true);
+
+    // ---------- Open the item if navigated from index.html with #id ----------
+    (function(){
+      const id = location.hash.slice(1);
+      if(!id) return;
+      const it = ITEMS.find(x => x.id === id);
+      if(it){
+        // ensure initial render happened, then open
+        openModal(it);
+        // optional: smooth scroll to top (mobile)
+        setTimeout(()=> window.scrollTo({ top: 0, behavior: 'smooth' }), 0);
+      }
+    })();
+  </script>
+</body>
+</html>

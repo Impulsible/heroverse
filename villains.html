@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Rogues Gallery — Heroverse</title>
+  <meta name="description" content="Browse the Rogues Gallery — explore origins, powers, weaknesses, allies, enemies, and appearances across the Heroverse." />
+  <meta name="author" content="Henry Osuagwu" />
+
+  <!-- Favicon & PWA icons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
+  <link rel="icon" href="images/favicon.ico">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="images/android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="images/android-chrome-512x512.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Bangers','cursive'],
+            sans: ['Poppins','ui-sans-serif','system-ui'],
+          },
+          colors: {
+            hero:'#E50914',
+            primary:'#0055FF',
+            gold:'#FFD700',
+            dark:'#0d0f13',
+            dark2:'#111521'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html{scroll-behavior:smooth}
+    .comic-shadow{box-shadow:0 10px 25px rgba(0,0,0,.25),0 2px 8px rgba(0,0,0,.1)}
+    .grid-auto{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+    body::before{
+      content:"";position:fixed;inset:0;z-index:-1;background:
+      radial-gradient(circle at 20% 20%, rgba(255,215,0,.06), transparent 40%),
+      radial-gradient(circle at 80% 0%, rgba(229,9,20,.05), transparent 35%),
+      radial-gradient(circle at 0% 100%, rgba(0,85,255,.06), transparent 40%),
+      repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,.04), rgba(255,255,255,.04) 2px, transparent 3px, transparent 6px);
+      background-color:#0d0f13;
+    }
+    .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+    .reveal.show{opacity:1;transform:translateY(0)}
+    .glow-hover:hover{text-shadow:0 0 10px rgba(255,215,0,.7),0 0 20px rgba(255,215,0,.5)}
+    .modal{position:fixed;inset:0;display:none}
+    .modal.open{display:block}
+    .selectish{
+      appearance:none;
+      background-image:
+        linear-gradient(135deg,transparent 50%,#ffd700 50%),
+        linear-gradient(45deg,#ffd700 50%,transparent 50%);
+      background-position:right 12px top 55%, right 6px top 55%;
+      background-size:6px 6px,6px 6px;
+      background-repeat:no-repeat;
+      padding-right:2.25rem
+    }
+    .active-nav{
+      background:linear-gradient(90deg,#FFD70022,#E5091422);
+      border-color:#FFD700;
+      color:#FFD700 !important;
+    }
+
+    .card-img{height:13.5rem}
+    .profile-img{height:19rem}
+
+    /* Make images fill containers */
+    .card-img img{width:100%;height:100%;object-fit:cover}
+    .profile-img{object-fit:cover}
+    .gallery-item{object-fit:cover}
+
+    /* Modal gallery thumbnails */
+    .gallery-row{
+      display:flex; gap:1rem; padding:.75rem .5rem 1rem;
+      overflow-x:auto; overflow-y:visible; scroll-snap-type:x mandatory; scroll-padding-left:.75rem;
+    }
+    .gallery-row::-webkit-scrollbar{height:12px}
+    .gallery-row::-webkit-scrollbar-thumb{background:#ffffff22;border-radius:999px}
+    .gallery-item{
+      min-width:420px;height:260px;flex:0 0 auto;scroll-snap-align:center;
+      border-radius:12px;border:1px solid rgba(255,255,255,.12);
+      background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));
+      box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);
+      cursor:zoom-in;
+    }
+    @media (max-width:640px){ .gallery-item{min-width:320px;height:210px} }
+
+    /* ========= LIGHTBOX (fit-to-view) ========= */
+    #lightbox{position:fixed; inset:0; z-index:60; display:none; overscroll-behavior:contain}
+    #lightbox.open{display:block}
+    .lb-wrap{position:absolute;inset:0;display:flex;flex-direction:column;padding:16px}
+    @media (min-width:640px){ .lb-wrap{padding:24px} }
+
+    .lb-top{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:.5rem;color:#fff}
+    .lb-title{font-weight:600}
+    .lb-count{opacity:.8;font-size:.9rem}
+    .lb-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);padding:.45rem .7rem;border-radius:.7rem}
+    .lb-btn:hover{background:rgba(255,255,255,.14)}
+
+    .lb-stage{position:relative;flex:1 1 auto;min-height:0;border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border-radius:1rem;padding:10px;overflow:hidden;touch-action:none}
+    @media (min-width:640px){ .lb-stage{padding:16px;border-radius:1.25rem} }
+
+    .lb-canvas{width:100%;height:100%;display:flex;align-items:center;justify-content:center;user-select:none}
+    .lb-img{max-width:96vw;max-height:80vh;width:auto;height:auto;border-radius:.75rem;object-fit:contain;border:1px solid rgba(255,255,255,.12);box-shadow:0 10px 35px rgba(0,0,0,.5), 0 2px 10px rgba(0,0,0,.25);transform-origin:center center;will-change:transform;cursor:grab}
+    .lb-img.grabbing{cursor:grabbing}
+    @media (min-width:640px){ .lb-img{max-width:86vw;max-height:82vh} }
+
+    .lb-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);padding:.6rem .9rem;border-radius:.9rem;backdrop-filter:blur(4px)}
+    .lb-arrow:hover{background:rgba(255,255,255,.14)}
+    .lb-prev{left:8px} .lb-next{right:8px}
+    @media (min-width:640px){ .lb-prev{left:14px} .lb-next{right:14px} }
+
+    .lb-bottom{margin-top:.6rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:.9rem;padding:.5rem .5rem}
+    .lb-thumbs-wrap{position:relative;display:flex;align-items:center;gap:.4rem}
+    .lb-scroll{flex:0 0 auto;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);padding:.35rem .55rem;border-radius:.6rem}
+    .lb-scroll:hover{background:rgba(255,255,255,.14)}
+    .lb-thumbs{overflow-x:auto;scroll-behavior:smooth;gap:.5rem;display:flex;align-items:center;padding:.2rem;-ms-overflow-style:none;scrollbar-width:thin}
+    .lb-thumbs::-webkit-scrollbar{height:10px}
+    .lb-thumbs::-webkit-scrollbar-thumb{background:#ffffff22;border-radius:999px}
+
+    .lb-thumb{width:110px;height:74px;flex:0 0 auto;border-radius:.5rem;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);overflow:hidden;opacity:.85;transition:opacity .2s, transform .2s}
+    .lb-thumb:hover{opacity:1;transform:translateY(-1px)}
+    .lb-thumb.active{outline:2px solid #FFD700;opacity:1}
+    @media (min-width:640px){ .lb-thumb{width:130px;height:86px} }
+
+    .lb-badge{font-size:.85rem;opacity:.9}
+
+    /* Mobile: gallery-only scroll */
+    @media (max-width:640px){
+      .profile-modal{ overflow: hidden; }
+      .gallery-vert{ display:flex; flex-direction:column; max-height:60vh; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; scroll-snap-type:y mandatory; gap:0.75rem; padding-right:4px; }
+      .gallery-vert .gallery-item{ min-width:100%; height:auto; aspect-ratio:16/10; scroll-snap-align:start; }
+    }
+  </style>
+</head>
+<body id="top" class="bg-dark text-white">
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 bg-gold text-dark px-3 py-2 rounded">Skip to content</a>
+
+  <!-- NAV -->
+  <header class="sticky top-0 z-40 bg-dark/70 backdrop-blur border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <span class="text-2xl sm:text-3xl font-display tracking-widest text-gold drop-shadow">Heroverse</span>
+      </a>
+
+      <button id="navToggle" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-white/20 hover:bg-white/10" aria-label="Open menu" aria-expanded="false">
+        <span class="sr-only">Menu</span> ☰
+      </button>
+
+      <nav class="hidden md:flex items-center gap-4 text-sm">
+        <a href="heroes.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Hall of Heroes</a>
+        <a href="villains.html" class="px-3 py-2 rounded-lg border active-nav" aria-current="page">Rogues Gallery</a>
+        <a href="teams.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Teams</a>
+        <a href="stories.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Stories</a>
+        <a href="rankings.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Rankings</a>
+        <a href="news.html" class="px-3 py-2 rounded-lg hover:bg-white/10">News</a>
+        <a href="about.html" class="px-3 py-2 rounded-lg hover:bg-white/10">About</a>
+        <a href="contact.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Contact</a>
+      </nav>
+
+      <button id="randomBtn" class="hidden sm:inline-flex items-center gap-2 bg-hero text-white px-3 sm:px-4 py-2 rounded-xl hover:brightness-110 transition">
+        🦹 Random Villain
+      </button>
+    </div>
+
+    <!-- Mobile nav drawer -->
+    <nav id="mobileNav" class="md:hidden hidden border-t border-gold/20 bg-gradient-to-b from-[#0b0f19] via-[#0c1324] to-[#0b0f19]">
+      <div class="max-w-7xl mx-auto px-4 py-3 grid grid-cols-2 gap-3 text-sm">
+        <a class="rounded-lg p-3 border border-red-400/40 bg-red-500/15 hover:bg-red-500/25 transition" href="heroes.html">Hall of Heroes</a>
+        <a class="rounded-lg p-3 border border-purple-400/40 bg-purple-500/15 hover:bg-purple-500/25 transition" href="villains.html">Rogues Gallery</a>
+        <a class="rounded-lg p-3 border border-yellow-400/40 bg-yellow-500/20 text-white hover:bg-yellow-500/30 transition" href="teams.html">Teams</a>
+        <a class="rounded-lg p-3 border border-blue-400/40 bg-blue-500/15 hover:bg-blue-500/25 transition" href="stories.html">Stories</a>
+        <a class="rounded-lg p-3 border border-green-400/40 bg-green-500/15 hover:bg-green-500/25 transition" href="rankings.html">Rankings</a>
+        <a class="rounded-lg p-3 border border-pink-400/40 bg-pink-500/15 hover:bg-pink-500/25 transition" href="news.html">News</a>
+        <a class="rounded-lg p-3 border border-cyan-400/40 bg-cyan-500/15 hover:bg-cyan-500/25 transition" href="about.html">About</a>
+        <a class="rounded-lg p-3 border border-orange-400/40 bg-orange-500/15 hover:bg-orange-500/25 transition" href="contact.html">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+    <header class="text-center mb-6 reveal">
+      <h1 class="font-display text-4xl sm:text-5xl">Rogues Gallery</h1>
+      <p class="text-white/70 max-w-2xl mx-auto mt-2">Filter by universe, alignment, and power type. Click a card to open a full profile with origin, powers, weaknesses, allies, enemies, appearances, and gallery.</p>
+    </header>
+
+    <!-- FILTERS -->
+    <section class="reveal">
+      <div class="rounded-2xl border border-gold/25 bg-gradient-to-r from-[#0f1320] via-[#12172a] to-[#0f1320] p-4 sm:p-5 comic-shadow">
+        <div class="grid gap-3 sm:gap-4 md:grid-cols-12 items-end">
+          <div class="md:col-span-5">
+            <label class="text-xs uppercase tracking-wide text-white/80">Search</label>
+            <input id="search" type="text" placeholder="name, alias, power, ally, enemy…" class="mt-1 w-full rounded-2xl bg-[#141824]/90 border border-gold/30 text-white placeholder-white/60 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold selectish">
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="text-xs uppercase tracking-wide text-white/80">Universe</label>
+            <select id="universe" class="mt-1 w-full rounded-2xl bg-[#141824]/90 border border-gold/30 text-white px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold selectish">
+              <option value="all">All</option>
+              <option>Marvel</option>
+              <option>DC</option>
+              <option>Original</option>
+            </select>
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="text-xs uppercase tracking-wide text-white/80">Alignment</label>
+            <select id="alignment" class="mt-1 w-full rounded-2xl bg-[#141824]/90 border border-gold/30 text-white px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold selectish">
+              <option value="all">All</option>
+              <option>Villain</option>
+              <option>Anti-hero</option>
+            </select>
+          </div>
+
+          <div class="md:col-span-3">
+            <label class="text-xs uppercase tracking-wide text-white/80">Power Type</label>
+            <select id="powerType" class="mt-1 w-full rounded-2xl bg-[#141824]/90 border border-gold/30 text-white px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold selectish">
+              <option value="all">All</option>
+              <option>strength</option>
+              <option>speed</option>
+              <option>magic</option>
+              <option>tech</option>
+              <option>flight</option>
+              <option>energy</option>
+              <option>martial arts</option>
+              <option>agility</option>
+            </select>
+          </div>
+
+          <div class="md:col-span-12 flex flex-wrap gap-2 pt-2">
+            <button id="clearFilters" class="px-4 py-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/20">Clear</button>
+            <button id="randomBtn2" class="px-4 py-2 rounded-xl bg-hero hover:brightness-110">🦹 Random Villain</button>
+          </div>
+        </div>
+        <p id="summary" class="mt-3 text-sm text-white/85">Loading…</p>
+      </div>
+    </section>
+
+    <!-- GRID -->
+    <section class="mt-6">
+      <div id="grid" class="grid grid-auto gap-6 sm:gap-7"></div>
+      <p id="noResults" class="hidden text-center text-white/60 mt-6">No villains match your filters.</p>
+    </section>
+  </main>
+
+  <!-- Floating “Skip to Top” button -->
+  <a id="toTop" href="#top"
+     class="hidden fixed bottom-4 right-4 z-50 rounded-full bg-gold text-dark px-3 py-2 shadow-lg border border-white/20
+            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gold"
+     aria-label="Skip to top">↑ Top</a>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-white/10 py-8 text-center text-white/60">
+    <p>© <span id="year"></span> Heroverse. All rights reserved.</p>
+    <p>Last modified: <span id="lastModified"></span></p>
+    <p class="mt-2 flex justify-center items-center gap-2">
+      <span class="text-xl">⚡</span>
+      <span class="text-gold font-semibold glow-hover">Henry Osuagwu</span>
+      <span class="text-xl">🦹</span>
+    </p>
+  </footer>
+
+  <!-- PROFILE MODAL -->
+  <div id="modal" class="modal z-50">
+    <div class="absolute inset-0 bg-black/70" data-close></div>
+    <div class="relative max-w-5xl mx-auto mt-8 sm:mt-10 bg-dark border border-white/10 rounded-3xl comic-shadow p-6 max-h-[85vh] overflow-auto profile-modal">
+      <button class="absolute top-2 right-3 text-white/70 hover:text-white" data-close>✕</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- ========= LIGHTBOX ========= -->
+  <div id="lightbox" class="fixed inset-0 z-[60] hidden">
+    <div class="absolute inset-0 bg-black/90" data-lb-close></div>
+    <div class="lb-wrap">
+      <div class="lb-top">
+        <div class="flex items-center gap-2">
+          <span class="lb-title" id="lbCaption">Villain</span>
+          <span class="lb-count" id="lbCount">1 / 3</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span id="lbZoomBadge" class="lb-badge hidden sm:inline-block px-2 py-1 rounded bg-white/10 border border-white/20">100%</span>
+          <button id="lbReset" class="lb-btn" title="Reset zoom">↺</button>
+          <button id="lbDownload" class="lb-btn" title="Open image in new tab">⬇</button>
+          <button id="lbClose" class="lb-btn" title="Close">✕</button>
+        </div>
+      </div>
+
+      <div class="lb-stage" id="lbStage">
+        <button class="lb-arrow lb-prev" id="lbPrev" aria-label="Previous">‹</button>
+        <button class="lb-arrow lb-next" id="lbNext" aria-label="Next">›</button>
+        <div class="lb-canvas"><img id="lbImg" src="" alt="Gallery image" class="lb-img" /></div>
+      </div>
+
+      <div class="lb-bottom">
+        <div class="lb-thumbs-wrap">
+          <button class="lb-scroll" id="thumbPrev" aria-label="Scroll thumbnails left">‹</button>
+          <div class="lb-thumbs" id="lbThumbs"></div>
+          <button class="lb-scroll" id="thumbNext" aria-label="Scroll thumbnails right">›</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ---------- Utility & UI ---------- */
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('lastModified').textContent = document.lastModified;
+
+    const navToggle = document.getElementById('navToggle');
+    const mobileNav = document.getElementById('mobileNav');
+    if (navToggle && mobileNav) {
+      navToggle.addEventListener('click', () => {
+        const hidden = mobileNav.classList.toggle('hidden');
+        navToggle.setAttribute('aria-expanded', (!hidden).toString());
+      });
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); }),
+      { threshold: 0.12 }
+    );
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    /* ---------- Helpers (placeholder + local image probing) ---------- */
+    const makeId = s => s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+
+    const PLACEHOLDER_SRC =
+      'data:image/svg+xml;utf8,' +
+      encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800">
+          <rect width="100%" height="100%" fill="#121624"/>
+          <rect x="1.5" y="1.5" width="1197" height="797" fill="none" stroke="#2a2f45" stroke-width="3"/>
+          <g fill="#2a2f45" font-family="Verdana" font-size="36" text-anchor="middle">
+            <text x="600" y="406">Image Placeholder</text>
+          </g>
+        </svg>
+      `);
+
+    const IMAGE_OVERRIDES = {
+      'thanos': { cover:'images/villains/thanos/1.webp', gallery:['images/villains/thanos/1.jpg','images/villains/thanos/2.jpg','images/villains/thanos/1.png'] },
+      'joker': { cover:'images/villains/joker/1.webp', gallery:['images/villains/joker/1.webp','images/villains/joker/2.jpg','images/villains/joker/3.jpg'] },
+      'magneto': { cover:'images/villains/magneto/1.webp', gallery:['images/villains/magneto/1.webp','images/villains/magneto/2.jpg','images/villains/magneto/3.jpg'] },
+      
+    };
+
+    const CANDIDATE_EXTS = ['webp', 'jpg', 'png', 'jpeg'];
+
+    const coverCandidates = (id) =>
+      (IMAGE_OVERRIDES[id]?.cover)
+        ? [IMAGE_OVERRIDES[id].cover]
+        : CANDIDATE_EXTS.map(ext => `images/villains/${id}/cover.${ext}`);
+
+    const galleryCandidates = (id, i) => {
+      if (IMAGE_OVERRIDES[id]?.gallery?.[i]) return [IMAGE_OVERRIDES[id].gallery[i]];
+      const idx = i + 1; // files 1,2,3...
+      return CANDIDATE_EXTS.map(ext => `images/villains/${id}/${idx}.${ext}`);
+    };
+
+    function probeAndSwap(img, candidates){
+      if (img.dataset.loaded === '1') return;
+      let k = 0;
+      function tryNext(){
+        if (k >= candidates.length) return;
+        const url = candidates[k++];
+        const test = new Image();
+        test.onload = () => { img.src = url; img.dataset.loaded = '1'; };
+        test.onerror = tryNext;
+        test.src = url;
+      }
+      tryNext();
+    }
+
+    function autoloadAll(){
+      document.querySelectorAll('img[data-candidates]').forEach(img => {
+        const list = img.getAttribute('data-candidates').split('|').filter(Boolean);
+        if (list.length) probeAndSwap(img, list);
+      });
+    }
+
+    function collectGallerySources(container){
+      return Array.from(container.querySelectorAll('img.gallery-item'))
+                  .map(img => img.src || PLACEHOLDER_SRC);
+    }
+
+    /* ---------- Data ---------- */
+    const M='Marvel', D='DC', O='Original';
+    const V='Villain', AH='Anti-hero';
+
+    const RAW = {
+      Marvel: [
+        'Thanos','Loki','Ultron','Red Skull','Green Goblin (Norman Osborn)','Doctor Octopus (Otto Octavius)',
+        'Venom (Eddie Brock)','Carnage (Cletus Kasady)','Kingpin (Wilson Fisk)','Bullseye','Mysterio (Quentin Beck)',
+        'Sandman (Flint Marko)','Vulture (Adrian Toomes)','Electro (Max Dillon)','Lizard (Curt Connors)',
+        'Kraven the Hunter','Rhino (Aleksei Sytsevich)','Shocker (Herman Schultz)','Black Cat (sometimes anti-hero)',
+        'Taskmaster','Baron Zemo','MODOK','Dormammu','Mephisto','Galactus','Magneto','Mystique (Raven Darkholme)',
+        'Sabretooth (Victor Creed)','Juggernaut (Cain Marko)','Apocalypse (En Sabah Nur)','Mister Sinister (Nathaniel Essex)',
+        'Emma Frost (started as villain)','Dark Phoenix (Jean Grey corrupted)','Sentinels','Silver Samurai','Lady Deathstrike',
+        'Omega Red','Onslaught','Hela (Asgardian Goddess of Death)','The Collector'
+      ],
+      DC: [
+        'Joker','Harley Quinn (sometimes anti-hero)','Lex Luthor','Darkseid','Doomsday','Brainiac','Bizarro','General Zod',
+        'Riddler (Edward Nygma)','Penguin (Oswald Cobblepot)','Catwoman (sometimes anti-hero)','Two-Face (Harvey Dent)',
+        'Scarecrow (Jonathan Crane)','Poison Ivy (Pamela Isley)','Killer Croc (Waylon Jones)','Mr. Freeze (Victor Fries)',
+        'Ra’s al Ghul','Talia al Ghul','Solomon Grundy','Clayface','Deathstroke (Slade Wilson)','Deadshot (Floyd Lawton)',
+        'Black Manta','Ocean Master (Orm)','Sinestro','Atrocitus','Reverse-Flash (Eobard Thawne)','Zoom (Hunter Zolomon)',
+        'Gorilla Grodd','Captain Cold','Heat Wave','Killer Frost','Cheetah (Barbara Minerva)','Ares (God of War)','Circe',
+        'Trigon','Despero','Vandal Savage','Black Adam (anti-hero sometimes)','Parasite'
+      ],
+      Original: [
+        'Spawn’s Violator','Malebolgia (Spawn)','Hellboy’s Grigori Rasputin','Hellboy’s Nimue (Blood Queen)',
+        'Invincible’s Thragg','Invincible’s Conquest','Omni-Man','The Mauler Twins (Invincible)','The Lizard King (Invincible)',
+        'The Tick’s Chairface Chippendale','The Tick’s The Terror','Watchmen’s Ozymandias (Adrian Veidt)',
+        'Watchmen’s Comedian (morally gray)','Watchmen’s Big Figure','The Monarch (Venture Bros)','Aku (Samurai Jack)',
+        'Fire Lord Ozai (Avatar: The Last Airbender)','Azula (Avatar: The Last Airbender)','Frieza (Dragon Ball)','Cell (Dragon Ball)'
+      ]
+    };
+
+    const ALIGNMENT_HINTS = {
+      'Black Cat': AH,
+      'Harley Quinn': AH,
+      'Catwoman': AH,
+      'Black Adam': AH,
+      'Emma Frost': AH,
+      'Ozymandias': AH,
+      'Comedian': AH
+    };
+
+    const POWER_HINTS = {
+      // Marvel
+      'Thanos':'strength,energy','Loki':'magic,energy','Ultron':'tech,energy','Red Skull':'tech',
+      'Green Goblin':'tech,agility','Doctor Octopus':'tech,strength','Venom':'strength,agility','Carnage':'strength,agility',
+      'Kingpin':'strength,martial arts','Bullseye':'martial arts,agility','Mysterio':'tech,magic','Sandman':'strength',
+      'Vulture':'tech,flight','Electro':'energy','Lizard':'strength,agility','Kraven the Hunter':'martial arts,agility',
+      'Rhino':'strength','Shocker':'energy,tech','Black Cat':'agility,martial arts','Taskmaster':'martial arts,tech',
+      'Baron Zemo':'martial arts,tech','MODOK':'tech,energy','Dormammu':'magic,energy','Mephisto':'magic',
+      'Galactus':'energy,flight,strength','Magneto':'energy,flight','Mystique':'agility,martial arts','Sabretooth':'strength,agility',
+      'Juggernaut':'strength','Apocalypse':'strength,energy,tech','Mister Sinister':'tech,energy','Emma Frost':'magic,energy',
+      'Dark Phoenix':'energy,flight,magic','Sentinels':'tech,energy','Silver Samurai':'martial arts,tech','Lady Deathstrike':'martial arts,tech',
+      'Omega Red':'strength,energy','Onslaught':'energy,magic,flight','Hela':'magic,energy','The Collector':'tech',
+      // DC
+      'Joker':'tech,agility','Harley Quinn':'martial arts,agility','Lex Luthor':'tech','Darkseid':'strength,energy',
+      'Doomsday':'strength','Brainiac':'tech,energy','Bizarro':'strength,flight,energy','General Zod':'strength,flight,energy',
+      'Riddler':'tech','Penguin':'tech','Catwoman':'agility,martial arts','Two-Face':'tech','Scarecrow':'tech','Poison Ivy':'magic',
+      'Killer Croc':'strength','Mr. Freeze':'energy,tech','Ra’s al Ghul':'martial arts','Talia al Ghul':'martial arts',
+      'Solomon Grundy':'strength','Clayface':'strength','Deathstroke':'martial arts,tech','Deadshot':'tech,agility',
+      'Black Manta':'tech,energy','Ocean Master':'strength,magic','Sinestro':'energy,flight','Atrocitus':'energy,flight',
+      'Reverse-Flash':'speed,energy','Zoom':'speed,energy','Gorilla Grodd':'strength,magic','Captain Cold':'tech,energy',
+      'Heat Wave':'energy,tech','Killer Frost':'energy','Cheetah':'agility,strength','Ares':'magic,strength',
+      'Circe':'magic','Trigon':'magic,energy','Despero':'magic,strength','Vandal Savage':'martial arts,tech',
+      'Black Adam':'strength,energy,flight','Parasite':'strength,energy',
+      // Others
+      'Violator':'magic,energy','Malebolgia':'magic','Grigori Rasputin':'magic','Nimue':'magic','Thragg':'strength,flight',
+      'Conquest':'strength,flight','Omni-Man':'strength,flight','Mauler Twins':'tech,strength','Lizard King':'strength',
+      'Chairface Chippendale':'tech','The Terror':'tech','Ozymandias':'tech,martial arts','Comedian':'martial arts,tech',
+      'Big Figure':'tech','The Monarch':'tech','Aku':'magic','Fire Lord Ozai':'magic,energy','Azula':'magic,energy',
+      'Frieza':'strength,energy,flight','Cell':'strength,energy,flight'
+    };
+
+    function parseNameAlias(s){
+      const m = s.match(/^(.*?)\s*\((.+?)\)\s*$/);
+      return m ? { name: m[1].trim(), alias: m[2].trim() } : { name: s.trim(), alias: '' };
+    }
+
+    const BASE = []
+      .concat(RAW.Marvel.map(s => ({ ...parseNameAlias(s), universe: M })))
+      .concat(RAW.DC.map(s => ({ ...parseNameAlias(s), universe: D })))
+      .concat(RAW.Original.map(s => ({ ...parseNameAlias(s), universe: O })))
+      .map(h => {
+        const clean = h.name.replace(/’/g,"'");
+        const baseName = clean
+          .replace(/\b\(sometimes anti-hero\)\b/i,'')
+          .replace(/\b\(started as villain\)\b/i,'')
+          .replace(/\b\(anti-hero sometimes\)\b/i,'')
+          .replace(/\b\(morally gray\)\b/i,'')
+          .trim();
+        const display = baseName;
+        const id = makeId(baseName);
+        const align = ALIGNMENT_HINTS[baseName] || V;
+        const hint = (POWER_HINTS[baseName] || '').split(',').map(x=>x.trim()).filter(Boolean);
+        return { id, name: display, alias: h.alias, universe: h.universe, alignment: align, powerType: hint };
+      });
+
+    const DEFAULTS = {
+      powersFromType: {
+        strength: ['Super strength','Durability'],
+        speed: ['Super speed','Reflexes'],
+        magic: ['Mystic arts','Spellcasting'],
+        tech: ['Advanced technology','Gadgets'],
+        flight: ['Flight'],
+        energy: ['Energy projection'],
+        'martial arts': ['Expert combatant'],
+        agility: ['Enhanced agility']
+      },
+      weaknessesFromType: {
+        magic: ['Anti-magic wards'], tech: ['EMP vulnerability'], speed: ['Energy depletion'],
+        strength: ['Overconfidence'], flight: ['Aerial disorientation (rare)'], energy: ['Power overload'],
+        'martial arts': ['Human vulnerabilities'], agility: ['Fatigue']
+      },
+      alliesByUniverse: { Marvel: ['Villain cabals vary'], DC: ['Villain cabals vary'], Original: ['Allies vary'] },
+      enemiesByUniverse: { Marvel: ['Avengers','X-Men','Spider-Man'], DC: ['Justice League','Batman','Flash'], Original: ['Nemeses vary'] },
+      appearancesByUniverse: {
+        Marvel: ['Comics (Marvel)','Animated/Films (various)'],
+        DC: ['Comics (DC)','Animated/Films (various)'],
+        Original: ['Comics/Animation (various)']
+      },
+      originByUniverse: {
+        Marvel: 'Villain from the Marvel Universe; story varies by continuity.',
+        DC: 'Villain from the DC Universe; story varies by continuity.',
+        Original: 'Villain from indie/animated universes; story varies by series.'
+      }
+    };
+
+    const VILLAINS = BASE.map(h => {
+      const typePowers = (h.powerType||[]).flatMap(t => DEFAULTS.powersFromType[t] || []);
+      const typeWeak = (h.powerType||[]).flatMap(t => DEFAULTS.weaknessesFromType[t] || []);
+      return {
+        ...h,
+        image: coverCandidates(h.id)[0],
+        powers: [...new Set(typePowers)].slice(0,4),
+        weaknesses: [...new Set(typeWeak)].slice(0,3),
+        allies: DEFAULTS.alliesByUniverse[h.universe] || ['Allies vary'],
+        enemies: DEFAULTS.enemiesByUniverse[h.universe] || ['Nemeses vary'],
+        appearances: DEFAULTS.appearancesByUniverse[h.universe] || ['Appearances vary'],
+        origin: DEFAULTS.originByUniverse[h.universe],
+        // Seed gallery with first candidate for each slot; loader will probe & swap
+        gallery: [0,1,2].map(i => galleryCandidates(h.id, i)[0])
+      };
+    });
+
+    /* ---------- Render ---------- */
+    const elGrid = document.getElementById('grid');
+    const elSummary = document.getElementById('summary');
+    const elNoResults = document.getElementById('noResults');
+    const elSearch = document.getElementById('search');
+    const elUniverse = document.getElementById('universe');
+    const elAlignment = document.getElementById('alignment');
+    const elPowerType = document.getElementById('powerType');
+
+    function card(v){
+      const tags = [v.universe, v.alignment].filter(Boolean).map(t =>
+        `<span class="px-2 py-0.5 rounded-lg bg-white/10 border border-white/10 text-xs">${t}</span>`
+      ).join(' ');
+      const coverList = coverCandidates(v.id);
+      return `
+        <article class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:-translate-y-0.5 hover:bg-white/10 transition comic-shadow">
+          <div class="card-img bg-white/5 overflow-hidden flex items-center justify-center">
+            <img
+              loading="lazy"
+              src="${PLACEHOLDER_SRC}"
+              data-candidates="${coverList.join('|')}"
+              alt="${v.name}"
+              class="w-full h-full"
+            />
+          </div>
+          <div class="p-4 text-center">
+            <h3 class="font-display text-2xl text-gold">${v.name}</h3>
+            <p class="text-white/70">${v.alias || ''}</p>
+            <p class="text-white/80 text-sm mt-2">Powers: ${(v.powerType||[]).join(', ') || '—'}</p>
+            <div class="mt-2 flex gap-2 justify-center">${tags}</div>
+            <button class="inline-block mt-3 bg-primary px-4 py-2 rounded-xl hover:brightness-110" data-open="${v.id}">View Profile</button>
+          </div>
+        </article>
+      `;
+    }
+
+    function applyFilters(){
+      const q = (elSearch.value || '').trim().toLowerCase();
+      const u = elUniverse.value; const a = elAlignment.value; const p = elPowerType.value;
+      let list = VILLAINS.filter(h=>{
+        const text = [h.name, h.alias, (h.powerType||[]).join(' '), (h.powers||[]).join(' '), (h.allies||[]).join(' '), (h.enemies||[]).join(' ')].join(' ').toLowerCase();
+        const matchQ = !q || text.includes(q);
+        const matchU = (u==='all') || (h.universe===u);
+        const matchA = (a==='all') || (h.alignment===a);
+        const matchP = (p==='all') || (h.powerType||[]).includes(p);
+        return matchQ && matchU && matchA && matchP;
+      });
+      elSummary.textContent = `${list.length} result${list.length===1?'':'s'} • ${u==='all'?'All universes':u} • ${a==='all'?'All alignments':a} • ${p==='all'?'All powers':p}`;
+      elGrid.innerHTML = list.map(card).join('');
+      elNoResults.classList.toggle('hidden', list.length>0);
+
+      // Hook buttons & autoload images
+      document.querySelectorAll('[data-open]').forEach(btn=>{
+        btn.addEventListener('click', ()=> openProfile( VILLAINS.find(h=>h.id===btn.dataset.open) ));
+      });
+      autoloadAll();
+    }
+
+    /* ---------- Modal ---------- */
+    const modal = document.getElementById('modal');
+    const modalBody = document.getElementById('modalBody');
+    modal.addEventListener('click', (e)=>{ if (e.target.dataset.close!==undefined) closeModal(); });
+    document.querySelectorAll('[data-close]').forEach(x=> x.addEventListener('click', closeModal));
+    function openModal(){ modal.classList.add('open'); document.body.style.overflow='hidden'; }
+    function closeModal(){ modal.classList.remove('open'); document.body.style.overflow=''; }
+
+    const listRow = (title, arr) => arr && arr.length
+      ? `<div><h4 class="font-semibold">${title}</h4><p class="text-white/80">${arr.join(', ')}</p></div>` : '';
+
+    function profileHTML(h){
+      const chips = [h.universe, h.alignment, ...(h.powerType||[])]
+        .filter(Boolean)
+        .map(x=>`<span class="px-2 py-1 rounded-lg bg-white/10 border border-white/10 text-xs">${x}</span>`).join(' ');
+
+      const coverList = coverCandidates(h.id);
+
+      const gallery = [0,1,2].map((i)=>{
+        const cands = galleryCandidates(h.id, i);
+        return `
+          <img
+            loading="lazy"
+            src="${PLACEHOLDER_SRC}"
+            data-candidates="${cands.join('|')}"
+            alt="${h.name} image ${i+1}"
+            class="gallery-item rounded-xl bg-white/5 border border-white/10 cursor-zoom-in"
+            data-vid="${h.id}"
+            data-idx="${i}"
+          />
+        `;
+      }).join('');
+
+      return `
+        <div class="space-y-6">
+          <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <h2 class="font-display text-3xl text-gold">${h.name}</h2>
+              <p class="text-white/70">${h.alias || ''}</p>
+            </div>
+            <div class="flex flex-wrap gap-2">${chips}</div>
+          </header>
+
+          <div class="grid md:grid-cols-3 gap-6">
+            <div class="md:col-span-1">
+              <div class="bg-white/5 rounded-2xl overflow-hidden border border-white/10">
+                <img
+                  src="${PLACEHOLDER_SRC}"
+                  data-candidates="${coverList.join('|')}"
+                  alt="${h.name}"
+                  class="w-full profile-img bg-white/5"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+
+            <div class="md:col-span-2 space-y-5">
+              <div>
+                <h3 class="font-semibold">Origin</h3>
+                <p class="text-white/80">${h.origin || '—'}</p>
+              </div>
+
+              ${listRow('Powers & Abilities', h.powers)}
+              ${listRow('Weaknesses', h.weaknesses)}
+              ${listRow('Allies', h.allies)}
+              ${listRow('Enemies', h.enemies)}
+              ${listRow('Appearances', h.appearances)}
+
+              <section>
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="font-semibold">Image Gallery</h3>
+                  <button class="px-2 py-1 text-sm rounded bg-white/10 border border-white/20 hover:bg-white/20" data-open-full>Open full-screen</button>
+                </div>
+                <div class="gallery-row gallery-vert">${gallery}</div>
+                <p class="text-xs text-white/60 mt-2">Tip: Tap a thumbnail to open the full-screen viewer. Use ← → keys, wheel to zoom, drag to pan.</p>
+              </section>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function openProfile(v){
+      modalBody.innerHTML = profileHTML(v);
+      openModal();
+
+      // Start probing newly inserted modal images
+      autoloadAll();
+
+      // Wire up gallery -> lightbox
+      setTimeout(() => {
+        const modalGalleryImgs = modalBody.querySelectorAll('img.gallery-item');
+
+        modalGalleryImgs.forEach(img=>{
+          img.addEventListener('click', () => {
+            const items = collectGallerySources(modalBody);
+            const start = +img.getAttribute('data-idx') || 0;
+            openLightbox(items, start, v.name);
+          });
+        });
+
+        const btnFull = modalBody.querySelector('[data-open-full]');
+        if (btnFull) {
+          btnFull.addEventListener('click', ()=>{
+            const items = collectGallerySources(modalBody);
+            openLightbox(items, 0, v.name);
+          });
+        }
+      }, 0);
+    }
+
+    /* ---------- Shared Lightbox Controller ---------- */
+    function initLightbox(){
+      const lightbox = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lbImg');
+      const lbPrev = document.getElementById('lbPrev');
+      const lbNext = document.getElementById('lbNext');
+      const lbClose = document.getElementById('lbClose');
+      const lbThumbs = document.getElementById('lbThumbs');
+      const lbCaption = document.getElementById('lbCaption');
+      const lbCount = document.getElementById('lbCount');
+      const thumbPrev = document.getElementById('thumbPrev');
+      const thumbNext = document.getElementById('thumbNext');
+      const lbStage = document.getElementById('lbStage');
+      const lbDownload = document.getElementById('lbDownload');
+      const lbReset = document.getElementById('lbReset');
+      const lbZoomBadge = document.getElementById('lbZoomBadge');
+
+      let items = []; let title = ''; let idx = 0;
+
+      function open(itemsIn, startIndex, titleIn){
+        items = itemsIn || []; idx = startIndex||0; title = titleIn||'';
+        if (!items.length) return;
+        render(); buildThumbs();
+        lightbox.classList.remove('hidden'); lightbox.classList.add('open');
+        document.body.style.overflow='hidden';
+        resetZoom();
+      }
+      function close(){ lightbox.classList.add('hidden'); lightbox.classList.remove('open'); document.body.style.overflow=''; }
+      function render(){
+        const src = items[idx] || PLACEHOLDER_SRC;
+        lbImg.onerror = () => { lbImg.onerror = null; lbImg.src = PLACEHOLDER_SRC; };
+        lbImg.src = src; lbImg.alt = `${title} image ${idx+1}`;
+        lbCaption.textContent = title || 'Gallery';
+        lbCount.textContent = `${idx+1} / ${items.length}`;
+        lbDownload.onclick = ()=> window.open(lbImg.src, '_blank');
+        highlightThumb();
+      }
+      function buildThumbs(){
+        lbThumbs.innerHTML = items.map((src,i)=>`
+          <button class="lb-thumb" data-i="${i}" title="Image ${i+1}">
+            <img src="${src}" alt="${title} thumbnail ${i+1}" />
+          </button>
+        `).join('');
+        lbThumbs.querySelectorAll('[data-i]').forEach(b=> b.onclick = ()=>{ idx = +b.dataset.i; render(); resetZoom(); ensureThumbVisible(); });
+      }
+      function highlightThumb(){ lbThumbs.querySelectorAll('.lb-thumb').forEach((n,i)=> n.classList.toggle('active', i===idx)); }
+      function ensureThumbVisible(){
+        const active = lbThumbs.querySelectorAll('.lb-thumb')[idx];
+        if (active) active.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+      }
+      function nav(d){ idx=(idx+d+items.length)%items.length; render(); resetZoom(); ensureThumbVisible(); }
+
+      // hooks
+      lbPrev.onclick = ()=> nav(-1);
+      lbNext.onclick = ()=> nav(1);
+      lbClose.onclick = close;
+      lightbox.addEventListener('click', e=>{ if (e.target.hasAttribute('data-lb-close')) close(); });
+      thumbPrev.onclick = ()=> lbThumbs.scrollBy({left:-Math.round(lbThumbs.clientWidth*.9),behavior:'smooth'});
+      thumbNext.onclick = ()=> lbThumbs.scrollBy({left: Math.round(lbThumbs.clientWidth*.9),behavior:'smooth'});
+      window.addEventListener('keydown', e=>{ if (lightbox.classList.contains('hidden')) return; if (e.key==='Escape') close(); if (e.key==='ArrowRight') nav(1); if (e.key==='ArrowLeft') nav(-1); });
+
+      // zoom/pan
+      let scale=1, min=1, max=4, tx=0, ty=0, panning=false, sx=0, sy=0, lastTap=0;
+      function apply(){ lbImg.style.transform = `translate(${tx}px,${ty}px) scale(${scale})`; lbZoomBadge.textContent = `${Math.round(scale*100)}%`; lbZoomBadge.classList.toggle('hidden', scale===1); }
+      function resetZoom(){ scale=1; tx=0; ty=0; apply(); }
+      function clamp(){
+        const r=lbImg.getBoundingClientRect(), s=lbStage.getBoundingClientRect();
+        const w=r.width/scale, h=r.height/scale; const mx=Math.max(0,(w*scale-s.width)/2)+20; const my=Math.max(0,(h*scale-s.height)/2)+20;
+        tx=Math.min(mx,Math.max(-mx,tx)); ty=Math.min(my,Math.max(-my,ty));
+      }
+      function zoomAt(x,y,t){
+        const s=lbStage.getBoundingClientRect(); const cx=x-s.left-s.width/2; const cy=y-s.top-s.height/2;
+        const k=t/scale; tx = cx - (cx-tx)*k; ty = cy - (cy-ty)*k; scale=t; clamp(); apply();
+      }
+      lbImg.addEventListener('dblclick', e=>{ e.preventDefault(); scale===1 ? zoomAt(e.clientX,e.clientY,2) : resetZoom(); });
+      lbImg.addEventListener('pointerdown', e=>{
+        const now=Date.now(); if (now-lastTap<300){ e.preventDefault(); scale===1 ? zoomAt(e.clientX,e.clientY,2) : resetZoom(); } lastTap=now;
+        if (scale>1){ panning=true; sx=e.clientX-tx; sy=e.clientY-ty; lbImg.setPointerCapture(e.pointerId); lbImg.classList.add('grabbing'); }
+        else { lbImg.setPointerCapture(e.pointerId); lbImg.dataset.swipeX=e.clientX; }
+      });
+      lbImg.addEventListener('pointermove', e=>{ if(!panning) return; tx=e.clientX-sx; ty=e.clientY-sy; clamp(); apply(); });
+      lbImg.addEventListener('pointerup', e=>{
+        if (panning){ panning=false; lbImg.classList.remove('grabbing'); return; }
+        const start=parseFloat(lbImg.dataset.swipeX||'0'); const dx=e.clientX-start;
+        if (Math.abs(dx)>40 && scale===1){ nav(dx>0?-1:1); }
+      });
+      lbStage.addEventListener('wheel', e=>{ e.preventDefault(); const t=Math.min(max,Math.max(min, scale + (-Math.sign(e.deltaY)*0.2))); zoomAt(e.clientX,e.clientY,t); }, {passive:false});
+      lbReset.onclick = resetZoom;
+
+      return function openLightboxPublic(items, startIndex, title){ open(items, startIndex, title); };
+    }
+    const openLightbox = initLightbox();
+
+    /* ---------- Wire up ---------- */
+    applyFilters();
+    [elSearch, elUniverse, elAlignment, elPowerType].forEach(el=>{
+      el.addEventListener('input', applyFilters);
+      el.addEventListener('change', applyFilters);
+    });
+    document.getElementById('clearFilters').addEventListener('click', ()=>{
+      elSearch.value=''; elUniverse.value='all'; elAlignment.value='all'; elPowerType.value='all'; applyFilters();
+    });
+
+    function openRandom(){ const v = VILLAINS[Math.floor(Math.random()*VILLAINS.length)]; openProfile(v); }
+    const rb = document.getElementById('randomBtn'); if (rb) rb.addEventListener('click', openRandom);
+    const rb2 = document.getElementById('randomBtn2'); if (rb2) rb2.addEventListener('click', openRandom);
+
+    // Skip-to-top button
+    const toTop = document.getElementById('toTop');
+    const toggleToTop = () => { if (window.scrollY > 400) toTop.classList.remove('hidden'); else toTop.classList.add('hidden'); };
+    toggleToTop();
+    window.addEventListener('scroll', toggleToTop, { passive: true });
+  </script>
+</body>
+</html>

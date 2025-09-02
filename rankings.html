@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rankings & Stats — Heroverse</title>
+  <meta name="description" content="Vote and rank a massive roster of heroes. Explore categories, spotlights, charts, and simulate DC vs Marvel matchups with user-tuned styles. Includes Top Movers ticker, CSV export, and add/remove votes." />
+
+  <!-- Favicon & PWA icons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
+  <link rel="icon" href="images/favicon.ico">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+
+  <!-- pinned tabs -->
+  <link rel="icon" type="image/png" sizes="192x192" href="images/android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="images/android-chrome-512x512.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Bangers','cursive'],
+            sans: ['Poppins','ui-sans-serif','system-ui'],
+          },
+          colors: {
+            hero:'#E50914',
+            primary:'#0055FF',
+            gold:'#FFD700',
+            dark:'#0d0f13',
+            panel:'#141824'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body::before{
+      content:"";position:fixed;inset:0;z-index:-1;background:
+      radial-gradient(circle at 20% 20%, rgba(255,215,0,.06), transparent 40%),
+      radial-gradient(circle at 80% 0%, rgba(229,9,20,.05), transparent 35%),
+      radial-gradient(circle at 0% 100%, rgba(0,85,255,.06), transparent 40%),
+      repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,.04), rgba(255,255,255,.04) 2px, transparent 3px, transparent 6px);
+      background-color:#0d0f13;
+    }
+    .active-nav{
+      background:linear-gradient(90deg,#FFD70022,#E5091422);
+      border-color:#FFD700;
+      color:#FFD700 !important;
+    }
+    .selectish{
+      appearance:none;
+      background-color:#141824;
+      color:#fff;
+      border:1px solid rgba(255,255,255,.15);
+      background-image:
+        linear-gradient(135deg,transparent 50%,#ffd700 50%),
+        linear-gradient(45deg,#ffd700 50%,transparent 50%);
+      background-position:right 16px top 55%, right 10px top 55%;
+      background-size:6px 6px,6px 6px;
+      background-repeat:no-repeat;
+      padding-right:2.5rem;
+    }
+    .bar-track{height:10px;border-radius:9999px;background:rgba(255,255,255,.12);}
+    .bar-fill{height:10px;border-radius:9999px;background:linear-gradient(90deg,#0055FF,#FFD700,#E50914);width:0%;}
+    .chip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:.75rem;padding:.25rem .5rem;font-size:.75rem}
+    .vote-pop{position:absolute;transform:translate(-50%,-50%);pointer-events:none;color:#FFD700;font-weight:700;opacity:0;animation:pop 700ms ease-out forwards}
+    .vote-pop.neg{color:#E50914}
+    @keyframes pop{0%{opacity:.0;transform:translate(-50%,-40%) scale(.8)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-120%) scale(1.1)}}
+    .ticker{white-space:nowrap; overflow:hidden}
+    .ticker > div{display:inline-block; padding-left:100%; animation:scroll 22s linear infinite}
+    @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+  </style>
+</head>
+
+<body id="top" class="bg-dark text-white">
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 bg-gold text-dark px-3 py-2 rounded">Skip to content</a>
+
+  <!-- NAV -->
+  <header class="sticky top-0 z-40 bg-dark/70 backdrop-blur border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="index.html" class="flex items-center gap-3">
+        <span class="text-2xl sm:text-3xl font-display tracking-widest text-gold drop-shadow">Heroverse</span>
+      </a>
+
+      <!-- Mobile menu button -->
+      <button id="navToggle" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-white/20 hover:bg-white/10" aria-label="Open menu" aria-expanded="false">
+        <span class="sr-only">Menu</span> ☰
+      </button>
+
+      <!-- Desktop nav -->
+      <nav class="hidden md:flex items-center gap-4 text-sm">
+        <a href="heroes.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Hall of Heroes</a>
+        <a href="villains.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Rogues Gallery</a>
+        <a href="teams.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Teams</a>
+        <a href="stories.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Stories</a>
+        <a href="rankings.html" class="px-3 py-2 rounded-lg border active-nav" aria-current="page">Rankings</a>
+        <a href="news.html" class="px-3 py-2 rounded-lg hover:bg-white/10">News</a>
+        <a href="about.html" class="px-3 py-2 rounded-lg hover:bg-white/10">About</a>
+        <a href="contact.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Contact</a>
+      </nav>
+    </div>
+
+    <!-- Mobile nav drawer (same colorful grid style) -->
+    <nav id="mobileNav" class="md:hidden hidden border-t border-gold/20 bg-gradient-to-b from-[#0b0f19] via-[#0c1324] to-[#0b0f19]">
+      <div class="max-w-7xl mx-auto px-4 py-3 grid grid-cols-2 gap-3 text-sm">
+        <a class="rounded-lg p-3 border border-red-400/40 bg-red-500/15 hover:bg-red-500/25 transition" href="heroes.html">Hall of Heroes</a>
+        <a class="rounded-lg p-3 border border-purple-400/40 bg-purple-500/15 hover:bg-purple-500/25 transition" href="villains.html">Rogues Gallery</a>
+        <a class="rounded-lg p-3 border border-yellow-400/40 bg-yellow-500/20 text-white hover:bg-yellow-500/30 transition" href="teams.html">Teams</a>
+        <a class="rounded-lg p-3 border border-blue-400/40 bg-blue-500/15 hover:bg-blue-500/25 transition" href="stories.html">Stories</a>
+        <a class="rounded-lg p-3 border border-green-400/40 bg-green-500/15 hover:bg-green-500/25 transition" href="rankings.html">Rankings</a>
+        <a class="rounded-lg p-3 border border-pink-400/40 bg-pink-500/15 hover:bg-pink-500/25 transition" href="news.html">News</a>
+        <a class="rounded-lg p-3 border border-cyan-400/40 bg-cyan-500/15 hover:bg-cyan-500/25 transition" href="about.html">About</a>
+        <a class="rounded-lg p-3 border border-orange-400/40 bg-orange-500/15 hover:bg-orange-500/25 transition" href="contact.html">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Mobile nav toggle script -->
+  <script>
+    const navToggle = document.getElementById('navToggle');
+    const mobileNav = document.getElementById('mobileNav');
+    if (navToggle && mobileNav) {
+      navToggle.addEventListener('click', () => {
+        const hidden = mobileNav.classList.toggle('hidden');
+        navToggle.setAttribute('aria-expanded', (!hidden).toString());
+      });
+    }
+  </script>
+
+  <main id="main" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <header class="text-center mb-8">
+      <h1 class="font-display text-4xl sm:text-5xl">Rankings & Stats</h1>
+      <p class="text-white/70 max-w-2xl mx-auto mt-2">Vote on every hero, explore categories, spotlights, charts — and run a user-tuned DC vs Marvel simulator with matchup styles.</p>
+    </header>
+
+    <!-- Universe filters -->
+    <section class="mb-6 flex flex-wrap justify-center gap-3">
+      <button class="filterBtn px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 active-nav" data-filter="all">All</button>
+      <button class="filterBtn px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20" data-filter="DC">DC</button>
+      <button class="filterBtn px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20" data-filter="Marvel">Marvel</button>
+      <button class="filterBtn px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20" data-filter="Other">Other</button>
+    </section>
+
+    <!-- Toggle & Actions -->
+    <section class="mb-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <label class="flex items-center gap-2 cursor-pointer">
+        <span>Preset</span>
+        <input id="modeToggle" type="checkbox" class="sr-only" aria-label="Toggle fan-voted mode">
+        <div class="w-14 h-8 bg-white/20 rounded-full relative">
+          <div id="toggleKnob" class="w-6 h-6 bg-gold rounded-full absolute left-1 top-1 transition"></div>
+        </div>
+        <span>Fan-Voted</span>
+      </label>
+
+      <div class="flex items-center gap-2">
+        <button id="resetVotes" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20">Reset Votes</button>
+        <button id="exportCsv" class="px-4 py-2 rounded-lg bg-primary/30 hover:bg-primary/50">Export CSV</button>
+      </div>
+    </section>
+
+    <!-- Top Movers Ticker -->
+    <section class="mb-8 rounded-2xl border border-white/10 bg-white/5 p-3">
+      <div class="flex items-center gap-3">
+        <span class="chip">Top Movers (last 60s)</span>
+        <div id="moversTicker" class="ticker flex-1 overflow-hidden">
+          <div id="moversInner" class="text-white/80"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Top 10 -->
+    <section class="mb-12">
+      <h2 class="font-display text-3xl text-gold mb-4">Top 10 Strongest Heroes</h2>
+      <div class="overflow-x-auto rounded-2xl border border-white/10 bg-white/5">
+        <table class="min-w-full text-sm">
+          <thead class="text-white/70">
+            <tr class="border-b border-white/10">
+              <th class="p-3 text-left">#</th>
+              <th class="p-3 text-left">Hero</th>
+              <th class="p-3 text-left">Universe</th>
+              <th class="p-3 text-left">Score</th>
+              <th class="p-3 text-left">Votes</th>
+              <th class="p-3 text-left">Action</th>
+            </tr>
+          </thead>
+          <tbody id="rankTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="mb-12">
+      <h2 class="font-display text-3xl text-gold mb-4">Fun Categories</h2>
+      <div id="categoriesGrid" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+    </section>
+
+    <!-- Spotlights -->
+    <section class="mb-12">
+      <div class="flex items-center justify-between gap-4 mb-3">
+        <h2 class="font-display text-3xl text-gold">Hero Spotlights</h2>
+        <button id="refreshSpotlights" class="px-4 py-2 rounded-xl bg-primary/30 hover:bg-primary/50">🔄 Refresh Spotlights (S)</button>
+      </div>
+      <div id="spotlightsGrid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+    </section>
+
+    <!-- Chart -->
+    <section class="mb-12">
+      <h2 class="font-display text-3xl text-gold mb-4">Power vs Intelligence</h2>
+      <canvas id="statsChart" height="120" class="rounded-2xl bg-white/5 p-2"></canvas>
+    </section>
+
+    <!-- ALL HEROES -->
+    <section class="mb-12">
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-3">
+        <h2 class="font-display text-3xl text-gold">Browse & Vote — All Heroes</h2>
+        <div class="flex flex-wrap items-center gap-2">
+          <input id="heroSearch" type="search" placeholder="Search heroes…" class="selectish rounded-lg px-3 py-2 w-56">
+          <select id="heroSort" class="selectish rounded-lg px-3 py-2">
+            <option value="power">Sort: Power</option>
+            <option value="speed">Sort: Speed</option>
+            <option value="int">Sort: Intelligence</option>
+            <option value="votes">Sort: Votes</option>
+            <option value="name">Sort: Name (A–Z)</option>
+          </select>
+          <button id="viewGrid" class="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20">Grid</button>
+          <button id="viewList" class="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20">List</button>
+        </div>
+      </div>
+      <div id="allHeroes" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      <div class="text-center mt-4">
+        <button id="loadMore" class="px-4 py-2 rounded-xl bg-primary/30 hover:bg-primary/50">Load more</button>
+      </div>
+    </section>
+
+    <!-- Compare + Simulator -->
+    <section class="mb-2">
+      <h2 class="font-display text-3xl text-gold mb-4 text-center">Compare & Simulate — DC vs Marvel</h2>
+      <div class="flex flex-col sm:flex-row gap-6 justify-center">
+        <div class="flex-1">
+          <label class="block text-sm text-white/70 mb-2">Select Hero A (DC)</label>
+          <select id="heroA" class="selectish w-full px-3 py-2 rounded-lg"></select>
+          <div id="compareA" class="mt-4 p-4 rounded-xl border border-white/10 bg-white/5"></div>
+        </div>
+        <div class="flex-1">
+          <label class="block text-sm text-white/70 mb-2">Select Hero B (Marvel)</label>
+          <select id="heroB" class="selectish w-full px-3 py-2 rounded-lg"></select>
+          <div id="compareB" class="mt-4 p-4 rounded-xl border border-white/10 bg-white/5"></div>
+        </div>
+      </div>
+
+      <div class="max-w-5xl mx-auto mt-6 rounded-2xl border border-white/10 bg-white/5 p-4">
+        <div class="grid lg:grid-cols-3 gap-4">
+          <div class="space-y-3">
+            <div class="flex items-center gap-2">
+              <span class="chip">Series</span>
+              <select id="seriesLen" class="selectish rounded-lg px-3 py-2">
+                <option value="3">Best of 3</option>
+                <option value="5">Best of 5</option>
+                <option value="7" selected>Best of 7</option>
+              </select>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="chip">Sims</span>
+              <select id="simCount" class="selectish rounded-lg px-3 py-2">
+                <option value="200">200</option>
+                <option value="500">500</option>
+                <option value="1000" selected>1000</option>
+              </select>
+            </div>
+
+            <div class="space-y-2">
+              <label class="flex items-center gap-2">
+                <input id="styleMagic" type="checkbox" class="accent-gold"> <span>Magic advantage (mystic vs non-mystic)</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input id="styleTechCounters" type="checkbox" class="accent-gold"> <span>Tech counters magic (tech vs mystic)</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input id="styleLargeArena" type="checkbox" class="accent-gold"> <span>Large arena (mobility matters)</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div class="flex items-center gap-2">
+              <span class="chip">Home field</span>
+              <select id="styleHome" class="selectish rounded-lg px-3 py-2">
+                <option value="none" selected>None</option>
+                <option value="dc">DC Arena</option>
+                <option value="marvel">Marvel Arena</option>
+              </select>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="chip">Weather</span>
+              <select id="styleWeather" class="selectish rounded-lg px-3 py-2">
+                <option value="none" selected>None</option>
+                <option value="stormy">Stormy</option>
+                <option value="rain">Rain / Water</option>
+                <option value="space">Space</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm text-white/70 mb-1">Prep time (strategists)</label>
+              <input id="stylePrep" type="range" min="0" max="10" value="0" class="w-full">
+              <div class="text-xs text-white/60">Boosts Batman, Iron Man, Black Panther, Captain America, Nightwing.</div>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <label class="block text-sm text-white/70 mb-1">Crowd bias</label>
+              <input id="styleBias" type="range" min="-10" max="10" value="0" class="w-full">
+              <div class="flex justify-between text-xs text-white/60"><span>DC</span><span>Neutral</span><span>Marvel</span></div>
+            </div>
+            <div class="flex gap-2">
+              <button id="runSim" class="px-4 py-2 rounded-lg bg-hero hover:brightness-110">Run Simulation</button>
+              <button id="clearMatch" class="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20">Clear Matchup</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <div class="flex justify-between text-xs text-white/70 mb-1">
+            <span id="probLeft">DC Win %</span><span id="probRight">Marvel Win %</span>
+          </div>
+          <div class="bar-track"><div id="probBar" class="bar-fill"></div></div>
+          <p id="seriesResult" class="mt-3 text-center text-white/85"></p>
+          <div id="gameLog" class="mt-3 text-xs grid gap-2"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Floating “Skip to Top” button -->
+  <a id="toTop" href="#top"
+     class="hidden fixed bottom-4 right-4 z-50 rounded-full bg-gold text-dark px-3 py-2 shadow-lg border border-white/20
+            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gold"
+     aria-label="Skip to top">↑ Top</a>
+
+  <!-- Footer -->
+  <footer class="border-t border-white/10 py-8 text-center text-white/60">
+    <p>© <span id="year"></span> Heroverse. All rights reserved.</p>
+    <p>Last modified: <span id="lastModified"></span></p>
+    <p class="mt-2 flex justify-center items-center gap-2">
+      <span class="text-xl">⚡</span>
+      <span class="text-gold font-semibold glow-hover">Henry Osuagwu</span>
+      <span class="text-xl">🦸</span>
+    </p>
+  </footer>
+
+  <!-- Footer dynamics -->
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+    document.getElementById("lastModified").textContent = document.lastModified;
+  </script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    // Show “Skip to top” button after scrolling
+    const toTop = document.getElementById('toTop');
+    const toggleToTop = () => {
+      if (window.scrollY > 400) toTop.classList.remove('hidden');
+      else toTop.classList.add('hidden');
+    };
+    toggleToTop();
+    window.addEventListener('scroll', toggleToTop, { passive: true });
+
+    // ===== ROSTER =====
+    // tags: mystic, tech, strategist, cosmic, water, flight, rage
+    const HEROES = [
+      /* --- your HEROES array unchanged --- */
+      // DC
+      {id:'superman',name:'Superman',universe:'DC',power:98,speed:99,int:85,apps:1400,tags:['flight','cosmic']},
+      {id:'supergirl',name:'Supergirl',universe:'DC',power:94,speed:95,int:83,apps:500,tags:['flight','cosmic']},
+      {id:'flash',name:'The Flash',universe:'DC',power:92,speed:100,int:82,apps:1100,tags:[]},
+      {id:'batman',name:'Batman',universe:'DC',power:88,speed:70,int:98,apps:2000,tags:['strategist','tech']},
+      {id:'nightwing',name:'Nightwing',universe:'DC',power:82,speed:78,int:88,apps:900,tags:['strategist']},
+      {id:'batgirl',name:'Batgirl',universe:'DC',power:80,speed:80,int:92,apps:850,tags:['strategist']},
+      {id:'red-hood',name:'Red Hood',universe:'DC',power:84,speed:78,int:85,apps:700,tags:['strategist']},
+      {id:'wonder-woman',name:'Wonder Woman',universe:'DC',power:94,speed:92,int:84,apps:900,tags:['mystic']},
+      {id:'aquaman',name:'Aquaman',universe:'DC',power:90,speed:80,int:78,apps:600,tags:['water']},
+      {id:'green-lantern',name:'Green Lantern',universe:'DC',power:91,speed:85,int:80,apps:750,tags:['cosmic','flight','tech']},
+      {id:'martian-manhunter',name:'Martian Manhunter',universe:'DC',power:97,speed:90,int:95,apps:650,tags:['mystic','flight','cosmic']},
+      {id:'cyborg',name:'Cyborg',universe:'DC',power:90,speed:82,int:92,apps:500,tags:['tech']},
+      {id:'shazam',name:'Shazam',universe:'DC',power:95,speed:88,int:82,apps:500,tags:['mystic']},
+      {id:'zatanna',name:'Zatanna',universe:'DC',power:93,speed:72,int:88,apps:400,tags:['mystic']},
+      {id:'raven',name:'Raven',universe:'DC',power:94,speed:75,int:90,apps:600,tags:['mystic']},
+      {id:'dr-fate',name:'Doctor Fate',universe:'DC',power:96,speed:78,int:90,apps:500,tags:['mystic','cosmic']},
+      {id:'constantine',name:'John Constantine',universe:'DC',power:78,speed:60,int:96,apps:550,tags:['mystic','strategist']},
+      {id:'blue-beetle',name:'Blue Beetle',universe:'DC',power:88,speed:85,int:86,apps:350,tags:['tech','flight']},
+      {id:'black-canary',name:'Black Canary',universe:'DC',power:84,speed:82,int:86,apps:800,tags:['strategist']},
+      {id:'hawkgirl',name:'Hawkgirl',universe:'DC',power:88,speed:84,int:80,apps:650,tags:['flight']},
+      {id:'starfire',name:'Starfire',universe:'DC',power:90,speed:88,int:78,apps:550,tags:['flight']},
+      {id:'firestorm',name:'Firestorm',universe:'DC',power:95,speed:80,int:88,apps:480,tags:['mystic','cosmic']},
+      {id:'swamp-thing',name:'Swamp Thing',universe:'DC',power:93,speed:60,int:85,apps:400,tags:['mystic']},
+      {id:'spectre',name:'The Spectre',universe:'DC',power:99,speed:90,int:95,apps:300,tags:['mystic','cosmic']},
+      {id:'booster-gold',name:'Booster Gold',universe:'DC',power:86,speed:80,int:85,apps:420,tags:['tech']},
+      {id:'superboy',name:'Superboy',universe:'DC',power:90,speed:90,int:78,apps:500,tags:['flight']},
+      {id:'green-arrow',name:'Green Arrow',universe:'DC',power:78,speed:78,int:85,apps:700,tags:['strategist']},
+
+      // Marvel
+      {id:'thor',name:'Thor',universe:'Marvel',power:96,speed:85,int:78,apps:1200,tags:['mystic','flight','cosmic']},
+      {id:'hulk',name:'Hulk',universe:'Marvel',power:97,speed:70,int:75,apps:1150,tags:['rage']},
+      {id:'she-hulk',name:'She-Hulk',universe:'Marvel',power:92,speed:78,int:82,apps:900,tags:[]},
+      {id:'captain-marvel',name:'Captain Marvel',universe:'Marvel',power:95,speed:90,int:82,apps:500,tags:['flight','cosmic']},
+      {id:'scarlet-witch',name:'Scarlet Witch',universe:'Marvel',power:96,speed:78,int:88,apps:650,tags:['mystic']},
+      {id:'doctor-strange',name:'Doctor Strange',universe:'Marvel',power:93,speed:72,int:95,apps:800,tags:['mystic']},
+      {id:'iron-man',name:'Iron Man',universe:'Marvel',power:90,speed:75,int:97,apps:1800,tags:['tech','strategist','flight']},
+      {id:'black-panther',name:'Black Panther',universe:'Marvel',power:90,speed:84,int:92,apps:900,tags:['tech','strategist']},
+      {id:'captain-america',name:'Captain America',universe:'Marvel',power:89,speed:80,int:85,apps:1700,tags:['strategist']},
+      {id:'spider-man',name:'Spider-Man',universe:'Marvel',power:88,speed:92,int:90,apps:1600,tags:[]},
+      {id:'miles-morales',name:'Spider-Man (Miles)',universe:'Marvel',power:86,speed:92,int:86,apps:400,tags:[]},
+      {id:'silver-surfer',name:'Silver Surfer',universe:'Marvel',power:97,speed:98,int:90,apps:450,tags:['cosmic','flight']},
+      {id:'storm',name:'Storm',universe:'Marvel',power:92,speed:85,int:87,apps:700,tags:['mystic','flight']},
+      {id:'jean-grey',name:'Jean Grey',universe:'Marvel',power:95,speed:80,int:89,apps:800,tags:['mystic']},
+      {id:'wolverine',name:'Wolverine',universe:'Marvel',power:90,speed:78,int:82,apps:1500,tags:['rage']},
+      {id:'rogue',name:'Rogue',universe:'Marvel',power:90,speed:80,int:80,apps:900,tags:[]},
+      {id:'gambit',name:'Gambit',universe:'Marvel',power:85,speed:80,int:82,apps:850,tags:[]},
+      {id:'iceman',name:'Iceman',universe:'Marvel',power:92,speed:82,int:84,apps:800,tags:[]},
+      {id:'quicksilver',name:'Quicksilver',universe:'Marvel',power:84,speed:99,int:80,apps:700,tags:[]},
+      {id:'vision',name:'Vision',universe:'Marvel',power:92,speed:85,int:92,apps:1000,tags:['tech']},
+      {id:'ant-man',name:'Ant-Man',universe:'Marvel',power:82,speed:78,int:90,apps:900,tags:['tech']},
+      {id:'wasp',name:'Wasp',universe:'Marvel',power:80,speed:82,int:88,apps:800,tags:['tech','flight']},
+      {id:'black-widow',name:'Black Widow',universe:'Marvel',power:80,speed:82,int:88,apps:1100,tags:['strategist']},
+      {id:'daredevil',name:'Daredevil',universe:'Marvel',power:82,speed:85,int:86,apps:1200,tags:[]},
+      {id:'deadpool',name:'Deadpool',universe:'Marvel',power:88,speed:84,int:80,apps:1000,tags:['rage']},
+      {id:'moon-knight',name:'Moon Knight',universe:'Marvel',power:86,speed:80,int:84,apps:600,tags:['mystic','strategist']},
+      {id:'luke-cage',name:'Luke Cage',universe:'Marvel',power:90,speed:70,int:78,apps:750,tags:[]},
+      {id:'jessica-jones',name:'Jessica Jones',universe:'Marvel',power:86,speed:72,int:82,apps:650,tags:[]},
+      {id:'nova',name:'Nova',universe:'Marvel',power:94,speed:94,int:86,apps:500,tags:['cosmic','flight']},
+      {id:'adam-warlock',name:'Adam Warlock',universe:'Marvel',power:97,speed:90,int:92,apps:450,tags:['cosmic','mystic']},
+      {id:'human-torch',name:'Human Torch',universe:'Marvel',power:88,speed:90,int:80,apps:1200,tags:['flight']},
+      {id:'thing',name:'The Thing',universe:'Marvel',power:92,speed:60,int:78,apps:1200,tags:[]},
+      {id:'magneto',name:'Magneto',universe:'Marvel',power:96,speed:70,int:92,apps:1300,tags:['mystic']},
+      {id:'sentry',name:'Sentry',universe:'Marvel',power:98,speed:96,int:86,apps:300,tags:['cosmic','flight']},
+      {id:'doctor-doom',name:'Doctor Doom',universe:'Marvel',power:95,speed:75,int:99,apps:2000,tags:['tech','mystic','strategist']},
+
+      // Other
+      {id:'hellboy',name:'Hellboy',universe:'Other',power:89,speed:70,int:82,apps:400,tags:['mystic']},
+      {id:'spawn',name:'Spawn',universe:'Other',power:96,speed:82,int:84,apps:350,tags:['mystic']},
+      {id:'invincible',name:'Invincible',universe:'Other',power:94,speed:92,int:80,apps:150,tags:['flight']},
+      {id:'omni-man',name:'Omni-Man',universe:'Other',power:97,speed:95,int:88,apps:160,tags:['flight']},
+      {id:'homelander',name:'Homelander',universe:'Other',power:95,speed:92,int:82,apps:120,tags:['flight']},
+      {id:'saitama',name:'Saitama',universe:'Other',power:100,speed:100,int:80,apps:100,tags:[]}
+    ];
+
+    // Votes + logs
+    const VOTE_KEY = 'heroverse_votes';
+    const LOG_KEY  = 'heroverse_vote_log'; // session-scoped list of {id, t, delta}
+    const MATCH_KEY= 'heroverse_matchup';
+    const votes = JSON.parse(localStorage.getItem(VOTE_KEY) || '{}');
+    const now = ()=>Date.now();
+
+    function readLog(){ try{ return JSON.parse(sessionStorage.getItem(LOG_KEY) || '[]'); }catch{ return []; } }
+    function writeLog(arr){ try{ sessionStorage.setItem(LOG_KEY, JSON.stringify(arr)); }catch{} }
+    function recordVote(id, delta){
+      const cur = votes[id]||0;
+      votes[id] = Math.max(0, cur + delta);
+      localStorage.setItem(VOTE_KEY, JSON.stringify(votes));
+      const L = readLog();
+      const cut = now() - 5*60*1000;
+      const newLog = L.filter(e=>e.t >= cut);
+      newLog.push({id, t: now(), delta});
+      writeLog(newLog);
+    }
+
+    // Top Movers (last 60s)
+    const moversInner = document.getElementById('moversInner');
+    function computeMovers(){
+      const L = readLog().filter(e=> now() - e.t <= 60*1000);
+      const map = {};
+      L.forEach(e => { map[e.id] = (map[e.id]||0) + e.delta; });
+      const items = Object.entries(map)
+        .sort((a,b)=>Math.abs(b[1]) - Math.abs(a[1]))
+        .slice(0,8)
+        .map(([id,delta])=>{
+          const h = HEROES.find(x=>x.id===id);
+          const sign = delta>0 ? '▲' : '▼';
+          const col  = delta>0 ? 'text-gold' : 'text-hero';
+          return `<span class="${col} font-semibold">${sign} ${h?.name||id} ${delta>0?'+':''}${delta}</span>`;
+        });
+      moversInner.innerHTML = items.length ? items.join(' &nbsp; • &nbsp; ') : '<span class="text-white/60">No movement yet — cast some votes!</span>';
+    }
+    setInterval(computeMovers, 2000);
+
+    // State & helpers
+    let universeFilter = 'all';
+    const table = document.getElementById('rankTable');
+    const MAX_APPS = Math.max(...HEROES.map(h=>h.apps));
+    const has = (h,tag)=> (h.tags||[]).includes(tag);
+    const byUni = uni => HEROES.filter(h=>h.universe===uni);
+    function filteredHeroes(){ return HEROES.filter(h => universeFilter==='all' || h.universe===universeFilter); }
+    function score(h){ const base = h.power; return document.getElementById('modeToggle').checked ? base + (votes[h.id]||0)*0.5 : base; }
+
+    /* ===== Top 10 Table ===== */
+    function renderTable(){
+      const sorted = filteredHeroes().slice().sort((a,b)=>score(b)-score(a)).slice(0,10);
+      table.innerHTML = sorted.map((h,i)=>`
+        <tr class="border-b border-white/10 hover:bg-white/5">
+          <td class="p-3">${i+1}</td>
+          <td class="p-3">${h.name}</td>
+          <td class="p-3">${h.universe}</td>
+          <td class="p-3">${score(h).toFixed(1)}</td>
+          <td class="p-3">${votes[h.id]||0}</td>
+          <td class="p-3 space-x-2">
+            <button data-vote="${h.id}" data-delta="1" class="px-3 py-1.5 bg-hero rounded-lg hover:brightness-110">+1</button>
+            <button data-vote="${h.id}" data-delta="-1" class="px-3 py-1.5 bg-white/10 rounded-lg hover:bg-white/20"${(votes[h.id]||0)<=0?' disabled':''}>-1</button>
+          </td>
+        </tr>`).join('');
+
+      renderCategories();
+      renderChart();
+      populateCompareDropdowns();
+      renderAllHeroes(true);
+      computeMovers();
+    }
+
+    // Voting animation
+    document.addEventListener('click', e=>{
+      if(e.target.dataset.vote){
+        const id = e.target.dataset.vote;
+        const delta = parseInt(e.target.dataset.delta||'1',10);
+        if (delta<0 && (votes[id]||0)<=0) return;
+        recordVote(id, delta);
+        renderTable();
+
+        const b = e.target.getBoundingClientRect();
+        const pop = document.createElement('div');
+        pop.className='vote-pop'+(delta<0?' neg':'');
+        pop.style.left = b.left + b.width/2 + 'px';
+        pop.style.top  = (b.top + window.scrollY) + 'px';
+        pop.textContent = (delta>0?'+':'') + delta;
+        document.body.appendChild(pop);
+        setTimeout(()=>pop.remove(),700);
+      }
+    });
+
+    // Reset & Export
+    document.getElementById('resetVotes').addEventListener('click',()=>{
+      if(!confirm('Reset all fan votes?')) return;
+      localStorage.removeItem(VOTE_KEY);
+      sessionStorage.removeItem(LOG_KEY);
+      location.reload();
+    });
+
+    document.getElementById('exportCsv').addEventListener('click', ()=>{
+      const hdr = ['Name','Universe','Power','Speed','Intelligence','Appearances','Votes','ScoreMode'];
+      const mode = document.getElementById('modeToggle').checked ? 'Fan' : 'Preset';
+      const data = filteredHeroes().map(h=>{
+        const row = [h.name,h.universe,h.power,h.speed,h.int,h.apps,(votes[h.id]||0), score(h).toFixed(2)];
+        return row.map(x=>`"${String(x).replaceAll('"','""')}"`).join(',');
+      });
+      const csv = [hdr.join(','), ...data].join('\n');
+      const blob = new Blob([csv], {type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `heroverse_rankings_${mode}_${universeFilter}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // Toggle preset/fan
+    const modeToggle = document.getElementById('modeToggle');
+    const knob = document.getElementById('toggleKnob');
+    modeToggle.addEventListener('change',()=>{
+      knob.style.transform = modeToggle.checked ? 'translateX(24px)' : 'translateX(0)';
+      renderTable();
+    });
+
+    // Universe filters
+    document.querySelectorAll('.filterBtn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        document.querySelectorAll('.filterBtn').forEach(b=>b.classList.remove('active-nav'));
+        btn.classList.add('active-nav');
+        universeFilter = btn.dataset.filter;
+        renderTable();
+        renderSpotlights();
+      });
+    });
+
+    /* ===== Categories ===== */
+    function renderCategories(){
+      const heroes = filteredHeroes();
+      if(!heroes.length) return;
+
+      const fastest     = heroes.reduce((a,b)=>a.speed>b.speed?a:b);
+      const smartest    = heroes.reduce((a,b)=>a.int>b.int?a:b);
+      const appearances = heroes.reduce((a,b)=>a.apps>b.apps?a:b);
+      const durable     = heroes.reduce((a,b)=>a.power>b.power?a:b);
+      const fighter     = heroes.reduce((a,b)=>(a.power+a.speed)>(b.power+b.speed)?a:b);
+      const mysticPool  = heroes.filter(h=>['Doctor Strange','Scarlet Witch','Jean Grey','Zatanna','Doctor Fate','Raven','Adam Warlock','Thor','The Spectre'].map(x=>x.toLowerCase()).includes(h.name.toLowerCase()));
+      const mystic      = (mysticPool.length?mysticPool:heroes).reduce((a,b)=>a.power>b.power?a:b);
+      const leaderPool  = heroes.filter(h=>['Captain America','Superman','Wonder Woman','Black Panther','Batman'].map(x=>x.toLowerCase()).includes(h.name.toLowerCase()));
+      const leader      = (leaderPool.length?leaderPool:heroes).reduce((a,b)=>a.int>b.int?a:b);
+      const fanFav      = heroes.reduce((a,b)=>(votes[a.id]||0)>(votes[b.id]||0)?a:b);
+
+      const items = [
+        {icon:'⚡', title:'Fastest Hero',      hero:fastest,     desc:`Speed ${fastest.speed}`},
+        {icon:'🧠', title:'Smartest Hero',     hero:smartest,    desc:`Intelligence ${smartest.int}`},
+        {icon:'🎥', title:'Most Appearances',  hero:appearances, desc:`${appearances.apps} appearances`},
+        {icon:'🛡️', title:'Most Durable',     hero:durable,     desc:`Power ${durable.power}`},
+        {icon:'⚔️', title:'Best Fighter',      hero:fighter,     desc:`Power+Speed ${fighter.power+fighter.speed}`},
+        {icon:'🔮', title:'Best Mystic',       hero:mystic,      desc:`Power ${mystic.power}`},
+        {icon:'🦸', title:'Best Leader',       hero:leader,      desc:`Intelligence ${leader.int}`},
+        {icon:'❤️', title:'Fan Favorite',      hero:fanFav,      desc:`${votes[fanFav.id]||0} votes`}
+      ];
+
+      const grid = document.getElementById('categoriesGrid');
+      grid.innerHTML = items.map(c => `
+        <article class="rounded-2xl border border-white/10 bg-white/5 overflow-hidden flex flex-col">
+          <div class="h-28 w-full overflow-hidden">
+            <img src="https://picsum.photos/seed/${c.hero.id}/640/360" alt="${c.title}" class="w-full h-full object-cover">
+          </div>
+          <div class="p-4 flex-1 flex flex-col">
+            <h3 class="text-lg font-semibold">${c.icon} ${c.title}</h3>
+            <p class="mt-1 text-gold font-display text-xl">${c.hero.name}</p>
+            <p class="text-white/70 text-sm">${c.desc} • ${c.hero.universe}</p>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    /* ===== Spotlights ===== */
+    function spotlightCard(h){
+      return `
+        <article class="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
+          <div class="h-36 w-full overflow-hidden">
+            <img src="https://picsum.photos/seed/${h.id}/800/450" alt="${h.name}" class="w-full h-full object-cover">
+          </div>
+          <div class="p-4">
+            <h3 class="text-xl font-display text-gold">${h.name}</h3>
+            <p class="text-white/70 text-sm">${h.universe}</p>
+            <div class="mt-3 grid grid-cols-2 gap-2 text-sm">
+              <div class="bg-panel/70 rounded-md p-2">💪 Power <span class="float-right">${h.power}</span></div>
+              <div class="bg-panel/70 rounded-md p-2">⚡ Speed <span class="float-right">${h.speed}</span></div>
+              <div class="bg-panel/70 rounded-md p-2">🧠 Intel <span class="float-right">${h.int}</span></div>
+              <div class="bg-panel/70 rounded-md p-2">🎥 Apps <span class="float-right">${h.apps}</span></div>
+            </div>
+          </div>
+        </article>`;
+    }
+    function renderSpotlights(){
+      const list = filteredHeroes();
+      const picks = [];
+      const used = new Set();
+      while (picks.length < Math.min(3, list.length)) {
+        const h = list[Math.floor(Math.random()*list.length)];
+        if (!used.has(h.id)) { used.add(h.id); picks.push(h); }
+      }
+      document.getElementById('spotlightsGrid').innerHTML = picks.map(spotlightCard).join('');
+    }
+    document.getElementById('refreshSpotlights').addEventListener('click', renderSpotlights);
+    window.addEventListener('keydown', e => { if(e.key.toLowerCase()==='s') renderSpotlights(); });
+
+    /* ===== Chart ===== */
+    let chart;
+    function renderChart(){
+      const ctx = document.getElementById('statsChart');
+      if(chart) chart.destroy();
+      const heroes = filteredHeroes().slice(0,12);
+      chart = new Chart(ctx,{
+        type: 'bar',
+        data: {
+          labels: heroes.map(h=>h.name),
+          datasets: [
+            { label: 'Power',        data: heroes.map(h=>h.power), backgroundColor: '#E50914' },
+            { label: 'Intelligence', data: heroes.map(h=>h.int),   backgroundColor: '#0055FF' }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { labels: { color: '#fff' } } },
+          scales: { x: { ticks: { color: '#fff' } }, y: { ticks: { color: '#fff' } } }
+        }
+      });
+    }
+
+    /* ===== All Heroes Explorer ===== */
+    const PAGE_SIZE = 24;
+    let heroQuery = '';
+    let heroSort = 'power';
+    let heroView = 'grid';
+    let page = 1;
+
+    const elAll = document.getElementById('allHeroes');
+    const elSearch = document.getElementById('heroSearch');
+    const elSort = document.getElementById('heroSort');
+    const elLoad = document.getElementById('loadMore');
+    const viewGridBtn = document.getElementById('viewGrid');
+    const viewListBtn = document.getElementById('viewList');
+
+    elSearch.addEventListener('input', ()=>{ heroQuery = elSearch.value.trim().toLowerCase(); page = 1; renderAllHeroes(true); });
+    elSort.addEventListener('change', ()=>{ heroSort = elSort.value; page = 1; renderAllHeroes(true); });
+    viewGridBtn.addEventListener('click', ()=>{ heroView='grid'; renderAllHeroes(true); });
+    viewListBtn.addEventListener('click', ()=>{ heroView='list'; renderAllHeroes(true); });
+    elLoad.addEventListener('click', ()=>{ page++; renderAllHeroes(false); });
+
+    function heroMatches(h){
+      const uniOK = (universeFilter==='all' || h.universe===universeFilter);
+      const q = heroQuery;
+      const text = (h.name + ' ' + h.universe).toLowerCase();
+      return uniOK && (!q || text.includes(q));
+    }
+    function heroSortFn(a,b){
+      if (heroSort==='name') return a.name.localeCompare(b.name);
+      if (heroSort==='speed') return b.speed - a.speed;
+      if (heroSort==='int') return b.int - a.int;
+      if (heroSort==='votes') return (votes[b.id]||0) - (votes[a.id]||0);
+      return b.power - a.power; // default power
+    }
+
+    function heroCard(h){
+      const v = votes[h.id]||0;
+      const bars = `
+        <div class="grid grid-cols-3 gap-2 text-[12px]">
+          <div class="bg-panel/70 rounded-md p-2">💪 ${h.power}</div>
+          <div class="bg-panel/70 rounded-md p-2">⚡ ${h.speed}</div>
+          <div class="bg-panel/70 rounded-md p-2">🧠 ${h.int}</div>
+        </div>`;
+      if (heroView==='list'){
+        return `
+          <article class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3">
+            <div class="w-28 h-16 overflow-hidden rounded-lg border border-white/10">
+              <img src="https://picsum.photos/seed/${h.id}/400/225" alt="${h.name}" class="w-full h-full object-cover">
+            </div>
+            <div class="flex-1">
+              <h3 class="font-semibold">${h.name} <span class="text-white/60 text-xs">• ${h.universe}</span></h3>
+              <div class="text-white/60 text-xs">${(h.tags||[]).join(', ')}</div>
+            </div>
+            <div class="hidden sm:block w-48">${bars}</div>
+            <div class="text-right space-x-2">
+              <span class="text-xs text-white/60">Votes: ${v}</span>
+              <button data-vote="${h.id}" data-delta="1" class="px-3 py-1.5 bg-hero rounded-lg hover:brightness-110">+1</button>
+              <button data-vote="${h.id}" data-delta="-1" class="px-3 py-1.5 bg-white/10 rounded-lg hover:bg-white/20"${v<=0?' disabled':''}>-1</button>
+            </div>
+          </article>`;
+      }
+      // grid
+      return `
+        <article class="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
+          <div class="h-36 w-full overflow-hidden">
+            <img src="https://picsum.photos/seed/${h.id}/800/450" alt="${h.name}" class="w-full h-full object-cover">
+          </div>
+          <div class="p-4">
+            <h3 class="text-lg font-semibold">${h.name}</h3>
+            <p class="text-white/60 text-sm">${h.universe} • ${(h.tags||[]).join(', ')}</p>
+            <div class="mt-3">${bars}</div>
+            <div class="mt-3 flex items-center justify-between">
+              <span class="text-xs text-white/70">Votes: ${v}</span>
+              <div class="space-x-2">
+                <button data-vote="${h.id}" data-delta="1" class="px-3 py-1.5 bg-hero rounded-lg hover:brightness-110">+1</button>
+                <button data-vote="${h.id}" data-delta="-1" class="px-3 py-1.5 bg-white/10 rounded-lg hover:bg-white/20"${v<=0?' disabled':''}>-1</button>
+              </div>
+            </div>
+          </div>
+        </article>`;
+    }
+
+    function renderAllHeroes(reset){
+      const list = HEROES.filter(heroMatches).sort(heroSortFn);
+      const totalPages = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
+      page = Math.min(page, totalPages);
+
+      const slice = list.slice(0, page*PAGE_SIZE);
+      if (reset) elAll.innerHTML = '';
+      elAll.className = heroView==='grid'
+        ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'
+        : 'grid grid-cols-1 gap-3';
+      elAll.insertAdjacentHTML('beforeend', slice.slice((page-1)*PAGE_SIZE).map(heroCard).join(''));
+
+      document.getElementById('loadMore').style.display = (page < totalPages) ? 'inline-flex' : 'none';
+    }
+
+    /* ===== Compare + Simulator ===== */
+    const ddA = document.getElementById('heroA'); // DC
+    const ddB = document.getElementById('heroB'); // Marvel
+    const clearBtn = document.getElementById('clearMatch');
+    const seriesLenEl = document.getElementById('seriesLen');
+    const simCountEl  = document.getElementById('simCount');
+    const runBtn      = document.getElementById('runSim');
+    const probBar     = document.getElementById('probBar');
+    const probLeft    = document.getElementById('probLeft');
+    const probRight   = document.getElementById('probRight');
+    const seriesResult= document.getElementById('seriesResult');
+    const gameLog     = document.getElementById('gameLog');
+
+    const styleMagic       = document.getElementById('styleMagic');
+    const styleTechCounters= document.getElementById('styleTechCounters');
+    const styleLargeArena  = document.getElementById('styleLargeArena');
+    const styleHome        = document.getElementById('styleHome');
+    const styleWeather     = document.getElementById('styleWeather');
+    const stylePrep        = document.getElementById('stylePrep');
+    const styleBias        = document.getElementById('styleBias');
+
+    function populateCompareDropdowns(){
+      const dcOpts = byUni('DC').map(h=>`<option value="${h.id}">${h.name}</option>`).join('');
+      const mvOpts = byUni('Marvel').map(h=>`<option value="${h.id}">${h.name}</option>`).join('');
+      ddA.innerHTML = `<option value="">-- Choose DC --</option>${dcOpts}`;
+      ddB.innerHTML = `<option value="">-- Choose Marvel --</option>${mvOpts}`;
+
+      const saved = JSON.parse(localStorage.getItem(MATCH_KEY) || '{}');
+      if (saved.a && byUni('DC').some(h=>h.id===saved.a)) ddA.value = saved.a;
+      if (saved.b && byUni('Marvel').some(h=>h.id===saved.b)) ddB.value = saved.b;
+
+      if (ddA.value) renderCompareCard(ddA.value,'compareA');
+      if (ddB.value) renderCompareCard(ddB.value,'compareB');
+    }
+
+    function strong(valA, valB){
+      if (valA>valB) return 'text-gold font-semibold';
+      if (valB>valA) return 'text-white/80';
+      return 'text-white/90';
+    }
+
+    function renderCompareCard(heroId, targetId){
+      const el = document.getElementById(targetId);
+      if(!heroId){ el.innerHTML = ''; return; }
+      const h = HEROES.find(x=>x.id===heroId);
+      const otherId = (targetId==='compareA') ? ddB.value : ddA.value;
+      const other = HEROES.find(x=>x.id===otherId);
+
+      const powClass = other ? strong(h.power, other.power) : 'text-white';
+      const spdClass = other ? strong(h.speed, other.speed) : 'text-white';
+      const intClass = other ? strong(h.int,   other.int)   : 'text-white';
+      const appClass = other ? strong(h.apps,  other.apps)  : 'text-white';
+
+      el.innerHTML = `
+        <div class="flex items-center gap-4">
+          <div class="w-28 h-28 overflow-hidden rounded-xl border border-white/10 flex-shrink-0">
+            <img src="https://picsum.photos/seed/${h.id}/300/300" alt="${h.name}" class="w-full h-full object-cover">
+          </div>
+          <div>
+            <h3 class="text-xl font-display text-gold">${h.name}</h3>
+            <p class="text-white/70 text-sm">${h.universe}</p>
+          </div>
+        </div>
+        <dl class="mt-3 grid grid-cols-2 gap-2 text-sm">
+          <div class="bg-panel rounded-lg p-2">💪 Power <span class="${powClass} float-right">${h.power}</span></div>
+          <div class="bg-panel rounded-lg p-2">⚡ Speed <span class="${spdClass} float-right">${h.speed}</span></div>
+          <div class="bg-panel rounded-lg p-2">🧠 Intel <span class="${intClass} float-right">${h.int}</span></div>
+          <div class="bg-panel rounded-lg p-2">🎥 Apps <span class="${appClass} float-right">${h.apps}</span></div>
+          <div class="bg-panel rounded-lg p-2 col-span-2">❤️ Votes <span class="float-right">${votes[h.id]||0}</span></div>
+        </dl>
+      `;
+    }
+
+    ddA.addEventListener('change', e=>{
+      renderCompareCard(e.target.value,'compareA');
+      localStorage.setItem(MATCH_KEY, JSON.stringify({a:ddA.value, b:ddB.value}));
+    });
+    ddB.addEventListener('change', e=>{
+      renderCompareCard(e.target.value,'compareB');
+      localStorage.setItem(MATCH_KEY, JSON.stringify({a:ddA.value, b:ddB.value}));
+    });
+
+    function updateProbBar(p){
+      probBar.style.width = (p*100).toFixed(0)+'%';
+      probLeft.textContent = `DC Win %: ${(p*100).toFixed(1)}`;
+      probRight.textContent = `Marvel Win %: ${((1-p)*100).toFixed(1)}`;
+    }
+
+    function baseRating(h){
+      const exp = (h.apps / MAX_APPS) * 100;
+      return 0.4*h.power + 0.3*h.speed + 0.2*h.int + 0.1*exp;
+    }
+    function styleAdjust(a,b){
+      let delta = 0;
+      const hasTag = (who, t) => (who.tags||[]).includes(t);
+      if (styleMagic.checked){
+        const aMystic = hasTag(a,'mystic'), bMystic = hasTag(b,'mystic');
+        if (aMystic && !bMystic) delta += 3;
+        if (bMystic && !aMystic) delta -= 3;
+      }
+      if (styleTechCounters.checked){
+        const aTech = hasTag(a,'tech'), bTech = hasTag(b,'tech');
+        const aMystic = hasTag(a,'mystic'), bMystic = hasTag(b,'mystic');
+        if (aTech && bMystic) delta += 2;
+        if (bTech && aMystic) delta -= 2;
+      }
+      if (styleLargeArena.checked){
+        const aMob = a.speed + (hasTag(a,'flight')?5:0);
+        const bMob = b.speed + (hasTag(b,'flight')?5:0);
+        delta += (aMob - bMob) * 0.05;
+      }
+      if (styleHome.value==='dc') delta += 2;
+      if (styleHome.value==='marvel') delta -= 2;
+
+      if (styleWeather.value==='stormy'){
+        if (a.name==='Storm') delta += 4;
+        if (b.name==='Storm') delta -= 4;
+        if (hasTag(a,'flight')) delta += 1;
+        if (hasTag(b,'flight')) delta -= 1;
+        if (hasTag(a,'tech')) delta -= 0.5;
+        if (hasTag(b,'tech')) delta += 0.5;
+      } else if (styleWeather.value==='rain'){
+        if (a.name==='Aquaman') delta += 5;
+        if (b.name==='Aquaman') delta -= 5;
+        if (hasTag(a,'water')) delta += 2;
+        if (hasTag(b,'water')) delta -= 2;
+      } else if (styleWeather.value==='space'){
+        delta += (hasTag(a,'cosmic')?3:0) + (hasTag(a,'flight')?1.5:0);
+        delta -= (hasTag(b,'cosmic')?3:0) + (hasTag(b,'flight')?1.5:0);
+      }
+
+      const prep = parseInt(stylePrep.value,10) || 0;
+      if (prep>0){
+        if (hasTag(a,'strategist')) delta += prep * 0.6;
+        if (hasTag(b,'strategist')) delta -= prep * 0.6;
+        if (hasTag(a,'strategist') && hasTag(b,'rage')) delta += 0.5;
+        if (hasTag(b,'strategist') && hasTag(a,'rage')) delta -= 0.5;
+      }
+      const bias = parseInt(styleBias.value,10) || 0;
+      delta += (-bias) * 0.3;
+      return delta;
+    }
+    function gameWinProb(a, b){
+      const diff = (baseRating(a) - baseRating(b)) + styleAdjust(a,b);
+      const fan = document.getElementById('modeToggle').checked;
+      const aVotes = votes[a.id]||0, bVotes = votes[b.id]||0;
+      const fanBoost = fan ? Math.max(-6, Math.min(6, (aVotes - bVotes) * 0.02 * 6)) : 0;
+      const z = diff + fanBoost;
+      const p = 1 / (1 + Math.exp(-z/6));
+      return Math.min(0.98, Math.max(0.02, p));
+    }
+    function simulateOnce(a, b){ return Math.random() < gameWinProb(a,b); }
+    function estimateProb(a,b,n){ let w=0; for(let i=0;i<n;i++) if(simulateOnce(a,b)) w++; return w/n; }
+
+    document.getElementById('runSim').addEventListener('click', ()=>{
+      const a = HEROES.find(h=>h.id===ddA.value);
+      const b = HEROES.find(h=>h.id===ddB.value);
+      if(!a || !b){ alert('Pick one DC hero and one Marvel hero to simulate.'); return; }
+
+      const N = parseInt(simCountEl.value,10);
+      const p = estimateProb(a,b,N);
+      updateProbBar(p);
+
+      const bestOf = parseInt(seriesLenEl.value,10);
+      const need = Math.ceil(bestOf/2);
+      let aWins=0, bWins=0;
+      gameLog.innerHTML='';
+      for(let g=1; g<=bestOf && aWins<need && bWins<need; g++){
+        const aWon = simulateOnce(a,b);
+        if(aWon) aWins++; else bWins++;
+        const why = [];
+        if (styleMagic.checked){
+          if ((a.tags||[]).includes('mystic') && !(b.tags||[]).includes('mystic')) why.push('magic edge');
+          if ((b.tags||[]).includes('mystic') && !(a.tags||[]).includes('mystic')) why.push('magic edge');
+        }
+        if (styleTechCounters.checked){
+          if ((a.tags||[]).includes('tech') && (b.tags||[]).includes('mystic')) why.push('tech vs magic');
+          if ((b.tags||[]).includes('tech') && (a.tags||[]).includes('mystic')) why.push('tech vs magic');
+        }
+        if (styleLargeArena.checked) why.push('mobility');
+        if (styleHome.value!=='none') why.push('home field');
+        if (styleWeather.value!=='none') why.push(styleWeather.value);
+        if (parseInt(stylePrep.value,10)>0) why.push('prep');
+        const row = document.createElement('div');
+        row.className='bg-white/5 border border-white/10 rounded-lg p-2';
+        row.innerHTML = `Game ${g}: <span class="${aWon?'text-gold':''}">${a.name}</span> ${aWon?'defeats':'loses to'} <span class="${!aWon?'text-gold':''}">${b.name}</span> • Series ${aWins}-${bWins}${why.length?` • <span class="text-white/60">${why.join(', ')}</span>`:''}`;
+        gameLog.appendChild(row);
+      }
+
+      const winner = (aWins>bWins) ? a : b;
+      seriesResult.innerHTML = `<span class="chip">Series Result</span> <span class="ms-2">${a.name} vs ${b.name} → <span class="text-gold font-semibold">${winner.name}</span> wins ${Math.max(aWins,bWins)}-${Math.min(aWins,bWins)}</span>`;
+    });
+
+    document.getElementById('clearMatch').addEventListener('click', ()=>{
+      ddA.value = ''; ddB.value = '';
+      document.getElementById('compareA').innerHTML='';
+      document.getElementById('compareB').innerHTML='';
+      localStorage.removeItem(MATCH_KEY);
+      updateProbBar(0.5);
+      document.getElementById('seriesResult').textContent='';
+      document.getElementById('gameLog').innerHTML='';
+    });
+
+    /* ===== INIT ===== */
+    function renderAll(){
+      renderTable();
+      renderSpotlights();
+    }
+    renderAll();
+  </script>
+</body>
+</html>
