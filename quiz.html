@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Which Hero Are You? — Heroverse</title>
+  <meta name="description" content="A quick personality quiz to reveal your Heroverse match." />
+  <meta name="author" content="Henry Osuagwu" />
+
+  <!-- Favicon & PWA icons (match site) -->
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
+  <link rel="icon" href="images/favicon.ico">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="images/android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="images/android-chrome-512x512.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Bangers','cursive'],
+            sans: ['Poppins','ui-sans-serif','system-ui'],
+          },
+          colors: {
+            hero:'#E50914',
+            primary:'#0055FF',
+            gold:'#FFD700',
+            dark:'#0d0f13',
+            dark2:'#111521'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html{scroll-behavior:smooth}
+    body::before{
+      content:"";position:fixed;inset:0;z-index:-1;background:
+      radial-gradient(circle at 20% 20%, rgba(255,215,0,.06), transparent 40%),
+      radial-gradient(circle at 80% 0%, rgba(229,9,20,.05), transparent 35%),
+      radial-gradient(circle at 0% 100%, rgba(0,85,255,.06), transparent 40%),
+      repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,.04), rgba(255,255,255,.04) 2px, transparent 3px, transparent 6px);
+      background-color:#0d0f13;
+    }
+    .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+    .reveal.show{opacity:1;transform:translateY(0)}
+    .active-nav{
+      background:linear-gradient(90deg,#FFD70022,#E5091422);
+      border-color:#FFD700;
+      color:#FFD700 !important;
+    }
+    .glow-hover:hover{text-shadow:0 0 10px rgba(255,215,0,.7),0 0 20px rgba(255,215,0,.5)}
+
+    /* Buttons */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1.25rem;border-radius:1rem;font-weight:600;transition:filter .2s,transform .06s, box-shadow .2s;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+    .btn:active{transform:translateY(1px)}
+    .btn-primary{background:linear-gradient(135deg,#E50914,#FF3B30);border:1px solid #ffffff22;color:#fff}
+    .btn-gold{background:linear-gradient(135deg,#FFD700,#FFB700);color:#0d0f13;border:1px solid #ffffff22}
+    .btn-ghost{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#fff}
+    .btn:hover{filter:brightness(1.08)}
+
+    /* Choice pills */
+    .choice{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06)}
+    .choice[aria-checked="true"]{border-color:#FFD700;background:linear-gradient(135deg,rgba(255,215,0,.18),rgba(255,215,0,.08))}
+    .choice:focus-visible{outline:2px solid #FFD700;outline-offset:2px}
+
+    /* Newsprint overlay (triple-click logo) */
+    .print-dots:before{
+      content:"";position:fixed;inset:0;pointer-events:none;z-index:50;
+      background:
+        radial-gradient(#ffffff10 1px, transparent 1px) 0 0 / 4px 4px,
+        radial-gradient(#ffffff08 1px, transparent 1px) 2px 2px / 4px 4px;
+      mix-blend-mode:overlay;opacity:.7;
+    }
+
+    /* Modal */
+    .modal{position:fixed;inset:0;display:none}
+    .modal.open{display:block}
+
+    /* Confetti canvas on result */
+    #confetti{position:fixed;inset:0;pointer-events:none;z-index:60;display:none}
+    #confetti.show{display:block}
+  </style>
+</head>
+
+<body class="bg-dark text-white" id="top">
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 bg-gold text-dark px-3 py-2 rounded">Skip to content</a>
+
+  <!-- NAV -->
+  <header class="sticky top-0 z-40 bg-dark/70 backdrop-blur border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+      <a id="brandLink" href="index.html" class="flex items-center gap-3 select-none" title="Triple-click me 👀">
+        <span class="text-2xl sm:text-3xl font-display tracking-widest text-gold drop-shadow">Heroverse</span>
+      </a>
+
+      <button id="navToggle" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-white/20 hover:bg-white/10" aria-label="Open menu" aria-expanded="false">☰</button>
+
+      <nav class="hidden md:flex items-center gap-4 text-sm" aria-label="Primary">
+        <a href="heroes.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Hall of Heroes</a>
+        <a href="villains.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Rogues Gallery</a>
+        <a href="teams.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Teams</a>
+        <a href="stories.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Stories</a>
+        <a href="rankings.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Rankings</a>
+        <a href="news.html" class="px-3 py-2 rounded-lg hover:bg-white/10">News</a>
+        <a href="about.html" class="px-3 py-2 rounded-lg hover:bg-white/10">About</a>
+        <a href="quiz.html" class="px-3 py-2 rounded-lg border active-nav" aria-current="page">Quiz</a>
+        <a href="contact.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Contact</a>
+      </nav>
+    </div>
+
+    <!-- Mobile drawer -->
+    <nav id="mobileNav" class="md:hidden hidden border-t border-gold/20 bg-gradient-to-b from-[#0b0f19] via-[#0c1324] to-[#0b0f19]">
+      <div class="max-w-7xl mx-auto px-4 py-3 grid grid-cols-2 gap-3 text-sm">
+        <a class="rounded-lg p-3 border border-red-400/40 bg-red-500/15 hover:bg-red-500/25 transition" href="heroes.html">Hall of Heroes</a>
+        <a class="rounded-lg p-3 border border-purple-400/40 bg-purple-500/15 hover:bg-purple-500/25 transition" href="villains.html">Rogues Gallery</a>
+        <a class="rounded-lg p-3 border border-yellow-400/40 bg-yellow-500/20 text-white hover:bg-yellow-500/30 transition" href="teams.html">Teams</a>
+        <a class="rounded-lg p-3 border border-blue-400/40 bg-blue-500/15 hover:bg-blue-500/25 transition" href="stories.html">Stories</a>
+        <a class="rounded-lg p-3 border border-green-400/40 bg-green-500/15 hover:bg-green-500/25 transition" href="rankings.html">Rankings</a>
+        <a class="rounded-lg p-3 border border-pink-400/40 bg-pink-500/15 hover:bg-pink-500/25 transition" href="news.html">News</a>
+        <a class="rounded-lg p-3 border border-cyan-400/40 bg-cyan-500/15 hover:bg-cyan-500/25 transition" href="about.html">About</a>
+        <a class="rounded-lg p-3 border border-amber-400/40 bg-amber-500/15 hover:bg-amber-500/25 transition active-nav" href="quiz.html" aria-current="page">Quiz</a>
+        <a class="rounded-lg p-3 border border-orange-400/40 bg-orange-500/15 hover:bg-orange-500/25 transition" href="contact.html">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main" class="max-w-none">
+    <!-- SPLASH -->
+    <section class="relative overflow-hidden pt-16 sm:pt-20 pb-12">
+      <div class="absolute -top-32 -left-32 w-[40rem] h-[40rem] rounded-full blur-3xl opacity-30 bg-gradient-to-br from-hero via-gold to-primary pointer-events-none"></div>
+      <div class="absolute -bottom-40 -right-40 w-[44rem] h-[44rem] rounded-full blur-3xl opacity-20 bg-gradient-to-tr from-primary via-hero to-gold pointer-events-none"></div>
+
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative text-center reveal">
+        <h1 class="font-display text-5xl sm:text-6xl">Which <span class="text-gold">Hero</span> Are You?</h1>
+        <p class="mt-3 text-white/80 max-w-2xl mx-auto">Answer a few quick questions. We’ll match your vibe to a signature hero — then you can jump into their profile.</p>
+      </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="pb-14">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Progress -->
+        <div class="reveal">
+          <div class="h-3 rounded-full bg-white/10 border border-white/10 overflow-hidden">
+            <div id="bar" class="h-full w-0 bg-gradient-to-r from-gold via-hero to-primary transition-all duration-500"></div>
+          </div>
+          <p id="progress" class="text-white/70 text-sm mt-2">Question 1 of 6</p>
+        </div>
+
+        <!-- Questions -->
+        <form id="quiz" class="mt-6 space-y-7">
+          <!-- Template replicated with different data-keys -->
+          <fieldset class="reveal">
+            <legend class="font-display text-2xl">Your ideal Friday night?</legend>
+            <div class="mt-3 grid sm:grid-cols-2 gap-3">
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="batman">Solo project in the workshop — precision and focus.</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="spidey">Patrol the neighborhood, help where you can.</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="cap">Training with friends — we’re stronger together.</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="wonder">A good challenge and a chance to do what’s right.</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="panther">Strategizing future moves — mind & heart aligned.</button>
+            </div>
+          </fieldset>
+
+          <fieldset class="reveal">
+            <legend class="font-display text-2xl">Pick a power set</legend>
+            <div class="mt-3 grid sm:grid-cols-2 gap-3">
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="batman">Peak skill, tech, and tactics</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="spidey">Agility & spidey-sense</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="cap">Strength, resolve, leadership</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="wonder">Truth, compassion, and might</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="panther">Ingenuity, tradition, vibranium</button>
+            </div>
+          </fieldset>
+
+          <fieldset class="reveal">
+            <legend class="font-display text-2xl">Team role you naturally take</legend>
+            <div class="mt-3 grid sm:grid-cols-2 gap-3">
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="cap">Captain — align the squad & push forward</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="batman">Planner — map the angles no one else sees</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="wonder">Warrior — protect the weak, challenge the strong</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="spidey">Heart — keep spirits up, improvise solutions</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="panther">Diplomat — bridge worlds with wisdom</button>
+            </div>
+          </fieldset>
+
+          <fieldset class="reveal">
+            <legend class="font-display text-2xl">Gadget of choice</legend>
+            <div class="mt-3 grid sm:grid-cols-2 gap-3">
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="batman">Grapnel + utility belt</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="spidey">Web shooters</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="panther">Vibranium suit & tech</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="cap">Vibranium shield</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="wonder">Lasso & bracelets</button>
+            </div>
+          </fieldset>
+
+          <fieldset class="reveal">
+            <legend class="font-display text-2xl">Your compass points to…</legend>
+            <div class="mt-3 grid sm:grid-cols-2 gap-3">
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="cap">Duty</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="wonder">Truth</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="panther">Legacy</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="batman">Justice</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="spidey">Responsibility</button>
+            </div>
+          </fieldset>
+
+          <fieldset class="reveal">
+            <legend class="font-display text-2xl">Pick a city to protect</legend>
+            <div class="mt-3 grid sm:grid-cols-2 gap-3">
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="batman">Gotham-esque — towering, shadowed, complex</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="spidey">Neighborhoods — friendly, chaotic, alive</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="cap">A city that believes in tomorrow</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="wonder">A crossroads of cultures & ideals</button>
+              <button type="button" class="choice px-4 py-3 rounded-xl text-left" data-key="panther">A hidden jewel steeped in tradition</button>
+            </div>
+          </fieldset>
+
+          <!-- Actions -->
+          <div class="reveal flex flex-col sm:flex-row gap-3 pt-2">
+            <button id="submit" type="button" class="btn btn-primary w-full sm:w-auto">Reveal My Hero</button>
+            <button id="clear" type="button" class="btn btn-ghost w-full sm:w-auto">Clear</button>
+          </div>
+        </form>
+
+        <!-- Result Card -->
+        <section id="result" class="reveal mt-10 hidden">
+          <div class="grid md:grid-cols-5 gap-6 items-center">
+            <div class="md:col-span-2 order-last md:order-first">
+              <div class="relative">
+                <div class="absolute -inset-1 rounded-3xl bg-gradient-to-tr from-gold/30 via-hero/20 to-primary/30 blur-xl"></div>
+                <img id="resImg" src="" alt="Hero image" class="relative rounded-3xl w-full aspect-[3/4] object-cover border border-white/10" />
+              </div>
+            </div>
+            <div class="md:col-span-3">
+              <h3 class="font-display text-4xl"><span class="text-white/70">You are</span> <span id="resName" class="text-gold">—</span></h3>
+              <p id="resLine" class="text-white/85 mt-2">—</p>
+              <div class="mt-4 flex flex-wrap gap-3">
+                <a id="resLink" href="heroes.html" class="btn btn-gold w-full sm:w-auto">View Profile</a>
+                <button id="retake" class="btn btn-ghost w-full sm:w-auto">Retake</button>
+                <a href="about.html" class="btn btn-ghost w-full sm:w-auto">Back to About</a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-white/10 py-8 text-center text-white/60">
+    <p>© <span id="year"></span> Heroverse. All rights reserved.</p>
+    <p>Last modified: <span id="lastModified"></span></p>
+    <p class="mt-2 flex justify-center items-center gap-2">
+      <span class="text-xl">⚡</span>
+      <span class="text-gold font-semibold glow-hover">Henry Osuagwu</span>
+      <span class="text-xl">🦸</span>
+    </p>
+  </footer>
+
+  <!-- SECRET GAUNTLET MODAL (kept for parity) -->
+  <div id="gauntlet" class="modal z-50">
+    <div class="absolute inset-0 bg-black/75" data-close></div>
+    <div class="relative max-w-xl mx-auto mt-16 bg-dark border border-white/10 rounded-3xl p-6">
+      <button class="absolute top-2 right-3 text-white/70 hover:text-white" data-close>✕</button>
+      <header class="text-center">
+        <h3 class="font-display text-3xl text-gold">Color Gauntlet</h3>
+        <p class="text-white/70 mt-1">Click a stone to change the site accent color.</p>
+      </header>
+      <div class="mt-5 flex items-center justify-center gap-4 flex-wrap">
+        <button class="stone" style="background:#FFD700" data-accent="gold" title="Mind (Gold)"></button>
+        <button class="stone" style="background:#E50914" data-accent="hero" title="Power (Red)"></button>
+        <button class="stone" style="background:#0055FF" data-accent="primary" title="Space (Blue)"></button>
+        <button class="stone" style="background:#10B981" data-accent="emerald" title="Time (Green)"></button>
+        <button class="stone" style="background:#A855F7" data-accent="amethyst" title="Reality (Purple)"></button>
+        <button class="stone" style="background:#F59E0B" data-accent="amber" title="Soul (Amber)"></button>
+      </div>
+      <p class="text-center text-white/60 mt-4 text-sm">Konami Code to open • Accent preference is saved locally.</p>
+    </div>
+  </div>
+
+  <!-- Confetti -->
+  <canvas id="confetti"></canvas>
+
+  <!-- Back to top -->
+  <a id="toTop" href="#top"
+     class="hidden fixed bottom-4 right-4 z-50 rounded-xl bg-gold text-dark px-3 py-2 shadow-lg border border-white/20"
+     aria-label="Back to top">↑ Top</a>
+
+  <script>
+    /* ---------- Utility & UI ---------- */
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('lastModified').textContent = document.lastModified;
+
+    const navToggle = document.getElementById('navToggle');
+    const mobileNav = document.getElementById('mobileNav');
+    if (navToggle && mobileNav) {
+      navToggle.addEventListener('click', () => {
+        const hidden = mobileNav.classList.toggle('hidden');
+        navToggle.setAttribute('aria-expanded', (!hidden).toString());
+      });
+    }
+
+    const io = new IntersectionObserver((entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); }), { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    /* Back to top */
+    const toTop = document.getElementById('toTop');
+    const toggleToTop = () => { window.scrollY > 400 ? toTop.classList.remove('hidden') : toTop.classList.add('hidden'); };
+    toggleToTop(); window.addEventListener('scroll', toggleToTop, { passive: true });
+
+    /* Triple-click logo => newsprint overlay */
+    const brand = document.getElementById('brandLink');
+    let clicks = 0, clickTimer = null;
+    brand.addEventListener('click', (e)=>{
+      clicks++; clearTimeout(clickTimer);
+      clickTimer = setTimeout(()=>{ if (clicks >= 3) document.body.classList.toggle('print-dots'); clicks=0; }, 350);
+      e.preventDefault();
+    });
+
+    /* Konami => open Gauntlet */
+    const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+    let seq = [];
+    window.addEventListener('keydown', (e)=>{
+      seq.push(e.key); if (seq.length > KONAMI.length) seq.shift();
+      if (KONAMI.every((k,i)=>k===seq[i])) openGauntlet();
+    });
+
+    /* Accent color persistence */
+    const ACCENT_KEY = 'heroverse_accent_v1';
+    function applyAccent(token){
+      const root = document.documentElement;
+      const map = { gold:'#FFD700', hero:'#E50914', primary:'#0055FF', emerald:'#10B981', amethyst:'#A855F7', amber:'#F59E0B' };
+      const val = map[token] || map.gold;
+      root.style.setProperty('--accent', val);
+      document.querySelectorAll('.text-gold').forEach(el=> el.style.color = val);
+      document.querySelectorAll('.bg-primary, .bg-hero').forEach(el=> el.style.backgroundColor = val);
+      document.querySelectorAll('.decoration-gold\\/60').forEach(el=> el.style.textDecorationColor = val+'99');
+      localStorage.setItem(ACCENT_KEY, token);
+    }
+    (function(){ const saved = localStorage.getItem(ACCENT_KEY); if (saved) applyAccent(saved); })();
+
+    /* Gauntlet modal */
+    const gauntlet = document.getElementById('gauntlet');
+    function openGauntlet(){ gauntlet.classList.add('open'); document.body.style.overflow='hidden'; }
+    function closeGauntlet(){ gauntlet.classList.remove('open'); document.body.style.overflow=''; }
+    gauntlet.addEventListener('click', (e)=>{ if (e.target.hasAttribute('data-close')) closeGauntlet(); });
+    gauntlet.querySelectorAll('[data-close]').forEach(btn=> btn.addEventListener('click', closeGauntlet));
+    gauntlet.querySelectorAll('.stone').forEach(stone=> stone.addEventListener('click', ()=> applyAccent(stone.dataset.accent)));
+
+    /* ---------- Quiz logic ---------- */
+    const choices = document.querySelectorAll('.choice');
+    const bar = document.getElementById('bar');
+    const prog = document.getElementById('progress');
+    const submit = document.getElementById('submit');
+    const clearBtn = document.getElementById('clear');
+    const form = document.getElementById('quiz');
+
+    const answers = []; // array of keys
+    const groups = Array.from(form.querySelectorAll('fieldset'));
+
+    // Result mapping
+    const HEROES = {
+      batman: {
+        name: 'Batman',
+        line: 'Strategist. Relentless. You see angles where others see fog.',
+        img: 'images/heroes/batman/1.webp',
+        link: 'heroes.html#batman'
+      },
+      spidey: {
+        name: 'Spider-Man',
+        line: 'Heart-first problem solver with quips and quick thinking.',
+        img: 'images/heroes/spider-man/spyder.jpg',
+        link: 'heroes.html#spider-man'
+      },
+      cap: {
+        name: 'Captain America',
+        line: 'Steady compass. You lift others — and never back down.',
+        img: 'images/heroes/captain-america/1.webp',
+        link: 'heroes.html#captain-america'
+      },
+      wonder: {
+        name: 'Wonder Woman',
+        line: 'Truth & compassion with warrior resolve — a beacon.',
+        img: 'images/heroes/wonder-woman/1.webp',
+        link: 'heroes.html#wonder-woman'
+      },
+      panther: {
+        name: 'Black Panther',
+        line: 'Grace under pressure: innovation rooted in legacy.',
+        img: 'images/heroes/black-panther/1.webp',
+        link: 'heroes.html#black-panther'
+      }
+    };
+
+    // select toggle per fieldset
+    groups.forEach((fs, idx) => {
+      const local = fs.querySelectorAll('.choice');
+      local.forEach(btn => {
+        btn.addEventListener('click', () => {
+          // clear previous selection in this fieldset
+          local.forEach(b => b.setAttribute('aria-checked','false'));
+          btn.setAttribute('aria-checked','true');
+          answers[idx] = btn.dataset.key;
+          updateProgress();
+        });
+      });
+    });
+
+    function updateProgress(){
+      const answered = answers.filter(Boolean).length;
+      const total = groups.length;
+      bar.style.width = Math.round(100 * answered / total) + '%';
+      prog.textContent = `Question ${Math.min(answered+1,total)} of ${total}`;
+    }
+
+    clearBtn.addEventListener('click', () => {
+      answers.length = 0;
+      groups.forEach(fs => fs.querySelectorAll('.choice').forEach(b => b.setAttribute('aria-checked','false')));
+      updateProgress();
+      hideResult();
+    });
+
+    submit.addEventListener('click', () => {
+      const total = groups.length;
+      const answered = answers.filter(Boolean).length;
+      if (answered < total) {
+        // scroll to first unanswered
+        const i = answers.findIndex(v => !v);
+        const target = groups[i === -1 ? 0 : i];
+        target.scrollIntoView({behavior:'smooth', block:'center'});
+        target.classList.add('ring-2','ring-hero');
+        setTimeout(()=> target.classList.remove('ring-2','ring-hero'), 1200);
+        return;
+      }
+      reveal();
+    });
+
+    function tally(){
+      const score = { batman:0, spidey:0, cap:0, wonder:0, panther:0 };
+      answers.forEach(k => { if (k in score) score[k]++; });
+      // pick max; tie-break by a gentle preference order
+      const order = ['panther','wonder','cap','batman','spidey'];
+      let best = order[0], bestVal = -1;
+      for (const k of Object.keys(score)) {
+        const v = score[k];
+        if (v > bestVal || (v === bestVal && order.indexOf(k) < order.indexOf(best))) {
+          best = k; bestVal = v;
+        }
+      }
+      return HEROES[best];
+    }
+
+    // Result UI
+    const resWrap = document.getElementById('result');
+    const resName = document.getElementById('resName');
+    const resLine = document.getElementById('resLine');
+    const resImg = document.getElementById('resImg');
+    const resLink = document.getElementById('resLink');
+    const retake = document.getElementById('retake');
+
+    function reveal(){
+      const hero = tally();
+      resName.textContent = hero.name;
+      resLine.textContent = hero.line;
+      resImg.src = hero.img;
+      resImg.onerror = () => { resImg.onerror=null; resImg.src = 'https://picsum.photos/seed/hero/720/960'; };
+      resLink.href = hero.link;
+      resWrap.classList.remove('hidden');
+      // confetti burst
+      burst();
+      // smooth scroll to result
+      resWrap.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+    function hideResult(){ resWrap.classList.add('hidden'); }
+
+    retake.addEventListener('click', () => {
+      hideResult();
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+
+    /* Simple confetti */
+    function burst(){
+      const cvs = document.getElementById('confetti');
+      const ctx = cvs.getContext('2d');
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      const W = cvs.width = Math.floor(window.innerWidth * dpr);
+      const H = cvs.height = Math.floor(window.innerHeight * dpr);
+      cvs.classList.add('show');
+
+      const N = 160, G = 0.15, F = [];
+      for (let i=0;i<N;i++){
+        F.push({
+          x: Math.random()*W, y: -Math.random()*H*0.2,
+          vx: (Math.random()-0.5)*6*dpr, vy: (Math.random()*3+2)*dpr,
+          s: Math.random()*6+4, a: 1, r: Math.random()*Math.PI
+        });
+      }
+      const colors = ['#FFD700','#E50914','#0055FF','#10B981','#A855F7','#F59E0B'];
+
+      let t0 = performance.now();
+      function step(t){
+        ctx.clearRect(0,0,W,H);
+        const dt = (t - t0)/16; t0 = t;
+        let alive = 0;
+        for(const p of F){
+          p.vy += G*dpr*dt; p.x += p.vx*dt; p.y += p.vy*dt; p.r += 0.1*dt; p.a -= 0.006*dt;
+          if (p.a <= 0 || p.y > H+30) continue; alive++;
+          ctx.save();
+          ctx.globalAlpha = Math.max(0,p.a);
+          ctx.translate(p.x,p.y); ctx.rotate(p.r);
+          ctx.fillStyle = colors[(p.x+p.y|0)%colors.length];
+          ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s);
+          ctx.restore();
+        }
+        if (alive>0) requestAnimationFrame(step);
+        else cvs.classList.remove('show');
+      }
+      requestAnimationFrame(step);
+      setTimeout(()=> cvs.classList.remove('show'), 2500);
+    }
+  </script>
+</body>
+</html>

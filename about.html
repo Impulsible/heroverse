@@ -91,6 +91,14 @@
     .modal.open{display:block}
     .stone{width:46px;height:46px;border-radius:50%;border:2px solid #ffffff55;cursor:pointer}
     .stone:hover{transform:translateY(-2px)}
+
+    /* Buttons */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1.25rem;border-radius:1rem;font-weight:600;transition:filter .2s,transform .06s, box-shadow .2s;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+    .btn:active{transform:translateY(1px)}
+    .btn-primary{background:linear-gradient(135deg,#E50914,#FF3B30);border:1px solid #ffffff22;color:#fff}
+    .btn-gold{background:linear-gradient(135deg,#FFD700,#FFB700);color:#0d0f13;border:1px solid #ffffff22}
+    .btn-ghost{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#fff}
+    .btn:hover{filter:brightness(1.08)}
   </style>
 </head>
 <body class="bg-dark text-white" id="top">
@@ -117,8 +125,6 @@
         <a href="about.html" class="px-3 py-2 rounded-lg border active-nav" aria-current="page">About</a>
         <a href="contact.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Contact</a>
       </nav>
-
-      <!-- Present for visual parity; no handler needed on About -->
     </div>
 
     <!-- Mobile drawer (copied styling) -->
@@ -150,14 +156,9 @@
           <p class="mt-3 sm:mt-4 text-white/80 max-w-3xl mx-auto text-lg">
             Built by fans for fans — a fast, gorgeous way to explore characters, teams and the arcs that shaped them.
           </p>
-          <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
-            <a href="heroes.html" class="px-5 py-3 rounded-2xl bg-hero hover:brightness-110 transition shadow-md">Browse Heroes</a>
-            <a href="contact.html" class="px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15">Suggest a Feature</a>
-          </div>
-          <div class="mt-5 flex items-center justify-center gap-3 text-sm text-white/60">
-            <span class="px-2 py-1 rounded-full bg-white/10">Fan Project</span>
-            <span class="px-2 py-1 rounded-full bg-white/10">No spoilers • No ads</span>
-            <span class="px-2 py-1 rounded-full bg-white/10">Lightning-fast UI</span>
+          <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a href="heroes.html" class="btn btn-primary w-full sm:w-auto">Browse Heroes</a>
+            <a href="contact.html" class="btn btn-ghost w-full sm:w-auto">Suggest a Feature</a>
           </div>
         </div>
       </div>
@@ -281,47 +282,10 @@
           <h2 class="font-display text-3xl text-gold">Hi, I’m Henry.</h2>
           <p class="text-white/85 mt-3 leading-relaxed">I love systems that make vast worlds easy to navigate. If you spot a gap, a typo, or have an idea that would help readers, I’d love to hear it.</p>
           <div class="mt-4 flex flex-wrap gap-3">
-            <a href="contact.html" class="px-5 py-3 rounded-2xl bg-primary hover:brightness-110 transition">Send Feedback</a>
-            <a href="heroes.html" class="px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15">Explore the Hall</a>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- UPDATE OVERVIEW (typographic, not a changelog) -->
-    <section class="py-10 sm:py-12 border-t border-white/10">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="font-display text-3xl text-gold text-center reveal">Update Overview</h2>
-        <div class="mt-6 grid md:grid-cols-3 gap-8 reveal">
-          <div>
-            <h3 class="font-semibold">What changed</h3>
-            <ul class="mt-2 space-y-1 text-white/80 list-disc list-inside">
-              <li>Removed the Changelog entirely.</li>
-              <li>Redesigned the whole page into flowing, full-bleed sections (no boxy containers):</li>
-              <li class="ml-5">Hero splash with big headline + soft gradient orbs.</li>
-              <li class="ml-5">“Why Heroverse?” feature list (icon-led, no cards).</li>
-              <li class="ml-5">A Design Principles stripe with large numerals.</li>
-              <li class="ml-5">A long-form Origin Story (clean, readable).</li>
-              <li class="ml-5">Credits &amp; Notes as an inline definition grid (no frames).</li>
-              <li class="ml-5">Founder teaser with portrait + CTAs.</li>
-              <li class="ml-5">A gentle gradient CTA ribbon to guide users onward.</li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="font-semibold">Kept</h3>
-            <ul class="mt-2 space-y-1 text-white/80 list-disc list-inside">
-              <li>Your nav/drawer styling and footer signature.</li>
-              <li>Easter eggs + accent color system.</li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="font-semibold">Next tweaks (say the word)</h3>
-            <ul class="mt-2 space-y-1 text-white/80 list-disc list-inside">
-              <li>Swap the placeholder collage/portrait with your real images.</li>
-              <li>Add subtle scroll parallax on the orbs.</li>
-              <li>Drop in a tiny stats row (e.g., characters, teams, stories) that auto-counts from your data source.</li>
-              <li>Prefer a lighter or darker gradient? I can tune the palette to your brand.</li>
-              <li>Want a quick pass to align this style across Teams/Stories/News too?</li>
-            </ul>
+            <a href="contact.html" class="btn btn-primary w-full sm:w-auto">Send Feedback</a>
+            <!-- Replaced "Explore the Hall" with Option 2 & 3 -->
+            <a href="quiz.html" class="btn btn-gold w-full sm:w-auto">Which Hero Are You?</a>
+            <button type="button" id="quoteBtn" class="btn btn-ghost w-full sm:w-auto">Random Comic Quote</button>
           </div>
         </div>
       </div>
@@ -331,47 +295,34 @@
     <section class="py-10 sm:py-12 bg-gradient-to-r from-hero/20 via-gold/10 to-primary/20">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
         <h2 class="font-display text-3xl sm:text-4xl">Ready to dive back in?</h2>
-        <p class="text-white/75 mt-2">Pick a hero, build a team, or spark a what‑if.</p>
+        <p class="text-white/75 mt-2">Pick a hero, build a team, or spark a what-if.</p>
         <div class="mt-5 flex justify-center gap-3">
-          <a href="teams.html" class="px-5 py-3 rounded-2xl bg-gold text-dark hover:brightness-110 transition">Build a Team</a>
-          <a href="stories.html" class="px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15">Find a Story</a>
+          <a href="teams.html" class="btn btn-gold w-full sm:w-auto">Build a Team</a>
+          <a href="stories.html" class="btn btn-ghost w-full sm:w-auto">Find a Story</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXTRA: Fun Stat Row -->
+    <section class="py-10 sm:py-14 border-t border-white/10">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-3 gap-6 text-center reveal">
+          <div>
+            <div class="text-4xl font-bold text-gold counter" data-count="120">0</div>
+            <p class="text-white/70 mt-1">Heroes indexed</p>
+          </div>
+          <div>
+            <div class="text-4xl font-bold text-gold counter" data-count="45">0</div>
+            <p class="text-white/70 mt-1">Teams tracked</p>
+          </div>
+          <div>
+            <div class="text-4xl font-bold text-gold counter" data-count="300">0</div>
+            <p class="text-white/70 mt-1">Story arcs</p>
+          </div>
         </div>
       </div>
     </section>
   </main>
-
-  <!-- Redesign Summary / Notes -->
-  <section class="py-12 sm:py-16 bg-dark2 border-t border-white/10">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-white/80 text-sm leading-relaxed space-y-4">
-      <h2 class="font-display text-2xl text-gold">What I Changed</h2>
-      <ul class="list-disc list-inside space-y-1">
-        <li>Removed the Changelog entirely.</li>
-        <li>Redesigned the whole page into flowing, full-bleed sections (no boxy containers).</li>
-        <li>Hero splash with big headline + soft gradient orbs.</li>
-        <li>“Why Heroverse?” feature list (icon-led, no cards).</li>
-        <li>A Design Principles stripe with large numerals.</li>
-        <li>A long-form Origin Story (clean, readable).</li>
-        <li>Credits & Notes as an inline definition grid (no frames).</li>
-        <li>Founder teaser with portrait + CTAs.</li>
-        <li>A gentle gradient CTA ribbon to guide users onward.</li>
-      </ul>
-
-      <h2 class="font-display text-2xl text-gold mt-8">Kept</h2>
-      <ul class="list-disc list-inside space-y-1">
-        <li>Your nav/drawer styling and footer signature.</li>
-        <li>Easter eggs + accent color system.</li>
-      </ul>
-
-      <h2 class="font-display text-2xl text-gold mt-8">Next Tweaks (say the word and I’ll wire them in)</h2>
-      <ul class="list-disc list-inside space-y-1">
-        <li>Swap the placeholder collage/portrait with your real images.</li>
-        <li>Add subtle scroll parallax on the orbs.</li>
-        <li>Drop in a tiny stats row (e.g., characters, teams, stories) that auto-counts from your data source.</li>
-        <li>Prefer a lighter or darker gradient? I can tune the palette to your brand.</li>
-        <li>Want a quick pass to align this style across Teams/Stories/News too?</li>
-      </ul>
-    </div>
-  </section>
 
   <!-- FOOTER (matched embellishment) -->
   <footer class="border-t border-white/10 py-8 text-center text-white/60">
@@ -402,6 +353,23 @@
         <button class="stone" style="background:#F59E0B" data-accent="amber" title="Soul (Amber)"></button>
       </div>
       <p class="text-center text-white/60 mt-4 text-sm">Konami Code to open • Accent preference is saved locally.</p>
+    </div>
+  </div>
+
+  <!-- RANDOM QUOTE MODAL (Option 3) -->
+  <div id="quoteModal" class="modal z-50">
+    <div class="absolute inset-0 bg-black/70" data-q-close></div>
+    <div class="relative max-w-xl mx-auto mt-16 bg-dark border border-white/10 rounded-3xl comic-shadow p-6">
+      <button class="absolute top-2 right-3 text-white/70 hover:text-white" data-q-close aria-label="Close">✕</button>
+      <header class="text-center mb-3">
+        <h3 class="font-display text-3xl text-gold">Random Comic Quote</h3>
+      </header>
+      <blockquote class="text-white/90 text-xl leading-relaxed text-center" id="quoteText">Loading…</blockquote>
+      <p class="text-white/60 text-center mt-2" id="quoteAuthor"></p>
+      <div class="mt-5 flex justify-center gap-3">
+        <button id="quoteNew" class="btn btn-ghost">Another One</button>
+        <button data-q-close class="btn btn-primary">Close</button>
+      </div>
     </div>
   </div>
 
@@ -500,8 +468,77 @@
     gauntlet.querySelectorAll('.stone').forEach(stone=>{
       stone.addEventListener('click', ()=> applyAccent(stone.dataset.accent));
     });
-      /* Fill 'Last updated' in Changelog using document.lastModified */
-    
+
+    /* ---------- Counter animation on scroll ---------- */
+    (function(){
+      const counters = document.querySelectorAll('.counter');
+      if (!counters.length) return;
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function animate(el){
+        if (el.dataset.animated) return;
+        el.dataset.animated = '1';
+        const target = parseInt(el.getAttribute('data-count'), 10) || 0;
+        if (prefersReduced){ el.textContent = target.toLocaleString(); return; }
+        const duration = 1200;
+        const start = performance.now();
+        const from = 0;
+        function tick(now){
+          const p = Math.min(1, (now - start) / duration);
+          const eased = 1 - Math.pow(1 - p, 3);
+          const val = Math.floor(from + (target - from) * eased);
+          el.textContent = val.toLocaleString();
+          if (p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      }
+
+      const obs = new IntersectionObserver((entries)=>{
+        entries.forEach(e => { if (e.isIntersecting) animate(e.target); });
+      }, { threshold: 0.35 });
+      counters.forEach(c => obs.observe(c));
+    })();
+
+    /* ---------- Random Quote modal (Option 3) ---------- */
+    (function(){
+      const quotes = [
+        { q: "With great power comes great responsibility.", a: "Spider-Man" },
+        { q: "I am vengeance. I am the night. I am Batman!", a: "Batman" },
+        { q: "Truth is... I am Iron Man.", a: "Tony Stark" },
+        { q: "Hope is the light that lifts us out of darkness.", a: "Superman" },
+        { q: "Higher, further, faster.", a: "Captain Marvel" },
+        { q: "It’s not who I am underneath, but what I do that defines me.", a: "Batman" },
+        { q: "I can do this all day.", a: "Captain America" },
+        { q: "Wakanda forever!", a: "T’Challa" }
+      ];
+
+      const modal = document.getElementById('quoteModal');
+      const quoteBtn = document.getElementById('quoteBtn');
+      const quoteNew = document.getElementById('quoteNew');
+      const txt = document.getElementById('quoteText');
+      const auth = document.getElementById('quoteAuthor');
+
+      function randomQuote(){
+        const item = quotes[Math.floor(Math.random()*quotes.length)];
+        txt.textContent = "“" + item.q + "”";
+        auth.textContent = "— " + item.a;
+      }
+      function openQ(){
+        randomQuote();
+        modal.classList.add('open');
+        document.body.style.overflow='hidden';
+      }
+      function closeQ(){
+        modal.classList.remove('open');
+        document.body.style.overflow='';
+      }
+
+      if (quoteBtn){ quoteBtn.addEventListener('click', openQ); }
+      if (quoteNew){ quoteNew.addEventListener('click', randomQuote); }
+      modal.addEventListener('click', (e)=>{ if (e.target.hasAttribute('data-q-close')) closeQ(); });
+      modal.querySelectorAll('[data-q-close]').forEach(btn => btn.addEventListener('click', closeQ));
+      window.addEventListener('keydown', (e)=>{ if (e.key === 'Escape' && modal.classList.contains('open')) closeQ(); });
+    })();
   </script>
 </body>
 </html>
