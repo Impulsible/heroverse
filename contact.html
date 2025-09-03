@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Contact / Feedback — Heroverse</title>
+  <meta name="description" content="Got a hero, villain, story idea—or feedback? Reach out to the Heroverse team." />
+
+  <!-- Favicon & PWA icons-->
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
+  <link rel="icon" href="images/favicon.ico">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="images/android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="images/android-chrome-512x512.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Bangers','cursive'],
+            sans: ['Poppins','ui-sans-serif','system-ui'],
+          },
+          colors: {
+            hero:'#E50914',
+            primary:'#0055FF',
+            gold:'#FFD700',
+            dark:'#0d0f13',
+            dark2:'#111521'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html{scroll-behavior:smooth}
+    .comic-shadow{box-shadow:0 10px 25px rgba(0,0,0,.25),0 2px 8px rgba(0,0,0,.1)}
+    .glow-hover:hover{ text-shadow:0 0 10px rgba(255,215,0,.7),0 0 20px rgba(255,215,0,.5) }
+    body::before{
+      content:"";position:fixed;inset:0;z-index:-1;background:
+      radial-gradient(circle at 20% 20%, rgba(255,215,0,.06), transparent 40%),
+      radial-gradient(circle at 80% 0%, rgba(229,9,20,.05), transparent 35%),
+      radial-gradient(circle at 0% 100%, rgba(0,85,255,.06), transparent 40%),
+      repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,.04), rgba(255,255,255,.04) 2px, transparent 3px, transparent 6px);
+      background-color:#0d0f13;
+    }
+    .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+    .reveal.show{opacity:1;transform:translateY(0)}
+    .selectish{
+      appearance:none;
+      background-image:
+        linear-gradient(135deg,transparent 50%,#ffd700 50%),
+        linear-gradient(45deg,#ffd700 50%,transparent 50%);
+      background-position:right 12px top 55%, right 6px top 55%;
+      background-size:6px 6px,6px 6px;
+      background-repeat:no-repeat;
+      padding-right:2.25rem
+    }
+    .active-nav{
+      background:linear-gradient(90deg,#FFD70022,#E5091422);
+      border-color:#FFD700;
+      color:#FFD700 !important;
+    }
+    .chip {
+      border: 1px solid rgba(255,255,255,.15);
+      background: rgba(255,255,255,.06);
+      transition: background .2s ease, border-color .2s ease, transform .1s ease;
+    }
+    .chip[aria-pressed="true"]{
+      background: rgba(255,215,0,.18);
+      border-color: rgba(255,215,0,.5);
+      transform: translateY(-1px);
+    }
+    .toast-enter{transform:translateY(8px);opacity:0}
+    .toast-enter-active{transform:translateY(0);opacity:1;transition:all .25s ease}
+  </style>
+</head>
+<body class="bg-dark text-white" id="top">
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 bg-gold text-dark px-3 py-2 rounded">Skip to content</a>
+
+  <!-- NAV -->
+  <header class="sticky top-0 z-40 bg-dark/70 backdrop-blur border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <span class="text-2xl sm:text-3xl font-display tracking-widest text-gold drop-shadow">Heroverse</span>
+      </a>
+
+      <button id="navToggle" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-white/20 hover:bg-white/10" aria-label="Open menu" aria-expanded="false">☰</button>
+
+      <nav class="hidden md:flex items-center gap-4 text-sm" aria-label="Primary">
+        <a href="heroes.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Hall of Heroes</a>
+        <a href="villains.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Rogues Gallery</a>
+        <a href="teams.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Teams</a>
+        <a href="stories.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Stories</a>
+        <a href="rankings.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Rankings</a>
+        <a href="news.html" class="px-3 py-2 rounded-lg hover:bg-white/10">News</a>
+        <a href="about.html" class="px-3 py-2 rounded-lg hover:bg-white/10">About</a>
+        <a href="contact.html" class="px-3 py-2 rounded-lg border active-nav" aria-current="page">Contact</a>
+      </nav>
+    </div>
+
+    <!-- Mobile drawer -->
+    <nav id="mobileNav" class="md:hidden hidden border-t border-gold/20 bg-gradient-to-b from-[#0b0f19] via-[#0c1324] to-[#0b0f19]">
+      <div class="max-w-7xl mx-auto px-4 py-3 grid grid-cols-2 gap-3 text-sm">
+        <a class="rounded-lg p-3 border border-red-400/40 bg-red-500/15 hover:bg-red-500/25 transition" href="heroes.html">Hall of Heroes</a>
+        <a class="rounded-lg p-3 border border-purple-400/40 bg-purple-500/15 hover:bg-purple-500/25 transition" href="villains.html">Rogues Gallery</a>
+        <a class="rounded-lg p-3 border border-yellow-400/40 bg-yellow-500/20 text-white hover:bg-yellow-500/30 transition" href="teams.html">Teams</a>
+        <a class="rounded-lg p-3 border border-blue-400/40 bg-blue-500/15 hover:bg-blue-500/25 transition" href="stories.html">Stories</a>
+        <a class="rounded-lg p-3 border border-green-400/40 bg-green-500/15 hover:bg-green-500/25 transition" href="rankings.html">Rankings</a>
+        <a class="rounded-lg p-3 border border-pink-400/40 bg-pink-500/15 hover:bg-pink-500/25 transition" href="news.html">News</a>
+        <a class="rounded-lg p-3 border border-cyan-400/40 bg-cyan-500/15 hover:bg-cyan-500/25 transition" href="about.html">About</a>
+        <a class="rounded-lg p-3 border border-orange-400/40 bg-orange-500/15 hover:bg-orange-500/25 transition active-nav" href="contact.html" aria-current="page">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+    <!-- Hero -->
+    <section class="text-center mb-8 reveal">
+      <h1 class="font-display text-4xl sm:text-5xl">Contact & Feedback</h1>
+      <p class="text-white/70 max-w-2xl mx-auto mt-2">Have a hero, villain, or story idea? Found a bug or want a feature? Drop us a line—let’s build the Heroverse together.</p>
+    </section>
+
+    <!-- FUN SUGGESTION SHORTCUTS -->
+    <section class="mb-10 reveal" aria-labelledby="suggestionsTitle">
+      <h2 id="suggestionsTitle" class="font-display text-xl sm:text-2xl text-gold text-center mb-4">Suggest Something Fun</h2>
+      <div class="grid md:grid-cols-3 gap-4">
+        <!-- Hero -->
+        <article class="rounded-2xl border border-white/10 bg-white/[.06] p-5 comic-shadow">
+          <h3 class="font-semibold text-lg">🦸 Hero Pitch</h3>
+          <p class="text-white/70 mt-1 text-sm">Got an underdog with a wild power set?</p>
+          <ul class="text-white/60 text-sm mt-2 list-disc pl-5">
+            <li>Origin hook</li><li>Signature move</li><li>Nemesis</li>
+          </ul>
+          <div class="mt-4 flex items-center gap-2">
+            <button class="px-3 py-2 rounded-lg bg-primary/30 border border-primary/40 hover:bg-primary/40" data-suggest="hero">Start Hero</button>
+            <button id="promptDice" class="px-3 py-2 rounded-lg bg-white/10 border border-white/20 hover:bg-white/20" title="Add a random prompt">🎲</button>
+          </div>
+        </article>
+        <!-- Villain -->
+        <article class="rounded-2xl border border-white/10 bg-white/[.06] p-5 comic-shadow">
+          <h3 class="font-semibold text-lg">🦹 Villain Concept</h3>
+          <p class="text-white/70 mt-1 text-sm">Schemer, bruiser, or cosmic threat?</p>
+          <ul class="text-white/60 text-sm mt-2 list-disc pl-5">
+            <li>Modus operandi</li><li>Rival</li><li>Fatal flaw</li>
+          </ul>
+          <div class="mt-4">
+            <button class="px-3 py-2 rounded-lg bg-hero/30 border border-hero/40 hover:bg-hero/40" data-suggest="villain">Start Villain</button>
+          </div>
+        </article>
+        <!-- Story -->
+        <article class="rounded-2xl border border-white/10 bg-white/[.06] p-5 comic-shadow">
+          <h3 class="font-semibold text-lg">📖 Story Idea</h3>
+          <p class="text-white/70 mt-1 text-sm">One-shot, mini, or sprawling saga?</p>
+          <ul class="text-white/60 text-sm mt-2 list-disc pl-5">
+            <li>Logline</li><li>Cast</li><li>Twist</li>
+          </ul>
+          <div class="mt-4">
+            <button class="px-3 py-2 rounded-lg bg-gold/30 border border-gold/50 hover:bg-gold/40 text-dark font-semibold" data-suggest="story">Start Story</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- MAIN GRID: Sidebar + Form -->
+    <div class="grid md:grid-cols-3 gap-6 reveal">
+      <!-- Left: sidebar -->
+      <aside class="md:col-span-1 space-y-4">
+        <!-- Quick Contacts (with GitHub) -->
+        <div class="rounded-2xl border border-gold/25 bg-gradient-to-br from-[#0f1320] via-[#12172a] to-[#0f1320] p-4 comic-shadow">
+          <h2 class="font-semibold text-gold mb-2">Quick Contacts</h2>
+          <ul class="space-y-2 text-white/85">
+            <li>📧 Email: <a class="underline hover:text-gold" href="mailto:hello@heroverse.example">hello@heroverse.example</a></li>
+            <li>🐦 X / Twitter: <a class="underline hover:text-gold" href="#" target="_blank" rel="noopener">@HeroverseHQ</a></li>
+            <li>💬 Discord: <a class="underline hover:text-gold" href="#" target="_blank" rel="noopener">Join our server</a></li>
+            <li>🐙 GitHub: <a class="underline hover:text-gold" href="https://github.com/impulsible/hero" target="_blank" rel="noopener">impulsible/hero</a></li>
+          </ul>
+        </div>
+
+        <!-- FAQ -->
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-4 comic-shadow">
+          <h3 class="font-semibold text-gold mb-2">FAQ</h3>
+          <details class="bg-white/5 border border-white/10 rounded-xl p-3">
+            <summary class="cursor-pointer">How do you pick featured heroes?</summary>
+            <p class="mt-2 text-white/80">A mix of community votes, cultural impact, and fun factor. You can suggest new ones via this form!</p>
+          </details>
+          <details class="bg-white/5 border border-white/10 rounded-xl p-3 mt-3">
+            <summary class="cursor-pointer">Can I submit art?</summary>
+            <p class="mt-2 text-white/80">Yes—link a portfolio or drive folder in your message. We’ll reach out before featuring anything.</p>
+          </details>
+        </div>
+
+        <!-- Easter Egg -->
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-4 comic-shadow">
+          <h3 class="font-semibold text-gold mb-2">Easter Egg</h3>
+          <p class="text-white/80">Type <kbd>up up down down left right left right b a</kbd> on this page 😉</p>
+        </div>
+
+        <!-- More Features -->
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-4 comic-shadow">
+          <h3 class="font-semibold text-gold mb-3">More Features</h3>
+          <ul class="space-y-3 text-white/85">
+            <li class="flex items-start gap-3">
+              <span class="text-xl">🔍</span>
+              <div>
+                <p class="font-medium">Search by Power</p>
+                <p class="text-white/60 text-sm">Filter heroes/villains by abilities, weaknesses, or gear.</p>
+                <span class="inline-flex items-center rounded-full border border-white/10 bg-white/10 px-2 py-0.5 text-[10px] uppercase tracking-wider">Planned</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-xl">🆚</span>
+              <div>
+                <p class="font-medium">Compare View</p>
+                <p class="text-white/60 text-sm">Side-by-side stats and story arcs for two characters.</p>
+                <span class="inline-flex items-center rounded-full border border-white/10 bg-white/10 px-2 py-0.5 text-[10px] uppercase tracking-wider">Beta</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-xl">🔖</span>
+              <div>
+                <p class="font-medium">Bookmark Sync</p>
+                <p class="text-white/60 text-sm">Keep your favorites across devices with optional sign-in.</p>
+                <span class="inline-flex items-center rounded-full border border-white/10 bg-white/10 px-2 py-0.5 text-[10px] uppercase tracking-wider">Soon</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-xl">🌗</span>
+              <div>
+                <p class="font-medium">High-Contrast Theme</p>
+                <p class="text-white/60 text-sm">Accessibility-focused palette for readability.</p>
+                <span class="inline-flex items-center rounded-full border border-white/10 bg-white/10 px-2 py-0.5 text-[10px] uppercase tracking-wider">New</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-xl">📴</span>
+              <div>
+                <p class="font-medium">Offline Mode</p>
+                <p class="text-white/60 text-sm">Cache core pages so the guide works without internet.</p>
+                <span class="inline-flex items-center rounded-full border border-white/10 bg-white/10 px-2 py-0.5 text-[10px] uppercase tracking-wider">Planned</span>
+              </div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-xl">⚠️</span>
+              <div>
+                <p class="font-medium">Spoiler Toggle</p>
+                <p class="text-white/60 text-sm">Hide major twists across bios and story entries.</p>
+                <span class="inline-flex items-center rounded-full border border-white/10 bg-white/10 px-2 py-0.5 text-[10px] uppercase tracking-wider">Idea</span>
+              </div>
+            </li>
+          </ul>
+
+          <div class="mt-4 text-xs text-white/50">
+            Have a feature in mind? Pick <span class="text-gold font-semibold">Feature Request</span> in the form and tell us!
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right: form -->
+      <section class="md:col-span-2">
+        <form id="contactForm"
+              class="rounded-2xl border border-gold/25 bg-gradient-to-br from-[#0f1320] via-[#12172a] to-[#0f1320] p-5 sm:p-6 comic-shadow space-y-5"
+              method="POST"
+              data-netlify="true"
+              data-netlify-honeypot="company"
+              name="heroverse-contact"
+              accept-charset="UTF-8"
+              novalidate>
+          <!-- Netlify hidden name -->
+          <input type="hidden" name="form-name" value="heroverse-contact" />
+          <!-- Honeypot (anti-spam) -->
+          <input type="text" name="company" id="company" class="hidden" tabindex="-1" autocomplete="off" />
+
+          <!-- Type CHIPS -->
+          <fieldset>
+            <legend class="block text-sm text-white/85 mb-2">Type (quick select)</legend>
+            <div class="flex flex-wrap gap-2" role="group" aria-label="Suggestion type">
+              <button type="button" class="chip px-3 py-1.5 rounded-xl" data-type-chip="General Feedback" aria-pressed="false">General</button>
+              <button type="button" class="chip px-3 py-1.5 rounded-xl" data-type-chip="New Hero" aria-pressed="false">New Hero</button>
+              <button type="button" class="chip px-3 py-1.5 rounded-xl" data-type-chip="New Villain" aria-pressed="false">New Villain</button>
+              <button type="button" class="chip px-3 py-1.5 rounded-xl" data-type-chip="Story Idea" aria-pressed="false">Story Idea</button>
+              <button type="button" class="chip px-3 py-1.5 rounded-xl" data-type-chip="Bug Report" aria-pressed="false">Bug Report</button>
+              <button type="button" class="chip px-3 py-1.5 rounded-xl" data-type-chip="Feature Request" aria-pressed="false">Feature Request</button>
+            </div>
+          </fieldset>
+
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label for="name" class="block text-sm text-white/85 mb-1">Your Name <span class="text-gold">*</span></label>
+              <input id="name" name="name" autocomplete="name" required
+                     class="w-full rounded-xl bg-[#141824]/90 border border-gold/30 text-white px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold"
+                     placeholder="Jane Doe">
+              <p class="mt-1 text-xs text-hero hidden" id="err-name">Please enter your name.</p>
+            </div>
+            <div>
+              <label for="email" class="block text-sm text-white/85 mb-1">Email <span class="text-gold">*</span></label>
+              <input id="email" name="email" type="email" autocomplete="email" required
+                     class="w-full rounded-xl bg-[#141824]/90 border border-gold/30 text-white px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold"
+                     placeholder="you@example.com">
+              <p class="mt-1 text-xs text-hero hidden" id="err-email">Please enter a valid email.</p>
+            </div>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label for="type" class="block text-sm text-white/85 mb-1">Suggestion Type</label>
+              <select id="type" name="type"
+                      class="w-full rounded-xl bg-[#141824]/90 border border-gold/30 text-white px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold selectish">
+                <option>General Feedback</option>
+                <option>New Hero</option>
+                <option>New Villain</option>
+                <option>Story Idea</option>
+                <option>Bug Report</option>
+                <option>Feature Request</option>
+              </select>
+            </div>
+            <div>
+              <label for="subject" class="block text-sm text-white/85 mb-1">Subject</label>
+              <input id="subject" name="subject" autocomplete="off"
+                     class="w-full rounded-xl bg-[#141824]/90 border border-gold/30 text-white px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold"
+                     placeholder="Short title (optional)">
+            </div>
+          </div>
+
+          <div>
+            <label for="message" class="block text-sm text-white/85 mb-1">Message <span class="text-gold">*</span></label>
+            <textarea id="message" name="message" rows="6" required maxlength="1500"
+                      aria-describedby="charCount"
+                      class="w-full rounded-xl bg-[#141824]/90 border border-gold/30 text-white px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold"
+                      placeholder="Write your message here…"></textarea>
+            <div class="flex items-center justify-between mt-1">
+              <p class="text-xs text-hero hidden" id="err-message">Please add a message (min 10 characters).</p>
+              <p class="text-xs text-white/60"><span id="charCount">0</span>/1500</p>
+            </div>
+          </div>
+
+          <!-- Feature wish chips (saves into hidden input) -->
+          <fieldset>
+            <legend class="block text-sm text-white/85 mb-2">Feature Wish (optional)</legend>
+            <input type="hidden" id="features" name="features" value="">
+            <div class="flex flex-wrap gap-2">
+              <button type="button" class="chip px-3 py-1.5 rounded-xl" data-feature="Compare view">Compare view</button>
+              <button type="button" class="chip px-3 py-1.5 rounded-xl" data-feature="Offline mode">Offline mode</button>
+              <button type="button" class="chip px-3 py-1.5 rounded-xl" data-feature="Bookmarks sync">Bookmarks sync</button>
+              <button type="button" class="chip px-3 py-1.5 rounded-xl" data-feature="Dark contrast theme">Dark contrast theme</button>
+              <button type="button" class="chip px-3 py-1.5 rounded-xl" data-feature="Search by power">Search by power</button>
+              <button type="button" class="chip px-3 py-1.5 rounded-xl" data-feature="Spoiler toggle">Spoiler toggle</button>
+            </div>
+            <p class="text-xs text-white/50 mt-1">Toggle a few—we’ll include them in your submission.</p>
+          </fieldset>
+
+          <!-- Attach link (optional) -->
+          <div>
+            <label for="link" class="block text-sm text-white/85 mb-1">Reference Link (optional)</label>
+            <input id="link" name="link" type="url" inputmode="url"
+                   class="w-full rounded-xl bg-[#141824]/90 border border-gold/30 text-white px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold"
+                   placeholder="https://example.com/portfolio-or-reference">
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button type="submit"
+                    class="px-5 py-2.5 rounded-xl bg-hero hover:brightness-110 transition font-semibold">
+              Send Message
+            </button>
+            <button type="button" id="clearBtn"
+                    class="px-4 py-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/20">
+              Clear
+            </button>
+          </div>
+
+          <p class="text-xs text-white/60">By sending, you agree to our <a href="#" class="underline hover:text-gold">community guidelines</a>.</p>
+        </form>
+
+        <!-- Toast -->
+        <div id="toast" class="hidden fixed left-1/2 -translate-x-1/2 bottom-6 z-50" role="status" aria-live="polite">
+          <div class="toast-enter bg-white/10 border border-white/20 backdrop-blur px-4 py-3 rounded-xl comic-shadow">
+            <p class="text-white"><span class="font-semibold text-gold">Thanks!</span> Your message was received. We’ll reply soon.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-white/10 py-8 text-center text-white/60">
+    <p>© <span id="year"></span> Heroverse. All rights reserved.</p>
+    <p>Last modified: <span id="lastModified"></span></p>
+    <p class="mt-2 flex justify-center items-center gap-2">
+      <span class="text-xl">⚡</span>
+      <span class="text-gold font-semibold glow-hover">Henry Osuagwu</span>
+      <span class="text-xl">🦸</span>
+    </p>
+  </footer>
+
+  <script>
+    // ===== Page constants =====
+    var DEMO_MODE = false; // true = show toast only (no submit). false = POST to Netlify.
+
+    // Basic page utilities
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('lastModified').textContent = document.lastModified;
+
+    // Nav toggle
+    var navToggle = document.getElementById('navToggle');
+    var mobileNav = document.getElementById('mobileNav');
+    if (navToggle && mobileNav) {
+      navToggle.addEventListener('click', function(){
+        var hidden = mobileNav.classList.toggle('hidden');
+        navToggle.setAttribute('aria-expanded', (!hidden).toString());
+      });
+    }
+
+    // Scroll reveal
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting) e.target.classList.add('show'); });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+    // Form enhancements
+    var form = document.getElementById('contactForm');
+    var nameEl = document.getElementById('name');
+    var emailEl = document.getElementById('email');
+    var typeEl = document.getElementById('type');
+    var subjectEl = document.getElementById('subject');
+    var messageEl = document.getElementById('message');
+    var featuresEl = document.getElementById('features');
+    var charCount = document.getElementById('charCount');
+    var clearBtn = document.getElementById('clearBtn');
+    var toast = document.getElementById('toast');
+    var honey = document.getElementById('company');
+
+    // Type chips sync with <select>
+    var typeChips = Array.prototype.slice.call(document.querySelectorAll('[data-type-chip]'));
+    function syncChipsWithSelect(){
+      var current = (typeEl && typeEl.value) || '';
+      typeChips.forEach(function(btn){
+        var on = (btn.getAttribute('data-type-chip') === current);
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+    }
+    typeChips.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var val = btn.getAttribute('data-type-chip');
+        if (typeEl) { typeEl.value = val; }
+        syncChipsWithSelect();
+      });
+    });
+    if (typeEl) typeEl.addEventListener('change', syncChipsWithSelect);
+
+    // Feature wish chips -> hidden input CSV
+    var featureChips = Array.prototype.slice.call(document.querySelectorAll('[data-feature]'));
+    var selectedFeatures = new Set();
+    function updateFeaturesField(){
+      var list = Array.from(selectedFeatures.values());
+      featuresEl.value = list.join(', ');
+    }
+    featureChips.forEach(function(btn){
+      btn.setAttribute('aria-pressed','false');
+      btn.addEventListener('click', function(){
+        var f = btn.getAttribute('data-feature');
+        var on = btn.getAttribute('aria-pressed') === 'true';
+        if (on){
+          selectedFeatures.delete(f);
+          btn.setAttribute('aria-pressed','false');
+        } else {
+          selectedFeatures.add(f);
+          btn.setAttribute('aria-pressed','true');
+        }
+        updateFeaturesField();
+      });
+    });
+
+    // Draft autosave (localStorage)
+    var DKEY = 'heroverse-contact-draft';
+    function loadDraft(){
+      try {
+        var d = JSON.parse(localStorage.getItem(DKEY) || '{}');
+        ['name','email','type','subject','message','link','features'].forEach(function(id){
+          var el = document.getElementById(id);
+          if (d[id] && el) el.value = d[id];
+        });
+        // restore selected features set
+        if (d.features){
+          d.features.split(',').map(function(s){ return s.trim(); }).forEach(function(f){
+            if (f) selectedFeatures.add(f);
+          });
+          featureChips.forEach(function(btn){
+            var label = btn.getAttribute('data-feature');
+            var on = selectedFeatures.has(label);
+            btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+          });
+        }
+        updateFeaturesField();
+        updateCount();
+        syncChipsWithSelect();
+      } catch(_){}
+    }
+    function saveDraft(){
+      var d = {};
+      ['name','email','type','subject','message','link','features'].forEach(function(id){
+        var el = document.getElementById(id);
+        if (el) d[id] = el.value;
+      });
+      localStorage.setItem(DKEY, JSON.stringify(d));
+    }
+    loadDraft();
+    form.addEventListener('input', saveDraft);
+
+    // URL prefill (?type=&subject=&message=)
+    (function prefillFromURL(){
+      try{
+        var p = new URLSearchParams(location.search);
+        var t = p.get('type'); var s = p.get('subject'); var m = p.get('message');
+        if (t && typeEl) typeEl.value = t;
+        if (s && subjectEl) subjectEl.value = s;
+        if (m && messageEl) messageEl.value = m;
+        updateCount();
+        syncChipsWithSelect();
+      } catch(_){}
+    })();
+
+    // Character counter
+    function updateCount(){ charCount.textContent = (messageEl.value || '').length; }
+    messageEl.addEventListener('input', updateCount);
+
+    // Simple validators
+    function showErr(id, show){ var el = document.getElementById(id); if (el) el.classList.toggle('hidden', !show); }
+    function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+    function validate(){
+      var ok = true;
+      if (!nameEl.value.trim()) { showErr('err-name', true); ok=false; } else showErr('err-name', false);
+      if (!validEmail(emailEl.value.trim())) { showErr('err-email', true); ok=false; } else showErr('err-email', false);
+      if ((messageEl.value||'').trim().length < 10) { showErr('err-message', true); ok=false; } else showErr('err-message', false);
+      if ((honey.value||'').trim() !== '') ok = false; // Honeypot
+      return ok;
+    }
+
+    // Fake / real submit switch
+    form.addEventListener('submit', function(e){
+      if (!validate()) { e.preventDefault(); return; }
+      if (DEMO_MODE) {
+        e.preventDefault();
+        showToast();
+        form.reset();
+        localStorage.removeItem(DKEY);
+        selectedFeatures.clear();
+        featureChips.forEach(function(btn){ btn.setAttribute('aria-pressed','false'); });
+        updateFeaturesField();
+        updateCount();
+        if (typeEl) typeEl.value = 'General Feedback';
+        syncChipsWithSelect();
+      }
+      // else: allow natural POST to Netlify
+    });
+
+    function showToast(){
+      toast.classList.remove('hidden');
+      var box = toast.firstElementChild;
+      void box.offsetWidth; // trigger enter animation
+      box.classList.add('toast-enter-active');
+      setTimeout(function(){ toast.classList.add('hidden'); box.classList.remove('toast-enter-active'); }, 2800);
+    }
+
+    // Clear form
+    clearBtn.addEventListener('click', function(){
+      form.reset();
+      localStorage.removeItem(DKEY);
+      selectedFeatures.clear();
+      featureChips.forEach(function(btn){ btn.setAttribute('aria-pressed','false'); });
+      updateFeaturesField();
+      updateCount();
+      ['err-name','err-email','err-message'].forEach(function(id){ showErr(id,false); });
+      if (typeEl) typeEl.value = 'General Feedback';
+      syncChipsWithSelect();
+    });
+
+    // Konami Easter egg
+    (function(){
+      var seq = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+      var idx=0;
+      window.addEventListener('keydown',function(e){
+        if (e.key === seq[idx]) { idx++; if (idx===seq.length){ sparkle(); idx=0; } }
+        else idx = 0;
+      });
+      function sparkle(){
+        var header = document.querySelector('header');
+        header && header.animate([{boxShadow:'0 0 0px rgba(255,215,0,0)'},{boxShadow:'0 0 30px rgba(255,215,0,.8)'}],{duration:600, direction:'alternate', iterations:3});
+      }
+    })();
+
+    /* ===== Suggestion Shortcuts wiring ===== */
+    var PROMPTS = [
+      'A mentor loses powers at sunrise—what now?',
+      'An antique ring grants flight but only while laughing.',
+      'The villain’s weakness is… good deeds?',
+      'Team-up between rivals for one impossible rescue.',
+      'A courtroom drama where the witness is a telepath.',
+      'A city that forgets superheroes every Monday.',
+      'A gadgeteer hero vs. a weather-witch villain.',
+      'A retired sidekick returns for one last case.',
+      'A cosmic road-trip with a sarcastic AI ship.',
+      'An archer with arrows that change memories.'
+    ];
+
+    function setType(val){
+      if (!typeEl) return;
+      typeEl.value = val;
+      var evt = document.createEvent('HTMLEvents'); evt.initEvent('change', true, false); typeEl.dispatchEvent(evt);
+    }
+
+    function seedForm(subject, body){
+      if (subjectEl) subjectEl.value = subject;
+      if (messageEl) {
+        var base = (messageEl.value||'').trim();
+        messageEl.value = (body + (base ? '\n\n' + base : ''));
+        messageEl.focus();
+        updateCount();
+      }
+      var target = document.getElementById('contactForm');
+      if (target && target.scrollIntoView) target.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+
+    Array.prototype.forEach.call(document.querySelectorAll('[data-suggest]'), function(btn){
+      btn.addEventListener('click', function(){
+        var kind = this.getAttribute('data-suggest');
+        if (kind === 'hero'){
+          setType('New Hero');
+          seedForm('Hero suggestion', 'Name:\nPowers:\nWeakness:\nWhy they’re awesome:');
+        } else if (kind === 'villain'){
+          setType('New Villain');
+          seedForm('Villain suggestion', 'Name:\nM.O.:\nRival:\nTheir big move:');
+        } else {
+          setType('Story Idea');
+          seedForm('Story idea', 'Title:\nCast:\nHook:\nWhat makes it epic:');
+        }
+        syncChipsWithSelect();
+      });
+    });
+
+    var dice = document.getElementById('promptDice');
+    if (dice){
+      dice.addEventListener('click', function(){
+        var line = PROMPTS[Math.floor(Math.random()*PROMPTS.length)];
+        messageEl.value = (messageEl.value ? messageEl.value + '\n\n' : '') + 'Prompt: ' + line;
+        messageEl.focus();
+        updateCount();
+      });
+    }
+  </script>
+</body>
+</html>
