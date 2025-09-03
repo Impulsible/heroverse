@@ -29,20 +29,16 @@
   <meta name="twitter:image" content="images/heroverse.png" />
 
   <!-- Favicon & PWA icons -->
-<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
-<link rel="icon" href="images/favicon.ico">
-<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-<link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
+  <link rel="icon" href="images/favicon.ico">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <!-- pinned tabs -->
+  <link rel="icon" type="image/png" sizes="192x192" href="images/android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="images/android-chrome-512x512.png">
 
-
-<!-- pinned tabs -->
-<link rel="icon" type="image/png" sizes="192x192" href="images/android-chrome-192x192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="images/android-chrome-512x512.png">
-
-
-
-  <!-- Fonts (mobile-first perf: preconnects) -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -87,24 +83,20 @@
     .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
     .reveal.show { opacity: 1; transform: translateY(0); }
 
+    /* Featured heroes carousel */
     .carousel { position: relative; }
-    .carousel-slide { position: absolute; inset: 0; opacity: 0; transform: scale(.98); transition: opacity .6s ease, transform .6s ease; }
+    .carousel-slide { position: absolute; inset: 0; opacity: 0; transform: scale(.985); transition: opacity .6s ease, transform .6s ease; }
     .carousel-slide.active { position: relative; opacity: 1; transform: scale(1); }
 
     .glow-hover:hover { text-shadow: 0 0 10px rgba(255,215,0,.7), 0 0 20px rgba(255,215,0,.5); }
-
-    .carousel { position: relative; }
-.carousel-slide {
-  position: absolute; inset: 0;
-  opacity: 0; transform: scale(.985);
-  transition: opacity .6s ease, transform .6s ease;
+.q-quote { 
+  overflow-wrap: anywhere;
+  word-break: normal;
+  white-space: normal;
 }
-.carousel-slide.active {
-  position: relative; opacity: 1; transform: scale(1);
-}
+.q-box { min-height: 0; height: auto; }
 
   </style>
-  
 </head>
 <body id="top" class="bg-dark text-white">
   <!-- Skip link (a11y) -->
@@ -140,35 +132,18 @@
     </div>
 
     <!-- Mobile nav drawer -->
-<nav id="mobileNav" class="md:hidden hidden border-t border-gold/20 bg-gradient-to-b from-[#0b0f19] via-[#0c1324] to-[#0b0f19]">
-  <div class="max-w-7xl mx-auto px-4 py-3 grid grid-cols-2 gap-3 text-sm">
-    <a class="rounded-lg p-3 border border-red-400/40 bg-red-500/15 hover:bg-red-500/25 transition" href="heroes.html">
-      Hall of Heroes
-    </a>
-    <a class="rounded-lg p-3 border border-purple-400/40 bg-purple-500/15 hover:bg-purple-500/25 transition" href="villains.html">
-      Rogues Gallery
-    </a>
-    <a class="rounded-lg p-3 border border-yellow-400/40 bg-yellow-500/20 text-white hover:bg-yellow-500/30 transition" href="teams.html">
-      Teams
-    </a>
-    <a class="rounded-lg p-3 border border-blue-400/40 bg-blue-500/15 hover:bg-blue-500/25 transition" href="stories.html">
-      Stories
-    </a>
-    <a class="rounded-lg p-3 border border-green-400/40 bg-green-500/15 hover:bg-green-500/25 transition" href="rankings.html">
-      Rankings
-    </a>
-    <a class="rounded-lg p-3 border border-pink-400/40 bg-pink-500/15 hover:bg-pink-500/25 transition" href="news.html">
-      News
-    </a>
-    <a class="rounded-lg p-3 border border-cyan-400/40 bg-cyan-500/15 hover:bg-cyan-500/25 transition" href="about.html">
-      About
-    </a>
-    <a class="rounded-lg p-3 border border-orange-400/40 bg-orange-500/15 hover:bg-orange-500/25 transition" href="contact.html">
-      Contact
-    </a>
-  </div>
-</nav>
-
+    <nav id="mobileNav" class="md:hidden hidden border-t border-gold/20 bg-gradient-to-b from-[#0b0f19] via-[#0c1324] to-[#0b0f19]">
+      <div class="max-w-7xl mx-auto px-4 py-3 grid grid-cols-2 gap-3 text-sm">
+        <a class="rounded-lg p-3 border border-red-400/40 bg-red-500/15 hover:bg-red-500/25 transition" href="heroes.html">Hall of Heroes</a>
+        <a class="rounded-lg p-3 border border-purple-400/40 bg-purple-500/15 hover:bg-purple-500/25 transition" href="villains.html">Rogues Gallery</a>
+        <a class="rounded-lg p-3 border border-yellow-400/40 bg-yellow-500/20 text-white hover:bg-yellow-500/30 transition" href="teams.html">Teams</a>
+        <a class="rounded-lg p-3 border border-blue-400/40 bg-blue-500/15 hover:bg-blue-500/25 transition" href="stories.html">Stories</a>
+        <a class="rounded-lg p-3 border border-green-400/40 bg-green-500/15 hover:bg-green-500/25 transition" href="rankings.html">Rankings</a>
+        <a class="rounded-lg p-3 border border-pink-400/40 bg-pink-500/15 hover:bg-pink-500/25 transition" href="news.html">News</a>
+        <a class="rounded-lg p-3 border border-cyan-400/40 bg-cyan-500/15 hover:bg-cyan-500/25 transition" href="about.html">About</a>
+        <a class="rounded-lg p-3 border border-orange-400/40 bg-orange-500/15 hover:bg-orange-500/25 transition" href="contact.html">Contact</a>
+      </div>
+    </nav>
   </header>
 
   <main id="main">
@@ -191,94 +166,117 @@
               <a href="heroes.html" class="px-4 sm:px-5 py-2.5 rounded-xl font-semibold border border-white/20 hover:border-gold transition">🎲 Random Hero</a>
             </div>
           </div>
-<!-- FEATURED CAROUSEL -->
-<div id="featured-heroes" class="bg-white/5 p-3 sm:p-4 rounded-3xl comic-shadow reveal w-full">
-  <h3 class="font-display text-2xl text-gold mb-3 text-center">Featured Heroes</h3>
 
-  <div class="carousel relative rounded-2xl overflow-hidden h-64 sm:h-80 bg-dark w-full">
-    <!-- Slides will be injected here -->
-  </div>
+          <!-- FEATURED CAROUSEL -->
+          <div id="featured-heroes" class="bg-white/5 p-3 sm:p-4 rounded-3xl comic-shadow reveal w-full">
+            <h3 class="font-display text-2xl text-gold mb-3 text-center">Featured Heroes</h3>
 
-  <!-- Dots -->
-  <div class="dots flex justify-center gap-2 mt-3"></div>
-</div>
-
-<script>
-  const HEROES = [
-    { name: "Gal Gadot", src: "images/gal.webp", alt: "Wonder Woman" },
-    { name: "Barry Allen", src: "images/barry.webp", alt: "The Flash" },
-    { name: "Tobey Maguire", src: "images/toby.webp", alt: "Spider-Man" },
-    { name: "Dinah Drake", src: "images/dinah.webp", alt: "Black Canary" },
-    { name: "Tyler Hoechlin", src: "images/tyler.webp", alt: "Superman" },
-    { name: "Matt Murdock", src: "images/matt.webp", alt: "Daredevil" },
-    { name: "Benedict Cumberbatch", src: "images/ben.webp", alt: "Doctor Strange" },
-    { name: "Scarlett Johansson", src: "images/scar.webp", alt: "Black Widow" },
-    { name: "Oliver Queen", src: "images/oliver.webp", alt: "Green Arrow" },
-    { name: "Elizabeth Olsen", src: "images/elizabeth.webp", alt: "Scarlet Witch" },
-  ];
-
-  function shuffle(arr) {
-    const a = arr.slice();
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
-
-  (function buildFeaturedCarousel() {
-    const root = document.getElementById("featured-heroes");
-    const carousel = root.querySelector(".carousel");
-    const dotsBar  = root.querySelector(".dots");
-
-    const shuffled = shuffle(HEROES);
-
-    shuffled.forEach((hero, idx) => {
-      const slide = document.createElement("div");
-      slide.className = "carousel-slide w-full h-full" + (idx === 0 ? " active" : "");
-      slide.innerHTML = `
-        <div class="relative w-full h-full p-2">
-          <!-- Card frame -->
-          <div class="w-full h-full bg-white/5 rounded-xl border border-white/10 flex items-center justify-center">
-            <!-- Image always fully visible -->
-            <img loading="lazy" src="${hero.src}" alt="${hero.alt}"
-                 class="h-full w-full object-contain rounded-lg pointer-events-none" />
-          </div>
-          <!-- Name overlay -->
-          <div class="absolute inset-x-2 bottom-2">
-            <div class="rounded-xl overflow-hidden border border-white/10">
-              <div class="bg-gradient-to-t from-black/70 to-black/10 px-3 py-2">
-                <p class="text-center font-semibold tracking-wide">
-                  ${hero.name}
-                </p>
-              </div>
+            <div class="carousel relative rounded-2xl overflow-hidden h-64 sm:h-80 bg-dark w-full">
+              <!-- Slides will be injected here -->
             </div>
+
+            <!-- Dots -->
+            <div class="dots flex justify-center gap-2 mt-3"></div>
           </div>
-        </div>`;
-      carousel.appendChild(slide);
-    });
 
-    shuffled.forEach((_, idx) => {
-      const btn = document.createElement("button");
-      btn.setAttribute("data-dot", idx);
-      btn.setAttribute("aria-label", `Slide ${idx + 1}`);
-      btn.className = "w-2.5 h-2.5 rounded-full " + (idx === 0 ? "bg-gold/80" : "bg-white/40 hover:bg-white/70 transition");
-      dotsBar.appendChild(btn);
-    });
+          <script>
+            const HEROES = [
+              { name: "Gal Gadot", src: "images/gal.webp", alt: "Wonder Woman" },
+              { name: "Barry Allen", src: "images/barry.webp", alt: "The Flash" },
+              { name: "Tobey Maguire", src: "images/toby.webp", alt: "Spider-Man" },
+              { name: "Dinah Drake", src: "images/dinah.webp", alt: "Black Canary" },
+              { name: "Tyler Hoechlin", src: "images/tyler.webp", alt: "Superman" },
+              { name: "Matt Murdock", src: "images/matt.webp", alt: "Daredevil" },
+              { name: "Benedict Cumberbatch", src: "images/ben.webp", alt: "Doctor Strange" },
+              { name: "Scarlett Johansson", src: "images/scar.webp", alt: "Black Widow" },
+              { name: "Oliver Queen", src: "images/oliver.webp", alt: "Green Arrow" },
+              { name: "Elizabeth Olsen", src: "images/elizabeth.webp", alt: "Scarlet Witch" },
+            ];
 
-    const slides = Array.from(carousel.querySelectorAll(".carousel-slide"));
-    const dots   = Array.from(dotsBar.querySelectorAll("[data-dot]"));
+            function shuffle(arr) {
+              const a = arr.slice();
+              for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+              }
+              return a;
+            }
 
-    function activate(index) {
-      slides.forEach((s, i) => s.classList.toggle("active", i === index));
-      dots.forEach((d, i) => d.className =
-        "w-2.5 h-2.5 rounded-full " + (i === index ? "bg-gold/80" : "bg-white/40 hover:bg-white/70 transition")
-      );
-    }
+            (function buildFeaturedCarousel() {
+              const root = document.getElementById("featured-heroes");
+              const carousel = root.querySelector(".carousel");
+              const dotsBar  = root.querySelector(".dots");
 
-    dots.forEach(d => d.addEventListener("click", () => activate(+d.dataset.dot)));
-  })();
-</script>
+              const shuffled = shuffle(HEROES);
+
+              shuffled.forEach((hero, idx) => {
+                const slide = document.createElement("div");
+                slide.className = "carousel-slide w-full h-full" + (idx === 0 ? " active" : "");
+                slide.innerHTML = `
+                  <div class="relative w-full h-full p-2">
+                    <div class="w-full h-full bg-white/5 rounded-xl border border-white/10 flex items-center justify-center">
+                      <img loading="lazy" src="${hero.src}" alt="${hero.alt}"
+                          class="h-full w-full object-contain rounded-lg pointer-events-none" />
+                    </div>
+                    <div class="absolute inset-x-2 bottom-2">
+                      <div class="rounded-xl overflow-hidden border border-white/10">
+                        <div class="bg-gradient-to-t from-black/70 to-black/10 px-3 py-2">
+                          <p class="text-center font-semibold tracking-wide">${hero.name}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>`;
+                carousel.appendChild(slide);
+              });
+
+              shuffled.forEach((_, idx) => {
+                const btn = document.createElement("button");
+                btn.setAttribute("data-dot", idx);
+                btn.setAttribute("aria-label", `Slide ${idx + 1}`);
+                btn.className = "w-2.5 h-2.5 rounded-full " + (idx === 0 ? "bg-gold/80" : "bg-white/40 hover:bg-white/70 transition");
+                dotsBar.appendChild(btn);
+              });
+
+              const slides = Array.from(carousel.querySelectorAll(".carousel-slide"));
+              const dots   = Array.from(dotsBar.querySelectorAll("[data-dot]"));
+
+              function activate(index) {
+                slides.forEach((s, i) => s.classList.toggle("active", i === index));
+                dots.forEach((d, i) => d.className =
+                  "w-2.5 h-2.5 rounded-full " + (i === index ? "bg-gold/80" : "bg-white/40 hover:bg-white/70 transition")
+                );
+              }
+
+              // Auto-advance every 4s with smart pause
+              let idx = 0;
+              function next(){ idx = (idx + 1) % slides.length; activate(idx); }
+
+              let timer = null;
+              function start(){ stop(); timer = setInterval(next, 4000); }
+              function stop(){ if (timer){ clearInterval(timer); timer = null; } }
+
+              // Pause when carousel not visible
+              const visObs = new IntersectionObserver(entries => {
+                entries.forEach(e => { e.isIntersecting ? start() : stop(); });
+              }, { threshold: 0.15 });
+              visObs.observe(root);
+
+              // Pause on hover
+              root.addEventListener('mouseenter', stop);
+              root.addEventListener('mouseleave', start);
+
+              // Pause when tab hidden
+              document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+
+              // Dot controls
+              dots.forEach(d => d.addEventListener("click", () => { stop(); idx = +d.dataset.dot; activate(idx); start(); }));
+
+              // Init
+              activate(0);
+              start();
+            })();
+          </script>
+        </div>
 
         <!-- QUICK LINKS -->
         <div class="mt-8 sm:mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-center">
@@ -289,6 +287,54 @@
         </div>
       </div>
     </section>
+
+    <!-- ===== LEGENDS SPEAK: Quote Carousel ===== -->
+  
+<section class="px-4 sm:px-6 lg:px-8 py-10">
+  <div class="max-w-3xl mx-auto">
+    <!-- Header -->
+    <header class="text-center mb-6 reveal">
+      <span class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs tracking-wide text-white/70">
+        🗯️ Timeless Lines
+      </span>
+      <h2 class="mt-3 font-display text-2xl sm:text-3xl">Legends Speak</h2>
+      <p class="mt-2 text-white/60 text-sm">Iconic quotes from across the Heroverse.</p>
+    </header>
+
+    <!-- Quote Card -->
+    <div class="reveal">
+      <div class="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-white/10 via-white/[.05] to-transparent p-1 comic-shadow">
+        <div class="relative rounded-2xl bg-black/30 p-5 sm:p-6 min-h-[180px] flex flex-col justify-center">
+          <!-- Quote text -->
+          <blockquote id="qText"
+            class="relative z-10 text-center text-xl sm:text-2xl leading-snug font-medium transition-all duration-500 ease-out">
+          </blockquote>
+          <div id="qAuthor"
+            class="relative z-10 mt-3 text-center text-sm sm:text-base text-white/70 italic transition-all duration-500 ease-out">
+            —
+          </div>
+
+          <!-- Controls -->
+          <div class="relative z-10 mt-5 flex items-center justify-center gap-2 text-xs">
+            <button id="qPrev"
+              class="px-3 py-1 rounded-md border border-white/15 bg-white/5 hover:bg-white/10 transition">
+              ‹ Prev
+            </button>
+            <button id="qShuffle"
+              class="px-3 py-1 rounded-md border border-white/15 bg-white/5 hover:bg-white/10 transition">
+              🔀 Shuffle
+            </button>
+            <button id="qNext"
+              class="px-3 py-1 rounded-md border border-white/15 bg-white/5 hover:bg-white/10 transition">
+              Next ›
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
     <!-- STATS -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-14 sm:mt-16 pb-4">
@@ -309,44 +355,82 @@
     </section>
 
     <!-- NEWS -->
-    <!-- NEWS -->
-<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-14">
-  <header class="text-center mb-6 sm:mb-8 reveal">
-    <h2 class="font-display text-3xl sm:text-4xl">News & Updates</h2>
-    <p class="text-white/70">Latest movies, comics, and series chatter</p>
-  </header>
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-14">
+      <header class="text-center mb-6 sm:mb-8 reveal">
+        <h2 class="font-display text-3xl sm:text-4xl">News & Updates</h2>
+        <p class="text-white/70">Latest movies, comics, and series chatter</p>
+      </header>
 
-  <!-- Dynamic news will render here -->
-  <div id="featuredNews" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      <!-- Dynamic news will render here -->
+      <div id="featuredNews" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
 
-  <div class="text-center mt-7 reveal">
-    <a href="news.html" class="inline-block bg-primary px-5 py-2.5 rounded-xl font-semibold hover:brightness-110 transition">See all news</a>
-  </div>
-</section>
+      <div class="text-center mt-7 reveal">
+        <a href="news.html" class="inline-block bg-primary px-5 py-2.5 rounded-xl font-semibold hover:brightness-110 transition">See all news</a>
+      </div>
+    </section>
 
-<!-- Scripts -->
-<script src="assets/news-data.js"></script>
-<script>
-  (function(){
-    // Pick 3 random news items from shared data
-    const items = window.HeroverseNews.pickRandom(3);
+    <!-- Scripts -->
+    <script src="assets/news-data.js"></script>
+    <script>
+      (function(){
+        const items = window.HeroverseNews && typeof window.HeroverseNews.pickRandom === 'function'
+          ? window.HeroverseNews.pickRandom(3)
+          : [];
+        const container = document.getElementById('featuredNews');
+        if (Array.isArray(items) && items.length) {
+          container.innerHTML = items.map(n => `
+            <article class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:translate-y-[-2px] hover:bg-white/10 transition comic-shadow reveal">
+              <img loading="lazy" src="${n.img}" alt="${n.title}" class="w-full h-40 sm:h-48 object-cover">
+              <div class="p-4">
+                <h3 class="font-semibold">${n.title}</h3>
+                <p class="text-white/70 text-sm mt-1">${n.summary}</p>
+                <a href="news.html#${n.id}" class="inline-block mt-3 text-gold hover:underline">Read more →</a>
+              </div>
+            </article>
+          `).join('');
+        }
+      })();
+    </script>
+
+    <!-- News robust fallback -->
+    <script>
+  (function () {
     const container = document.getElementById('featuredNews');
-
-    // Render the cards
-    container.innerHTML = items.map(n => `
-      <article class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:translate-y-[-2px] hover:bg-white/10 transition comic-shadow reveal">
-        <img loading="lazy" src="${n.img}" alt="${n.title}" class="w-full h-40 sm:h-48 object-cover">
-        <div class="p-4">
-          <h3 class="font-semibold">${n.title}</h3>
-          <p class="text-white/70 text-sm mt-1">${n.summary}</p>
-          <a href="news.html#${n.id}" class="inline-block mt-3 text-gold hover:underline">Read more →</a>
-        </div>
-      </article>
-    `).join('');
+    if (container && container.children.length === 0) {
+      console.warn('HeroverseNews not loaded — showing placeholders');
+      const placeholders = [
+        {
+          id: 'placeholder-1',
+          img: 'https://picsum.photos/seed/hero-news1/640/360',
+          title: 'News module not loaded',
+          summary: 'Ensure assets/news-data.js is present and exposes window.HeroverseNews.'
+        },
+        {
+          id: 'placeholder-2',
+          img: 'https://picsum.photos/seed/hero-news2/640/360',
+          title: 'Using fallback content',
+          summary: 'This is a graceful placeholder so the layout still looks great.'
+        },
+        {
+          id: 'placeholder-3',
+          img: 'https://picsum.photos/seed/hero-news3/640/360',
+          title: 'How to fix quickly',
+          summary: 'Check the <script src="assets/news-data.js"><\\/script> path and object shape.'
+        }
+      ];
+      container.innerHTML = placeholders.map(n => `
+        <article class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:translate-y-[-2px] hover:bg-white/10 transition comic-shadow reveal">
+          <img loading="lazy" src="${n.img}" alt="${n.title}" class="w-full h-40 sm:h-48 object-cover">
+          <div class="p-4">
+            <h3 class="font-semibold">${n.title}</h3>
+            <p class="text-white/70 text-sm mt-1">${n.summary}</p>
+            <a href="news.html#${n.id}" class="inline-block mt-3 text-gold hover:underline">Read more →</a>
+          </div>
+        </article>
+      `).join('');
+    }
   })();
 </script>
-
-
     <!-- CTA -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 sm:pb-16">
       <div class="bg-gradient-to-r from-primary/30 via-hero/30 to-gold/30 rounded-3xl p-7 sm:p-8 md:p-10 comic-shadow reveal">
@@ -416,30 +500,217 @@
       }, { threshold: 0.6 });
       obs.observe(el);
     });
+  </script>
 
-    // Simple carousel
-    const slides = Array.from(document.querySelectorAll('.carousel-slide'));
-    const dots = Array.from(document.querySelectorAll('[data-dot]'));
-    let idx = 0;
-    function show(i){
-      slides.forEach((s,j)=> s.classList.toggle('active', j===i));
-      dots.forEach((d,j)=> d.style.backgroundColor = j===i ? 'rgba(255,215,0,.8)' : 'rgba(255,255,255,.4)');
-      idx = i;
+  <!-- ===== Legends Speak JS ===== -->
+   <script>
+  // (kept) Accent token helper — not used for the cycle, but safe to keep
+  function getAccentToken() {
+    const key = 'heroverse_accent_v1';
+    const saved = localStorage.getItem(key);
+    return (saved === 'gold' || saved === 'hero' || saved === 'primary') ? saved : 'gold';
+  }
+
+  // Quotes, tagged by t: 'gold' | 'hero' | 'primary'
+  const QUOTES = [
+    /* gold — heroic/classic */
+    { q: "With great power comes great responsibility.", a: "Spider-Man", t: "gold" },
+    { q: "I can do this all day.", a: "Captain America", t: "gold" },
+    { q: "Hope is the light that lifts us out of darkness.", a: "Superman", t: "gold" },
+    { q: "Truth, justice, and a better tomorrow.", a: "Superman", t: "gold" },
+    { q: "Higher, further, faster.", a: "Captain Marvel", t: "gold" },
+    { q: "Heroes are made by the paths they choose.", a: "Tony Stark", t: "gold" },
+    { q: "Wakanda forever!", a: "T’Challa", t: "gold" },
+    { q: "It’s not about saving our world. It’s about saving theirs.", a: "Aquaman", t: "gold" },
+    { q: "You are stronger than you believe.", a: "Wonder Woman", t: "gold" },
+    { q: "The future is worth it. All the pain. All the tears. The future is worth the fight.", a: "Martian Manhunter", t: "gold" },
+    { q: "No man can win every battle, but no man should fall without a struggle.", a: "Spider-Man", t: "gold" },
+    { q: "The shield isn’t about me. It’s about us.", a: "Captain America", t: "gold" },
+    { q: "You can’t be a friendly neighborhood Spider-Man if there’s no neighborhood.", a: "Spider-Man", t: "gold" },
+    { q: "It’s not the suit that makes the hero; it’s the choices.", a: "Iron Man", t: "gold" },
+    { q: "A hero can be anyone.", a: "Batman", t: "gold" },
+    { q: "In a world of ordinary mortals, you are a Wonder Woman.", a: "Batman", t: "gold" },
+    { q: "Sometimes you’ve gotta run before you can walk.", a: "Tony Stark", t: "gold" },
+    { q: "There’s room for everyone in this story.", a: "Kamala Khan", t: "gold" },
+    { q: "I will fight for those who cannot fight for themselves.", a: "Wonder Woman", t: "gold" },
+    { q: "I’m loyal to nothing… except the dream.", a: "Captain America", t: "gold" },
+
+    /* hero — punchy/power (red) */
+    { q: "I am vengeance. I am the night. I am Batman!", a: "Batman", t: "hero" },
+    { q: "It’s not who I am underneath, but what I do that defines me.", a: "Batman", t: "hero" },
+    { q: "Truth is... I am Iron Man.", a: "Tony Stark", t: "hero" },
+    { q: "Eat peace, motherfucker!!", a: "Peacemaker", t: "hero" },
+    { q: "I’m the best there is at what I do.", a: "Wolverine", t: "hero" },
+    { q: "I never miss.", a: "Deadshot", t: "hero" },
+    { q: "Maximum effort!", a: "Deadpool", t: "hero" },
+    { q: "If you can’t protect Earth, you can be damn sure we’ll avenge it.", a: "Tony Stark", t: "hero" },
+    { q: "Power is a responsibility.", a: "Black Lightning", t: "hero" },
+    { q: "No matter how many times you knock me down, I’ll get back up.", a: "Daredevil", t: "hero" },
+    { q: "The bill comes due. Always.", a: "Doctor Strange", t: "hero" },
+    { q: "I can do this all day… and then some.", a: "Sam Wilson", t: "hero" },
+    { q: "Heroes don’t kill good people.", a: "Batman", t: "hero" },
+    { q: "Fly. Punch stuff. Save the day.", a: "Supergirl", t: "hero" },
+    { q: "The harder the world is, the stronger we must be.", a: "Elektra", t: "hero" },
+    { q: "On your left.", a: "Falcon", t: "hero" },
+    { q: "I am Diana of Themyscira. Stand aside.", a: "Wonder Woman", t: "hero" },
+    { q: "You either step up, or step aside.", a: "Green Arrow", t: "hero" },
+
+    /* primary — cosmic/techy/cool (blue) */
+    { q: "In brightest day, in blackest night, no evil shall escape my sight.", a: "Green Lantern", t: "primary" },
+    { q: "I am Loki, of Asgard, and I am burdened with glorious purpose.", a: "Loki", t: "primary" },
+    { q: "I am inevitable.", a: "Thanos", t: "primary" },
+    { q: "Riddle me this, Batman.", a: "Riddler", t: "primary" },
+    { q: "We are Venom!", a: "Venom", t: "primary" },
+    { q: "Kneel before Zod.", a: "General Zod", t: "primary" },
+    { q: "Peace was never an option.", a: "Magneto", t: "primary" },
+    { q: "There are no strings on me.", a: "Ultron", t: "primary" },
+    { q: "Dormammu, I’ve come to bargain.", a: "Doctor Strange", t: "primary" },
+    { q: "You should have gone for the head.", a: "Thanos", t: "primary" },
+    { q: "The strongest choices require the hardest wills.", a: "Thanos", t: "primary" },
+    { q: "Hail Hydra.", a: "HYDRA", t: "primary" },
+    { q: "I find your lack of faith disturbing.", a: "Darth Vader", t: "primary" },
+    { q: "The city is mine.", a: "Kingpin", t: "primary" },
+    { q: "Chaos is a ladder.", a: "Littlefinger", t: "primary" },
+
+    /* extra mix */
+    { q: "Life doesn’t give us purpose. We give life purpose.", a: "The Flash", t: "gold" },
+    { q: "My name is Barry Allen, and I am the fastest man alive.", a: "The Flash", t: "primary" },
+    { q: "I’m always angry.", a: "Bruce Banner", t: "hero" },
+    { q: "Snikt.", a: "Wolverine", t: "hero" },
+    { q: "I knew it!", a: "Shuri", t: "primary" },
+    { q: "I am Groot.", a: "Groot", t: "gold" },
+    { q: "We are Groot.", a: "Groot", t: "gold" },
+    { q: "I’m Mary Poppins, y’all!", a: "Yondu", t: "hero" },
+    { q: "This is my city.", a: "Green Arrow", t: "hero" },
+    { q: "I believe in Harvey Dent.", a: "Gotham City", t: "gold" },
+    { q: "The night is darkest just before the dawn.", a: "Harvey Dent", t: "gold" },
+    { q: "Why so serious?", a: "Joker", t: "primary" },
+    { q: "Introduce a little anarchy.", a: "Joker", t: "primary" },
+    { q: "I’m not locked in here with you. You’re locked in here with me.", a: "Rorschach", t: "hero" },
+    { q: "We work in the dark to serve the light.", a: "Assassin’s Creed", t: "primary" },
+    { q: "The truth is a matter of circumstances.", a: "Natasha Romanoff", t: "primary" },
+    { q: "I would rather be a good man than a great king.", a: "Thor", t: "gold" },
+    { q: "He’s a friend from work!", a: "Thor", t: "hero" },
+    { q: "I’m something of a scientist myself.", a: "Norman Osborn", t: "primary" }
+  ];
+
+  (function quoteCarousel(){
+    const txt = document.getElementById('qText');
+    const auth = document.getElementById('qAuthor');
+    const prevBtn = document.getElementById('qPrev');
+    const nextBtn = document.getElementById('qNext');
+    const shuffleBtn = document.getElementById('qShuffle');
+
+    // === Behavior ===
+    const DISPLAY_MS = 6000;  // 6 seconds (kept from your snippet)
+    const XFADE_MS   = 700;
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // === Non-repeating cycle: gold -> hero -> primary -> ... ===
+    const ACCENT_ORDER = ['gold','hero','primary'];
+    let accentIndex = 0;
+
+    // Group quotes by tag
+    const groups = {
+      gold: QUOTES.filter(q => q.t === 'gold'),
+      hero: QUOTES.filter(q => q.t === 'hero'),
+      primary: QUOTES.filter(q => q.t === 'primary')
+    };
+
+    // In-place shuffle helper (returns a new array)
+    function shuffle(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
     }
-    function next(){ show((idx + 1) % slides.length); }
-    let timer = setInterval(next, 3500);
-    dots.forEach(d => {
-      d.addEventListener('click', () => { clearInterval(timer); show(+d.dataset.dot); timer = setInterval(next, 3500); });
+
+    // Shuffled pools per color; each pool must empty before reshuffling => no repeats
+    let pools = {
+      gold: shuffle(groups.gold),
+      hero: shuffle(groups.hero),
+      primary: shuffle(groups.primary)
+    };
+
+    function nextFromPool() {
+      const accent = ACCENT_ORDER[accentIndex];
+      let pool = pools[accent];
+
+      // If this accent is exhausted, reshuffle ONLY that accent
+      if (pool.length === 0) {
+        pool = pools[accent] = shuffle(groups[accent]);
+      }
+
+      // pop first to avoid repeats inside the cycle
+      const q = pool.shift();
+      // advance accent
+      accentIndex = (accentIndex + 1) % ACCENT_ORDER.length;
+      return { ...q, accent };
+    }
+
+    function setAccentColor(accent) {
+      const map = { gold: '#FFD700', hero: '#E50914', primary: '#0055FF' };
+      txt.style.color = map[accent] || map.gold;
+    }
+
+    function renderQuote(qObj) {
+      txt.textContent = '“' + qObj.q + '”';
+      auth.textContent = '— ' + qObj.a;
+      setAccentColor(qObj.accent);
+    }
+
+    function fadeTo(qObj) {
+      if (prefersReduced) { renderQuote(qObj); return; }
+      txt.classList.add('opacity-0','translate-y-2');
+      auth.classList.add('opacity-0','translate-y-2');
+      setTimeout(() => {
+        renderQuote(qObj);
+        txt.classList.remove('opacity-0','translate-y-2');
+        auth.classList.remove('opacity-0','translate-y-2');
+      }, XFADE_MS);
+    }
+
+    // Initial
+    let current = nextFromPool();
+    renderQuote(current);
+
+    // Autoplay
+    let ticker = null;
+    function start(){ if (!prefersReduced && !ticker) ticker = setInterval(() => { current = nextFromPool(); fadeTo(current); }, DISPLAY_MS); }
+    function stop(){ if (ticker){ clearInterval(ticker); ticker = null; } }
+
+    // Controls
+    nextBtn && nextBtn.addEventListener('click', () => { stop(); current = nextFromPool(); fadeTo(current); start(); });
+    prevBtn && prevBtn.addEventListener('click', () => { // simple: just move forward again (keeps no-repeat logic)
+      stop(); current = nextFromPool(); fadeTo(current); start();
+    });
+    shuffleBtn && shuffleBtn.addEventListener('click', () => {
+      pools = { gold: shuffle(groups.gold), hero: shuffle(groups.hero), primary: shuffle(groups.primary) };
+      stop(); current = nextFromPool(); fadeTo(current); start();
     });
 
-    // Show “Skip to top” button after scrolling
-    const toTop = document.getElementById('toTop');
-    const toggleToTop = () => {
-      if (window.scrollY > 400) toTop.classList.remove('hidden');
-      else toTop.classList.add('hidden');
-    };
-    toggleToTop();
-    window.addEventListener('scroll', toggleToTop, { passive: true });
-  </script>
+    // Pause on hover/focus for a11y
+    const qCard = txt?.closest('.comic-shadow');
+    if (qCard){
+      ['mouseenter','focusin'].forEach(ev => qCard.addEventListener(ev, stop));
+      ['mouseleave','focusout'].forEach(ev => qCard.addEventListener(ev, start));
+    }
+
+    // Pause when not visible
+    const visObs = new IntersectionObserver(entries => {
+      entries.forEach(e => { e.isIntersecting ? start() : stop(); });
+    }, { threshold: 0.2 });
+    const qBox = txt?.parentElement;
+    if (qBox) visObs.observe(qBox);
+
+    // Pause when tab hidden
+    document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+
+    start();
+  })();
+</script>
+
 </body>
 </html>

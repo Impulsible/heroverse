@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>About — Heroverse</title>
-  <meta name="description" content="What Heroverse is about: purpose, inspiration, and credits for sources & tools." />
+  <title>Hall of Heroes — Heroverse</title>
+  <meta name="description" content="Browse the Hall of Heroes — explore origins, powers, weaknesses, allies, enemies, and appearances across the Heroverse." />
   <meta name="author" content="Henry Osuagwu" />
 
-  <!-- Favicon & PWA icons (match heroes.html) -->
+  <!-- Favicon & PWA icons -->
   <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
   <link rel="icon" href="images/favicon.ico">
@@ -47,6 +47,7 @@
   <style>
     html{scroll-behavior:smooth}
     .comic-shadow{box-shadow:0 10px 25px rgba(0,0,0,.25),0 2px 8px rgba(0,0,0,.1)}
+    .grid-auto{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
     body::before{
       content:"";position:fixed;inset:0;z-index:-1;background:
       radial-gradient(circle at 20% 20%, rgba(255,215,0,.06), transparent 40%),
@@ -57,6 +58,10 @@
     }
     .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
     .reveal.show{opacity:1;transform:translateY(0)}
+    .glow-hover:hover{text-shadow:0 0 10px rgba(255,215,0,.7),0 0 20px rgba(255,215,0,.5)}
+    .modal{position:fixed;inset:0;display:none}
+    .modal.open{display:block}
+
     .selectish{
       appearance:none;
       background-image:
@@ -67,39 +72,78 @@
       background-repeat:no-repeat;
       padding-right:2.25rem
     }
-    .grid-auto{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
 
-    /* Match heroes.html extras */
-    .glow-hover:hover{text-shadow:0 0 10px rgba(255,215,0,.7),0 0 20px rgba(255,215,0,.5)}
+    .card-img{height:13.5rem}
+    .profile-img{height:22rem}
+
+    .gallery-row{
+      overflow-x:auto; overflow-y:visible;
+      padding:.75rem .5rem 1rem; scroll-snap-type:x mandatory; scroll-padding-left:.75rem; gap:1rem;
+      display:flex;
+    }
+    .gallery-row::-webkit-scrollbar{height:12px}
+    .gallery-row::-webkit-scrollbar-thumb{background:#ffffff22;border-radius:999px}
+    .gallery-item{
+      min-width:360px;height:220px;flex:0 0 auto;scroll-snap-align:center;
+      border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);
+      object-fit:cover;cursor:zoom-in;
+    }
+    @media (max-width:640px){ .gallery-item{min-width:280px;height:170px} }
+
+    #lightbox{position:fixed; inset:0; z-index:60; display:none; overscroll-behavior:contain}
+    #lightbox.open{display:block}
+    .lb-wrap{position:absolute;inset:0;display:flex;flex-direction:column;padding:16px}
+    @media (min-width:640px){ .lb-wrap{padding:24px} }
+    .lb-top{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:.5rem;color:#fff}
+    .lb-title{font-weight:600}
+    .lb-count{opacity:.8;font-size:.9rem}
+    .lb-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);padding:.45rem .7rem;border-radius:.7rem}
+    .lb-btn:hover{background:rgba(255,255,255,.14)}
+    .lb-stage{position:relative;flex:1 1 auto;min-height:0;border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border-radius:1rem;padding:10px;overflow:hidden;touch-action:none}
+    @media (min-width:640px){ .lb-stage{padding:16px;border-radius:1.25rem} }
+    .lb-canvas{width:100%;height:100%;display:flex;align-items:center;justify-content:center;user-select:none}
+    .lb-img{max-width:96vw;max-height:80vh;width:auto;height:auto;border-radius:.75rem;object-fit:contain;border:1px solid rgba(255,255,255,.12);box-shadow:0 10px 35px rgba(0,0,0,.5), 0 2px 10px rgba(0,0,0,.25);transform-origin:center center;will-change:transform;cursor:grab}
+    .lb-img.grabbing{cursor:grabbing}
+    @media (min-width:640px){ .lb-img{max-width:86vw;max-height:82vh} }
+    .lb-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);padding:.6rem .9rem;border-radius:.9rem;backdrop-filter:blur(4px)}
+    .lb-arrow:hover{background:rgba(255,255,255,.14)}
+    .lb-prev{left:8px} .lb-next{right:8px}
+    @media (min-width:640px){ .lb-prev{left:14px} .lb-next{right:14px} }
+    .lb-bottom{margin-top:.6rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:.9rem;padding:.5rem .5rem}
+    .lb-thumbs-wrap{position:relative;display:flex;align-items:center;gap:.4rem}
+    .lb-scroll{flex:0 0 auto;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);padding:.35rem .55rem;border-radius:.6rem}
+    .lb-scroll:hover{background:rgba(255,255,255,.14)}
+    .lb-thumbs{overflow-x:auto;scroll-behavior:smooth;gap:.5rem;display:flex;align-items:center;padding:.2rem;-ms-overflow-style:none;scrollbar-width:thin}
+    .lb-thumbs::-webkit-scrollbar{height:10px}
+    .lb-thumbs::-webkit-scrollbar-thumb{background:#ffffff22;border-radius:999px}
+    .lb-thumb{width:110px;height:74px;flex:0 0 auto;border-radius:.5rem;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);overflow:hidden;opacity:.85;transition:opacity .2s, transform .2s}
+    .lb-thumb img{width:100%;height:100%;object-fit:cover}
+    .lb-thumb:hover{opacity:1;transform:translateY(-1px)}
+    .lb-thumb.active{outline:2px solid #FFD700;opacity:1}
+    @media (min-width:640px){ .lb-thumb{width:130px;height:86px} }
+    .lb-badge{font-size:.85rem;opacity:.9}
+
+    @media (max-width:640px){
+      .profile-modal{ overflow: hidden; }
+      .gallery-vert{ display:flex; flex-direction:column; max-height:60vh; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; scroll-snap-type:y mandatory; gap:0.75rem; padding-right:4px; }
+      .gallery-vert .gallery-item{ min-width:100%; height:auto; aspect-ratio:16/10; scroll-snap-align:start; }
+    }
+
     .active-nav{
       background:linear-gradient(90deg,#FFD70022,#E5091422);
       border-color:#FFD700;
       color:#FFD700 !important;
     }
-
-    /* Secret "newsprint" overlay toggled by triple-click on logo */
-    .print-dots:before{
-      content:"";position:fixed;inset:0;pointer-events:none;z-index:50;
-      background:
-        radial-gradient(#ffffff10 1px, transparent 1px) 0 0 / 4px 4px,
-        radial-gradient(#ffffff08 1px, transparent 1px) 2px 2px / 4px 4px;
-      mix-blend-mode:overlay;opacity:.7;
-    }
-
-    /* Secret Gauntlet modal */
-    .modal{position:fixed;inset:0;display:none}
-    .modal.open{display:block}
-    .stone{width:46px;height:46px;border-radius:50%;border:2px solid #ffffff55;cursor:pointer}
-    .stone:hover{transform:translateY(-2px)}
   </style>
 </head>
+
 <body class="bg-dark text-white" id="top">
   <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 bg-gold text-dark px-3 py-2 rounded">Skip to content</a>
 
-  <!-- NAV (identical structure & classes to heroes.html) -->
+  <!-- NAV -->
   <header class="sticky top-0 z-40 bg-dark/70 backdrop-blur border-b border-white/10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
-      <a id="brandLink" href="index.html" class="flex items-center gap-3 select-none" title="Triple-click me 👀">
+      <a href="index.html" class="flex items-center gap-3">
         <span class="text-2xl sm:text-3xl font-display tracking-widest text-gold drop-shadow">Heroverse</span>
       </a>
 
@@ -107,21 +151,23 @@
         <span class="sr-only">Menu</span> ☰
       </button>
 
-      <nav class="hidden md:flex items-center gap-4 text-sm" aria-label="Primary">
-        <a href="heroes.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Hall of Heroes</a>
+      <nav class="hidden md:flex items-center gap-4 text-sm">
+        <a href="heroes.html" class="px-3 py-2 rounded-lg border active-nav" aria-current="page">Hall of Heroes</a>
         <a href="villains.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Rogues Gallery</a>
         <a href="teams.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Teams</a>
         <a href="stories.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Stories</a>
         <a href="rankings.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Rankings</a>
         <a href="news.html" class="px-3 py-2 rounded-lg hover:bg-white/10">News</a>
-        <a href="about.html" class="px-3 py-2 rounded-lg border active-nav" aria-current="page">About</a>
+        <a href="about.html" class="px-3 py-2 rounded-lg hover:bg-white/10">About</a>
         <a href="contact.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Contact</a>
       </nav>
 
-      <!-- Present for visual parity; no handler needed on About -->
+      <button id="randomBtn" class="hidden sm:inline-flex items-center gap-2 bg-hero text-white px-3 sm:px-4 py-2 rounded-xl hover:brightness-110 transition">
+        🎲 Random Hero
+      </button>
     </div>
 
-    <!-- Mobile drawer (copied styling) -->
+    <!-- Mobile nav drawer-->
     <nav id="mobileNav" class="md:hidden hidden border-t border-gold/20 bg-gradient-to-b from-[#0b0f19] via-[#0c1324] to-[#0b0f19]">
       <div class="max-w-7xl mx-auto px-4 py-3 grid grid-cols-2 gap-3 text-sm">
         <a class="rounded-lg p-3 border border-red-400/40 bg-red-500/15 hover:bg-red-500/25 transition" href="heroes.html">Hall of Heroes</a>
@@ -130,250 +176,80 @@
         <a class="rounded-lg p-3 border border-blue-400/40 bg-blue-500/15 hover:bg-blue-500/25 transition" href="stories.html">Stories</a>
         <a class="rounded-lg p-3 border border-green-400/40 bg-green-500/15 hover:bg-green-500/25 transition" href="rankings.html">Rankings</a>
         <a class="rounded-lg p-3 border border-pink-400/40 bg-pink-500/15 hover:bg-pink-500/25 transition" href="news.html">News</a>
-        <a class="rounded-lg p-3 border border-cyan-400/40 bg-cyan-500/15 hover:bg-cyan-500/25 transition active-nav" href="about.html" aria-current="page">About</a>
+        <a class="rounded-lg p-3 border border-cyan-400/40 bg-cyan-500/15 hover:bg-cyan-500/25 transition" href="about.html">About</a>
         <a class="rounded-lg p-3 border border-orange-400/40 bg-orange-500/15 hover:bg-orange-500/25 transition" href="contact.html">Contact</a>
       </div>
     </nav>
   </header>
 
-  <main id="main" class="max-w-none">
-    <!-- HERO / SPLASH -->
-    <section class="relative overflow-hidden pt-16 sm:pt-20 pb-14 sm:pb-20">
-      <div class="absolute -top-32 -left-32 w-[42rem] h-[42rem] rounded-full blur-3xl opacity-30 bg-gradient-to-br from-hero via-gold to-primary pointer-events-none"></div>
-      <div class="absolute -bottom-40 -right-40 w-[46rem] h-[46rem] rounded-full blur-3xl opacity-20 bg-gradient-to-tr from-primary via-hero to-gold pointer-events-none"></div>
+  <main id="main" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+    <header class="text-center mb-6 reveal">
+      <h1 class="font-display text-4xl sm:text-5xl">Hall of Heroes</h1>
+      <p class="text-white/70 max-w-2xl mx-auto mt-2">Filter by universe, alignment, and power type. Click a card to open a full profile with origin, powers, weaknesses, allies, enemies, appearances, and gallery.</p>
+    </header>
 
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div class="text-center reveal">
-          <h1 class="font-display text-5xl sm:text-6xl leading-tight tracking-tight">
-            The Story <span class="text-gold">behind</span> Heroverse
-          </h1>
-          <p class="mt-3 sm:mt-4 text-white/80 max-w-3xl mx-auto text-lg">
-            Built by fans for fans — a fast, gorgeous way to explore characters, teams and the arcs that shaped them.
-          </p>
-          <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
-            <a href="heroes.html" class="px-5 py-3 rounded-2xl bg-hero hover:brightness-110 transition shadow-md">Browse Heroes</a>
-            <a href="contact.html" class="px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15">Suggest a Feature</a>
+    <!-- FILTERS -->
+    <section class="reveal">
+      <div class="rounded-2xl border border-gold/25 bg-gradient-to-r from-[#0f1320] via-[#12172a] to-[#0f1320] p-4 sm:p-5 comic-shadow">
+        <div class="grid gap-3 sm:gap-4 md:grid-cols-12 items-end">
+          <div class="md:col-span-5">
+            <label class="text-xs uppercase tracking-wide text-white/80">Search</label>
+            <input id="search" type="text" placeholder="name, alias, power, ally, enemy…" class="mt-1 w-full rounded-2xl bg-[#141824]/90 border border-gold/30 text-white placeholder-white/60 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold selectish">
           </div>
-          <div class="mt-5 flex items-center justify-center gap-3 text-sm text-white/60">
-            <span class="px-2 py-1 rounded-full bg-white/10">Fan Project</span>
-            <span class="px-2 py-1 rounded-full bg-white/10">No spoilers • No ads</span>
-            <span class="px-2 py-1 rounded-full bg-white/10">Lightning-fast UI</span>
+
+          <div class="md:col-span-2">
+            <label class="text-xs uppercase tracking-wide text-white/80">Universe</label>
+            <select id="universe" class="mt-1 w-full rounded-2xl bg-[#141824]/90 border border-gold/30 text-white px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold selectish">
+              <option value="all">All</option>
+              <option>Marvel</option>
+              <option>DC</option>
+              <option>Original</option>
+            </select>
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="text-xs uppercase tracking-wide text-white/80">Alignment</label>
+            <select id="alignment" class="mt-1 w-full rounded-2xl bg-[#141824]/90 border border-gold/30 text-white px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold selectish">
+              <option value="all">All</option>
+              <option>Hero</option>
+              <option>Villain</option>
+              <option>Anti-hero</option>
+            </select>
+          </div>
+
+          <div class="md:col-span-3">
+            <label class="text-xs uppercase tracking-wide text-white/80">Power Type</label>
+            <select id="powerType" class="mt-1 w-full rounded-2xl bg-[#141824]/90 border border-gold/30 text-white px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold selectish">
+              <option value="all">All</option>
+              <option>strength</option>
+              <option>speed</option>
+              <option>magic</option>
+              <option>tech</option>
+              <option>flight</option>
+              <option>energy</option>
+              <option>martial arts</option>
+              <option>agility</option>
+              <option>spider-sense</option>
+            </select>
+          </div>
+
+          <div class="md:col-span-12 flex flex-wrap gap-2 pt-2">
+            <button id="clearFilters" class="px-4 py-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/20">Clear</button>
+            <button id="randomBtn2" class="px-4 py-2 rounded-xl bg-hero hover:brightness-110">🎲 Random Hero</button>
           </div>
         </div>
-      </div>
-
-      <div class="mt-10 sm:mt-14">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="grid md:grid-cols-12 gap-6 items-start">
-            <div class="md:col-span-7 reveal">
-              <h2 class="font-display text-3xl text-gold">Why Heroverse?</h2>
-              <ul class="mt-3 space-y-3">
-                <li class="flex gap-3">
-                  <span class="text-2xl">⚡</span>
-                  <div>
-                    <h3 class="font-semibold">Faster than a speedster</h3>
-                    <p class="text-white/75">Search, filter, compare — answers in seconds, not twenty open tabs.</p>
-                  </div>
-                </li>
-                <li class="flex gap-3">
-                  <span class="text-2xl">🎴</span>
-                  <div>
-                    <h3 class="font-semibold">Trading-card inspired</h3>
-                    <p class="text-white/75">Clean typography and bold imagery without clutter or click-maze.</p>
-                  </div>
-                </li>
-                <li class="flex gap-3">
-                  <span class="text-2xl">🧭</span>
-                  <div>
-                    <h3 class="font-semibold">Orientation, not spoilers</h3>
-                    <p class="text-white/75">Concise summaries to guide your reading — support the publishers.</p>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="md:col-span-5 reveal">
-              <div class="relative">
-                <div class="absolute -inset-1 rounded-3xl bg-gradient-to-tr from-gold/30 via-hero/20 to-primary/30 blur-xl"></div>
-                <img src="images/about/collage.jpg" alt="Heroverse collage"
-                     class="relative rounded-3xl w-full aspect-[4/3] object-cover border border-white/10"
-                     onerror="this.src='https://picsum.photos/seed/heroverse/1200/900'"/>
-              </div>
-              <p class="text-xs text-white/60 mt-2 text-center">Placeholder image — replace with a custom collage.</p>
-            </div>
-          </div>
-        </div>
+        <p id="summary" class="mt-3 text-sm text-white/85">Loading…</p>
       </div>
     </section>
 
-    <!-- DESIGN PRINCIPLES STRIPE -->
-    <section class="py-10 sm:py-14 bg-gradient-to-r from-[#0f1320] via-[#12172a] to-[#0f1320] border-y border-white/10">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="font-display text-3xl text-gold text-center reveal">Design Principles</h2>
-        <div class="mt-6 grid md:grid-cols-3 gap-6 reveal">
-          <div>
-            <div class="text-5xl font-display text-white/20 leading-none">01</div>
-            <h3 class="mt-2 font-semibold">Clarity over chrome</h3>
-            <p class="text-white/75 mt-1">Every element must help you orient — no decorative noise, no mystery meat navigation.</p>
-          </div>
-          <div>
-            <div class="text-5xl font-display text-white/20 leading-none">02</div>
-            <h3 class="mt-2 font-semibold">Mobile-first motion</h3>
-            <p class="text-white/75 mt-1">Smooth, purposeful animations that respect battery and attention.</p>
-          </div>
-          <div>
-            <div class="text-5xl font-display text-white/20 leading-none">03</div>
-            <h3 class="mt-2 font-semibold">Accessible by default</h3>
-            <p class="text-white/75 mt-1">Keyboard nav, reduced flicker, high contrast, and semantic HTML.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ORIGIN STORY / LONGFORM -->
-    <section class="py-12 sm:py-16">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="font-display text-3xl text-gold text-center reveal">Origin Story</h2>
-        <p class="mt-4 text-white/85 leading-relaxed reveal">
-          Heroverse began as a weekend sketch: a single screen that answered <em>who</em>, <em>where</em>, and <em>why now</em> for any character.
-          It grew into a small toolkit of patterns — trading-card grids, quick-compare rows, and galleries with real zoom and pan —
-          tuned for readers who hop between eras and mediums.
-        </p>
-        <p class="mt-4 text-white/85 leading-relaxed reveal">
-          The goal isn’t to replace the stories. It’s to hand you the right thread so the next issue, film, or run hits harder.
-        </p>
-      </div>
-    </section>
-
-    <!-- CREDITS (INLINE, NO BOXES) -->
-    <section class="py-8 sm:py-10 border-t border-white/10">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
-        <h2 class="font-display text-3xl text-gold">Credits & Notes</h2>
-        <dl class="mt-4 grid sm:grid-cols-2 gap-x-8 gap-y-3">
-          <div>
-            <dt class="text-white/60 text-sm">Fonts</dt>
-            <dd class="text-white">Bangers & Poppins (Google Fonts)</dd>
-          </div>
-          <div>
-            <dt class="text-white/60 text-sm">Tech</dt>
-            <dd class="text-white">Tailwind CSS • Vanilla JS • Progressive enhancement</dd>
-          </div>
-          <div>
-            <dt class="text-white/60 text-sm">Images</dt>
-            <dd class="text-white">Placeholders during development; replace with licensed art before launch.</dd>
-          </div>
-          <div>
-            <dt class="text-white/60 text-sm">Fair Use</dt>
-            <dd class="text-white">Names for identification/commentary only. No verbatim story text or art.</dd>
-          </div>
-        </dl>
-      </div>
-    </section>
-
-    <!-- FOUNDER / CONTACT TEASE -->
-    <section class="py-12 sm:py-16">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-5 gap-8 items-center">
-        <div class="md:col-span-2 order-last md:order-first reveal">
-          <img src="images/contributors/henry.jpg" alt="Henry Osuagwu portrait"
-               class="rounded-3xl w-full aspect-[3/4] object-cover border border-white/10"
-               onerror="this.src='https://picsum.photos/seed/henry-portrait/720/960'"/>
-        </div>
-        <div class="md:col-span-3 reveal">
-          <h2 class="font-display text-3xl text-gold">Hi, I’m Henry.</h2>
-          <p class="text-white/85 mt-3 leading-relaxed">I love systems that make vast worlds easy to navigate. If you spot a gap, a typo, or have an idea that would help readers, I’d love to hear it.</p>
-          <div class="mt-4 flex flex-wrap gap-3">
-            <a href="contact.html" class="px-5 py-3 rounded-2xl bg-primary hover:brightness-110 transition">Send Feedback</a>
-            <a href="heroes.html" class="px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15">Explore the Hall</a>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- UPDATE OVERVIEW (typographic, not a changelog) -->
-    <section class="py-10 sm:py-12 border-t border-white/10">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="font-display text-3xl text-gold text-center reveal">Update Overview</h2>
-        <div class="mt-6 grid md:grid-cols-3 gap-8 reveal">
-          <div>
-            <h3 class="font-semibold">What changed</h3>
-            <ul class="mt-2 space-y-1 text-white/80 list-disc list-inside">
-              <li>Removed the Changelog entirely.</li>
-              <li>Redesigned the whole page into flowing, full-bleed sections (no boxy containers):</li>
-              <li class="ml-5">Hero splash with big headline + soft gradient orbs.</li>
-              <li class="ml-5">“Why Heroverse?” feature list (icon-led, no cards).</li>
-              <li class="ml-5">A Design Principles stripe with large numerals.</li>
-              <li class="ml-5">A long-form Origin Story (clean, readable).</li>
-              <li class="ml-5">Credits &amp; Notes as an inline definition grid (no frames).</li>
-              <li class="ml-5">Founder teaser with portrait + CTAs.</li>
-              <li class="ml-5">A gentle gradient CTA ribbon to guide users onward.</li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="font-semibold">Kept</h3>
-            <ul class="mt-2 space-y-1 text-white/80 list-disc list-inside">
-              <li>Your nav/drawer styling and footer signature.</li>
-              <li>Easter eggs + accent color system.</li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="font-semibold">Next tweaks (say the word)</h3>
-            <ul class="mt-2 space-y-1 text-white/80 list-disc list-inside">
-              <li>Swap the placeholder collage/portrait with your real images.</li>
-              <li>Add subtle scroll parallax on the orbs.</li>
-              <li>Drop in a tiny stats row (e.g., characters, teams, stories) that auto-counts from your data source.</li>
-              <li>Prefer a lighter or darker gradient? I can tune the palette to your brand.</li>
-              <li>Want a quick pass to align this style across Teams/Stories/News too?</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA RIBBON -->
-    <section class="py-10 sm:py-12 bg-gradient-to-r from-hero/20 via-gold/10 to-primary/20">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
-        <h2 class="font-display text-3xl sm:text-4xl">Ready to dive back in?</h2>
-        <p class="text-white/75 mt-2">Pick a hero, build a team, or spark a what‑if.</p>
-        <div class="mt-5 flex justify-center gap-3">
-          <a href="teams.html" class="px-5 py-3 rounded-2xl bg-gold text-dark hover:brightness-110 transition">Build a Team</a>
-          <a href="stories.html" class="px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15">Find a Story</a>
-        </div>
-      </div>
+    <!-- GRID -->
+    <section class="mt-6">
+      <div id="grid" class="grid grid-auto gap-6 sm:gap-7"></div>
+      <p id="noResults" class="hidden text-center text-white/60 mt-6">No heroes match your filters.</p>
     </section>
   </main>
 
-  <!-- Redesign Summary / Notes -->
-  <section class="py-12 sm:py-16 bg-dark2 border-t border-white/10">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-white/80 text-sm leading-relaxed space-y-4">
-      <h2 class="font-display text-2xl text-gold">What I Changed</h2>
-      <ul class="list-disc list-inside space-y-1">
-        <li>Removed the Changelog entirely.</li>
-        <li>Redesigned the whole page into flowing, full-bleed sections (no boxy containers).</li>
-        <li>Hero splash with big headline + soft gradient orbs.</li>
-        <li>“Why Heroverse?” feature list (icon-led, no cards).</li>
-        <li>A Design Principles stripe with large numerals.</li>
-        <li>A long-form Origin Story (clean, readable).</li>
-        <li>Credits & Notes as an inline definition grid (no frames).</li>
-        <li>Founder teaser with portrait + CTAs.</li>
-        <li>A gentle gradient CTA ribbon to guide users onward.</li>
-      </ul>
-
-      <h2 class="font-display text-2xl text-gold mt-8">Kept</h2>
-      <ul class="list-disc list-inside space-y-1">
-        <li>Your nav/drawer styling and footer signature.</li>
-        <li>Easter eggs + accent color system.</li>
-      </ul>
-
-      <h2 class="font-display text-2xl text-gold mt-8">Next Tweaks (say the word and I’ll wire them in)</h2>
-      <ul class="list-disc list-inside space-y-1">
-        <li>Swap the placeholder collage/portrait with your real images.</li>
-        <li>Add subtle scroll parallax on the orbs.</li>
-        <li>Drop in a tiny stats row (e.g., characters, teams, stories) that auto-counts from your data source.</li>
-        <li>Prefer a lighter or darker gradient? I can tune the palette to your brand.</li>
-        <li>Want a quick pass to align this style across Teams/Stories/News too?</li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- FOOTER (matched embellishment) -->
+  <!-- FOOTER -->
   <footer class="border-t border-white/10 py-8 text-center text-white/60">
     <p>© <span id="year"></span> Heroverse. All rights reserved.</p>
     <p>Last modified: <span id="lastModified"></span></p>
@@ -384,31 +260,49 @@
     </p>
   </footer>
 
-  <!-- SECRET GAUNTLET MODAL (kept) -->
-  <div id="gauntlet" class="modal z-50">
-    <div class="absolute inset-0 bg-black/75" data-close></div>
-    <div class="relative max-w-xl mx-auto mt-16 bg-dark border border-white/10 rounded-3xl comic-shadow p-6">
+  <!-- PROFILE MODAL -->
+  <div id="modal" class="modal z-50">
+    <div class="absolute inset-0 bg-black/70" data-close></div>
+    <div class="relative max-w-5xl mx-auto mt-8 sm:mt-10 bg-dark border border-white/10 rounded-3xl comic-shadow p-6 max-h-[85vh] overflow-auto profile-modal">
       <button class="absolute top-2 right-3 text-white/70 hover:text-white" data-close>✕</button>
-      <header class="text-center">
-        <h3 class="font-display text-3xl text-gold">Color Gauntlet</h3>
-        <p class="text-white/70 mt-1">Click a stone to change the site accent color.</p>
-      </header>
-      <div class="mt-5 flex items-center justify-center gap-4 flex-wrap">
-        <button class="stone" style="background:#FFD700" data-accent="gold" title="Mind (Gold)"></button>
-        <button class="stone" style="background:#E50914" data-accent="hero" title="Power (Red)"></button>
-        <button class="stone" style="background:#0055FF" data-accent="primary" title="Space (Blue)"></button>
-        <button class="stone" style="background:#10B981" data-accent="emerald" title="Time (Green)"></button>
-        <button class="stone" style="background:#A855F7" data-accent="amethyst" title="Reality (Purple)"></button>
-        <button class="stone" style="background:#F59E0B" data-accent="amber" title="Soul (Amber)"></button>
-      </div>
-      <p class="text-center text-white/60 mt-4 text-sm">Konami Code to open • Accent preference is saved locally.</p>
+      <div id="modalBody"></div>
     </div>
   </div>
 
-  <!-- Back to top -->
-  <a id="toTop" href="#top"
-     class="hidden fixed bottom-4 right-4 z-50 rounded-xl bg-gold text-dark px-3 py-2 shadow-lg border border-white/20"
-     aria-label="Back to top">↑ Top</a>
+  <!-- LIGHTBOX -->
+  <div id="lightbox" class="hidden">
+    <div class="absolute inset-0 bg-black/90" data-lb-close></div>
+    <div class="lb-wrap">
+      <div class="lb-top">
+        <div class="flex items-center gap-2">
+          <span class="lb-title" id="lbCaption">Hero</span>
+          <span class="lb-count" id="lbCount">1 / 3</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span id="lbZoomBadge" class="lb-badge hidden sm:inline-block px-2 py-1 rounded bg-white/10 border border-white/20">100%</span>
+          <button id="lbReset" class="lb-btn" title="Reset zoom">↺</button>
+          <button id="lbDownload" class="lb-btn" title="Open image in new tab">⬇</button>
+          <button id="lbClose" class="lb-btn" title="Close">✕</button>
+        </div>
+      </div>
+
+      <div class="lb-stage" id="lbStage">
+        <button class="lb-arrow lb-prev" id="lbPrev" aria-label="Previous">‹</button>
+        <button class="lb-arrow lb-next" id="lbNext" aria-label="Next">›</button>
+        <div class="lb-canvas">
+          <img id="lbImg" src="" alt="Gallery image" class="lb-img"/>
+        </div>
+      </div>
+
+      <div class="lb-bottom">
+        <div class="lb-thumbs-wrap">
+          <button class="lb-scroll" id="thumbPrev" aria-label="Scroll thumbnails left">‹</button>
+          <div class="lb-thumbs" id="lbThumbs"></div>
+          <button class="lb-scroll" id="thumbNext" aria-label="Scroll thumbnails right">›</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script>
     /* ---------- Utility & UI ---------- */
@@ -426,7 +320,1348 @@
     const io = new IntersectionObserver((entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); }), { threshold: 0.12 });
     document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-    /* ---------- Back to top visibility ---------- */
+    /* ---------- Placeholder-only image system ---------- */
+    const makeId = s => s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+
+    const PLACEHOLDER_SRC =
+      'data:image/svg+xml;utf8,' +
+      encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800"><rect width="100%" height="100%" fill="#121624"/><rect x="1.5" y="1.5" width="1197" height="797" fill="none" stroke="#2a2f45" stroke-width="3"/><g fill="#2a2f45" font-family="Verdana" font-size="36" text-anchor="middle"><text x="600" y="406">Image Placeholder</text></g></svg>`);
+
+  const IMAGE_OVERRIDES = {
+  // --- MARVEL ---
+  'spider-man': {
+    cover: 'images/heroes/spider-man/spyder.jpg',
+    gallery: [
+      'images/heroes/spider-man/1.webp',
+      'images/heroes/spider-man/2.jpg',
+      'images/heroes/spider-man/3.jpg'
+    ]
+  },
+  'iron-man': {
+    cover: 'images/heroes/iron-man/1.webp',
+    gallery: [
+      'images/heroes/iron-man/1.jpg',
+      'images/heroes/iron-man/2.jpg',
+      'images/heroes/iron-man/3.jpg'
+    ]
+  },
+  'captain-america': {
+    cover: 'images/heroes/captain-america/1.webp',
+    gallery: [
+      'images/heroes/captain-america/1.jpg',
+      'images/heroes/captain-america/2.webp',
+      'images/heroes/captain-america/2.jpg'
+    ]
+  },
+  'thor': {
+    cover: 'images/heroes/thor/1.jpg',
+    gallery: [
+      'images/heroes/thor/1.webp',
+      'images/heroes/thor/2.jpg',
+      'images/heroes/thor/3.jpg'
+    ]
+  },
+  'hulk': {
+    cover: 'images/heroes/hulk/1.webp',
+    gallery: [
+      'images/heroes/hulk/1.webp',
+      'images/heroes/hulk/2.jpg',
+      'images/heroes/hulk/3.jpg'
+    ]
+  },
+  'black-panther': {
+    cover: 'images/heroes/black-panther/1.webp',
+    gallery: [
+      'images/heroes/black-panther/1.webp',
+      'images/heroes/black-panther/2.jpg',
+      'images/heroes/black-panther/3.jpg'
+    ]
+  },
+  'doctor-strange': {
+    cover: 'images/heroes/doctor-strange/1.webp',
+    gallery: [
+      'images/heroes/doctor-strange/1.webp',
+      'images/heroes/doctor-strange/2.jpg',
+      'images/heroes/doctor-strange/3.jpg'
+    ]
+  },
+  'scarlet-witch': {
+    cover: 'images/heroes/scarlet-witch/1.webp',
+    gallery: [
+      'images/heroes/scarlet-witch/1.webp',
+      'images/heroes/scarlet-witch/2.jpg',
+      'images/heroes/scarlet-witch/3.jpg'
+    ]
+  },
+  'vision': {
+    cover: 'images/heroes/vision/1.webp',
+    gallery: [
+      'images/heroes/vision/1.webp',
+      'images/heroes/vision/2.jpg',
+      'images/heroes/vision/3.jpg'
+    ]
+  },
+  'ant-man': {
+    cover: 'images/heroes/ant-man/1.webp',
+    gallery: [
+      'images/heroes/ant-man/1.webp',
+      'images/heroes/ant-man/2.jpg',
+      'images/heroes/ant-man/3.jpg'
+    ]
+  },
+  'wasp': {
+    cover: 'images/heroes/wasp/1.webp',
+    gallery: [
+      'images/heroes/wasp/1.webp',
+      'images/heroes/wasp/2.jpg',
+      'images/heroes/wasp/3.jpg'
+    ]
+  },
+  'hawkeye': {
+    cover: 'images/heroes/hawkeye/1.webp',
+    gallery: [
+      'images/heroes/hawkeye/1.webp',
+      'images/heroes/hawkeye/2.jpg',
+      'images/heroes/hawkeye/3.jpg'
+    ]
+  },
+  'black-widow': {
+    cover: 'images/heroes/black-widow/1.webp',
+    gallery: [
+      'images/heroes/black-widow/1.webp',
+      'images/heroes/black-widow/2.jpg',
+      'images/heroes/black-widow/3.jpg'
+    ]
+  },
+  'falcon': {
+    cover: 'images/heroes/falcon/1.webp',
+    gallery: [
+      'images/heroes/falcon/1.webp',
+      'images/heroes/falcon/2.jpg',
+      'images/heroes/falcon/3.jpg'
+    ]
+  },
+  'winter-soldier': {
+    cover: 'images/heroes/winter-soldier/1.webp',
+    gallery: [
+      'images/heroes/winter-soldier/1.webp',
+      'images/heroes/winter-soldier/2.jpg',
+      'images/heroes/winter-soldier/3.jpg'
+    ]
+  },
+  'star-lord': {
+    cover: 'images/heroes/star-lord/1.webp',
+    gallery: [
+      'images/heroes/star-lord/1.webp',
+      'images/heroes/star-lord/2.jpg',
+      'images/heroes/star-lord/3.jpg'
+    ]
+  },
+  'gamora': {
+    cover: 'images/heroes/gamora/1.webp',
+    gallery: [
+      'images/heroes/gamora/1.webp',
+      'images/heroes/gamora/2.jpg',
+      'images/heroes/gamora/3.jpg'
+    ]
+  },
+  'drax': {
+    cover: 'images/heroes/drax/1.webp',
+    gallery: [
+      'images/heroes/drax/1.webp',
+      'images/heroes/drax/2.jpg',
+      'images/heroes/drax/3.jpg'
+    ]
+  },
+  'rocket': {
+    cover: 'images/heroes/rocket/1.webp',
+    gallery: [
+      'images/heroes/rocket/1.webp',
+      'images/heroes/rocket/2.jpg',
+      'images/heroes/rocket/3.jpg'
+    ]
+  },
+  'groot': {
+    cover: 'images/heroes/groot/1.webp',
+    gallery: [
+      'images/heroes/groot/1.webp',
+      'images/heroes/groot/2.jpg',
+      'images/heroes/groot/3.jpg'
+    ]
+  },
+  'mantis': {
+    cover: 'images/heroes/mantis/1.webp',
+    gallery: [
+      'images/heroes/mantis/1.webp',
+      'images/heroes/mantis/2.jpg',
+      'images/heroes/mantis/3.jpg'
+    ]
+  },
+  'captain-marvel': {
+    cover: 'images/heroes/captain-marvel/1.webp',
+    gallery: [
+      'images/heroes/captain-marvel/1.webp',
+      'images/heroes/captain-marvel/2.jpg',
+      'images/heroes/captain-marvel/3.jpg'
+    ]
+  },
+  'wolverine': {
+    cover: 'images/heroes/wolverine/1.webp',
+    gallery: [
+      'images/heroes/wolverine/1.webp',
+      'images/heroes/wolverine/2.jpg',
+      'images/heroes/wolverine/3.jpg'
+    ]
+  },
+  'storm': {
+    cover: 'images/heroes/storm/1.webp',
+    gallery: [
+      'images/heroes/storm/1.webp',
+      'images/heroes/storm/2.jpg',
+      'images/heroes/storm/3.jpg'
+    ]
+  },
+  'cyclops': {
+    cover: 'images/heroes/cyclops/1.webp',
+    gallery: [
+      'images/heroes/cyclops/1.webp',
+      'images/heroes/cyclops/2.jpg',
+      'images/heroes/cyclops/3.jpg'
+    ]
+  },
+  'jean-grey': {
+    cover: 'images/heroes/jean-grey/1.webp',
+    gallery: [
+      'images/heroes/jean-grey/1.webp',
+      'images/heroes/jean-grey/2.jpg',
+      'images/heroes/jean-grey/3.jpg'
+    ]
+  },
+  'professor-x': {
+    cover: 'images/heroes/professor-x/1.webp',
+    gallery: [
+      'images/heroes/professor-x/1.webp',
+      'images/heroes/professor-x/2.jpg',
+      'images/heroes/professor-x/3.jpg'
+    ]
+  },
+  'beast': {
+    cover: 'images/heroes/beast/1.webp',
+    gallery: [
+      'images/heroes/beast/1.webp',
+      'images/heroes/beast/2.jpg',
+      'images/heroes/beast/3.jpg'
+    ]
+  },
+  'rogue': {
+    cover: 'images/heroes/rogue/1.webp',
+    gallery: [
+      'images/heroes/rogue/1.webp',
+      'images/heroes/rogue/2.jpg',
+      'images/heroes/rogue/3.jpg'
+    ]
+  },
+  'nightcrawler': {
+    cover: 'images/heroes/nightcrawler/1.webp',
+    gallery: [
+      'images/heroes/nightcrawler/1.webp',
+      'images/heroes/nightcrawler/2.jpg',
+      'images/heroes/nightcrawler/3.jpg'
+    ]
+  },
+  'deadpool': {
+    cover: 'images/heroes/deadpool/1.webp',
+    gallery: [
+      'images/heroes/deadpool/1.webp',
+      'images/heroes/deadpool/2.jpg',
+      'images/heroes/deadpool/3.jpg'
+    ]
+  },
+  'daredevil': {
+    cover: 'images/heroes/daredevil/1.webp',
+    gallery: [
+      'images/heroes/daredevil/1.webp',
+      'images/heroes/daredevil/2.jpg',
+      'images/heroes/daredevil/3.jpg'
+    ]
+  },
+  'luke-cage': {
+    cover: 'images/heroes/luke-cage/1.webp',
+    gallery: [
+      'images/heroes/luke-cage/1.webp',
+      'images/heroes/luke-cage/2.jpg',
+      'images/heroes/luke-cage/3.jpg'
+    ]
+  },
+  'iron-fist': {
+    cover: 'images/heroes/iron-fist/1.webp',
+    gallery: [
+      'images/heroes/iron-fist/1.webp',
+      'images/heroes/iron-fist/2.jpg',
+      'images/heroes/iron-fist/3.jpg'
+    ]
+  },
+  'jessica-jones': {
+    cover: 'images/heroes/jessica-jones/1.webp',
+    gallery: [
+      'images/heroes/jessica-jones/1.webp',
+      'images/heroes/jessica-jones/2.jpg',
+      'images/heroes/jessica-jones/3.jpg'
+    ]
+  },
+  'punisher': {
+    cover: 'images/heroes/punisher/1.webp',
+    gallery: [
+      'images/heroes/punisher/1.webp',
+      'images/heroes/punisher/2.jpg',
+      'images/heroes/punisher/3.jpg'
+    ]
+  },
+  'blade': {
+    cover: 'images/heroes/blade/1.webp',
+    gallery: [
+      'images/heroes/blade/1.webp',
+      'images/heroes/blade/2.jpg',
+      'images/heroes/blade/3.jpg'
+    ]
+  },
+  'ghost-rider': {
+    cover: 'images/heroes/ghost-rider/1.webp',
+    gallery: [
+      'images/heroes/ghost-rider/1.webp',
+      'images/heroes/ghost-rider/2.jpg',
+      'images/heroes/ghost-rider/3.jpg'
+    ]
+  },
+  'moon-knight': {
+    cover: 'images/heroes/moon-knight/1.webp',
+    gallery: [
+      'images/heroes/moon-knight/1.webp',
+      'images/heroes/moon-knight/2.jpg',
+      'images/heroes/moon-knight/3.jpg'
+    ]
+  },
+  'silver-surfer': {
+    cover: 'images/heroes/silver-surfer/1.webp',
+    gallery: [
+      'images/heroes/silver-surfer/1.webp',
+      'images/heroes/silver-surfer/2.jpg',
+      'images/heroes/silver-surfer/3.jpg'
+    ]
+  },
+
+  // --- DC ---
+  'superman': {
+    cover: 'images/heroes/superman/1.webp',
+    gallery: [
+      'images/heroes/superman/1.webp',
+      'images/heroes/superman/2.jpg',
+      'images/heroes/superman/3.jpg'
+    ]
+  },
+  'batman': {
+    cover: 'images/heroes/batman/1.webp',
+    gallery: [
+      'images/heroes/batman/1.webp',
+      'images/heroes/batman/2.jpg',
+      'images/heroes/batman/3.jpg'
+    ]
+  },
+  'wonder-woman': {
+    cover: 'images/heroes/wonder-woman/1.webp',
+    gallery: [
+      'images/heroes/wonder-woman/1.webp',
+      'images/heroes/wonder-woman/2.jpg',
+      'images/heroes/wonder-woman/3.jpg'
+    ]
+  },
+  'the-flash': {
+    cover: 'images/heroes/the-flash/1.webp',
+    gallery: [
+      'images/heroes/the-flash/1.webp',
+      'images/heroes/the-flash/2.jpg',
+      'images/heroes/the-flash/3.jpg'
+    ]
+  },
+  'green-lantern': {
+    cover: 'images/heroes/green-lantern/1.webp',
+    gallery: [
+      'images/heroes/green-lantern/1.webp',
+      'images/heroes/green-lantern/2.jpg',
+      'images/heroes/green-lantern/3.jpg'
+    ]
+  },
+  'aquaman': {
+    cover: 'images/heroes/aquaman/1.webp',
+    gallery: [
+      'images/heroes/aquaman/1.webp',
+      'images/heroes/aquaman/2.jpg',
+      'images/heroes/aquaman/3.jpg'
+    ]
+  },
+  'cyborg': {
+    cover: 'images/heroes/cyborg/1.webp',
+    gallery: [
+      'images/heroes/cyborg/1.webp',
+      'images/heroes/cyborg/2.jpg',
+      'images/heroes/cyborg/3.jpg'
+    ]
+  },
+  'green-arrow': {
+    cover: 'images/heroes/green-arrow/1.webp',
+    gallery: [
+      'images/heroes/green-arrow/1.webp',
+      'images/heroes/green-arrow/2.jpg',
+      'images/heroes/green-arrow/3.jpg'
+    ]
+  },
+  'supergirl': {
+    cover: 'images/heroes/supergirl/1.webp',
+    gallery: [
+      'images/heroes/supergirl/1.webp',
+      'images/heroes/supergirl/2.jpg',
+      'images/heroes/supergirl/3.jpg'
+    ]
+  },
+  'batgirl': {
+    cover: 'images/heroes/batgirl/1.webp',
+    gallery: [
+      'images/heroes/batgirl/1.webp',
+      'images/heroes/batgirl/2.jpg',
+      'images/heroes/batgirl/3.jpg'
+    ]
+  },
+  'nightwing': {
+    cover: 'images/heroes/nightwing/1.webp',
+    gallery: [
+      'images/heroes/nightwing/1.webp',
+      'images/heroes/nightwing/2.jpg',
+      'images/heroes/nightwing/3.jpg'
+    ]
+  },
+  'robin': {
+    cover: 'images/heroes/robin/1.webp',
+    gallery: [
+      'images/heroes/robin/1.webp',
+      'images/heroes/robin/2.jpg',
+      'images/heroes/robin/3.jpg'
+    ]
+  },
+  'shazam': {
+    cover: 'images/heroes/shazam/1.webp',
+    gallery: [
+      'images/heroes/shazam/1.webp',
+      'images/heroes/shazam/2.jpg',
+      'images/heroes/shazam/3.jpg'
+    ]
+  },
+  'zatanna': {
+    cover: 'images/heroes/zatanna/1.webp',
+    gallery: [
+      'images/heroes/zatanna/1.webp',
+      'images/heroes/zatanna/2.jpg',
+      'images/heroes/zatanna/3.jpg'
+    ]
+  },
+  'martian-manhunter': {
+    cover: 'images/heroes/martian-manhunter/1.webp',
+    gallery: [
+      'images/heroes/martian-manhunter/1.webp',
+      'images/heroes/martian-manhunter/2.jpg',
+      'images/heroes/martian-manhunter/3.jpg'
+    ]
+  },
+  'hawkman': {
+    cover: 'images/heroes/hawkman/1.webp',
+    gallery: [
+      'images/heroes/hawkman/1.webp',
+      'images/heroes/hawkman/2.jpg',
+      'images/heroes/hawkman/3.jpg'
+    ]
+  },
+  'hawkgirl': {
+    cover: 'images/heroes/hawkgirl/1.webp',
+    gallery: [
+      'images/heroes/hawkgirl/1.webp',
+      'images/heroes/hawkgirl/2.jpg',
+      'images/heroes/hawkgirl/3.jpg'
+    ]
+  },
+  'black-canary': {
+    cover: 'images/heroes/black-canary/1.webp',
+    gallery: [
+      'images/heroes/black-canary/1.webp',
+      'images/heroes/black-canary/2.jpg',
+      'images/heroes/black-canary/3.jpg'
+    ]
+  },
+  'constantine': {
+    cover: 'images/heroes/constantine/1.webp',
+    gallery: [
+      'images/heroes/constantine/1.webp',
+      'images/heroes/constantine/2.jpg',
+      'images/heroes/constantine/3.jpg'
+    ]
+  },
+  'blue-beetle': {
+    cover: 'images/heroes/blue-beetle/1.webp',
+    gallery: [
+      'images/heroes/blue-beetle/1.webp',
+      'images/heroes/blue-beetle/2.jpg',
+      'images/heroes/blue-beetle/3.jpg'
+    ]
+  },
+  'booster-gold': {
+    cover: 'images/heroes/booster-gold/1.webp',
+    gallery: [
+      'images/heroes/booster-gold/1.webp',
+      'images/heroes/booster-gold/2.jpg',
+      'images/heroes/booster-gold/3.jpg'
+    ]
+  },
+  'plastic-man': {
+    cover: 'images/heroes/plastic-man/1.webp',
+    gallery: [
+      'images/heroes/plastic-man/1.webp',
+      'images/heroes/plastic-man/2.jpg',
+      'images/heroes/plastic-man/3.jpg'
+    ]
+  },
+  'firestorm': {
+    cover: 'images/heroes/firestorm/1.webp',
+    gallery: [
+      'images/heroes/firestorm/1.webp',
+      'images/heroes/firestorm/2.jpg',
+      'images/heroes/firestorm/3.jpg'
+    ]
+  },
+  'atom': {
+    cover: 'images/heroes/atom/1.webp',
+    gallery: [
+      'images/heroes/atom/1.webp',
+      'images/heroes/atom/2.jpg',
+      'images/heroes/atom/3.jpg'
+    ]
+  },
+  'red-tornado': {
+    cover: 'images/heroes/red-tornado/1.webp',
+    gallery: [
+      'images/heroes/red-tornado/1.webp',
+      'images/heroes/red-tornado/2.jpg',
+      'images/heroes/red-tornado/3.jpg'
+    ]
+  },
+  'doctor-fate': {
+    cover: 'images/heroes/doctor-fate/1.webp',
+    gallery: [
+      'images/heroes/doctor-fate/1.webp',
+      'images/heroes/doctor-fate/2.jpg',
+      'images/heroes/doctor-fate/3.jpg'
+    ]
+  },
+  'huntress': {
+    cover: 'images/heroes/huntress/1.webp',
+    gallery: [
+      'images/heroes/huntress/1.webp',
+      'images/heroes/huntress/2.jpg',
+      'images/heroes/huntress/3.jpg'
+    ]
+  },
+  'power-girl': {
+    cover: 'images/heroes/power-girl/1.webp',
+    gallery: [
+      'images/heroes/power-girl/1.webp',
+      'images/heroes/power-girl/2.jpg',
+      'images/heroes/power-girl/3.jpg'
+    ]
+  },
+  'vixen': {
+    cover: 'images/heroes/vixen/1.webp',
+    gallery: [
+      'images/heroes/vixen/1.webp',
+      'images/heroes/vixen/2.jpg',
+      'images/heroes/vixen/3.jpg'
+    ]
+  },
+  'mister-miracle': {
+    cover: 'images/heroes/mister-miracle/1.webp',
+    gallery: [
+      'images/heroes/mister-miracle/1.webp',
+      'images/heroes/mister-miracle/2.jpg',
+      'images/heroes/mister-miracle/3.jpg'
+    ]
+  },
+  'rorschach': {
+    cover: 'images/heroes/rorschach/1.webp',
+    gallery: [
+      'images/heroes/rorschach/1.webp',
+      'images/heroes/rorschach/2.jpg',
+      'images/heroes/rorschach/3.jpg'
+    ]
+  },
+  'doctor-manhattan': {
+    cover: 'images/heroes/doctor-manhattan/1.webp',
+    gallery: [
+      'images/heroes/doctor-manhattan/1.webp',
+      'images/heroes/doctor-manhattan/2.jpg',
+      'images/heroes/doctor-manhattan/3.jpg'
+    ]
+  },
+  'silk-spectre': {
+    cover: 'images/heroes/silk-spectre/1.webp',
+    gallery: [
+      'images/heroes/silk-spectre/1.webp',
+      'images/heroes/silk-spectre/2.jpg',
+      'images/heroes/silk-spectre/3.jpg'
+    ]
+  },
+  'ozymandias': {
+    cover: 'images/heroes/ozymandias/1.webp',
+    gallery: [
+      'images/heroes/ozymandias/1.webp',
+      'images/heroes/ozymandias/2.jpg',
+      'images/heroes/ozymandias/3.jpg'
+    ]
+  },
+
+  // --- ORIGINAL / OTHER ---
+  'spawn': {
+    cover: 'images/heroes/spawn/1.webp',
+    gallery: [
+      'images/heroes/spawn/1.webp',
+      'images/heroes/spawn/2.jpg',
+      'images/heroes/spawn/3.jpg'
+    ]
+  },
+  'hellboy': {
+    cover: 'images/heroes/hellboy/1.webp',
+    gallery: [
+      'images/heroes/hellboy/1.webp',
+      'images/heroes/hellboy/2.jpg',
+      'images/heroes/hellboy/3.jpg'
+    ]
+  },
+  'the-tick': {
+    cover: 'images/heroes/the-tick/1.webp',
+    gallery: [
+      'images/heroes/the-tick/1.webp',
+      'images/heroes/the-tick/2.jpg',
+      'images/heroes/the-tick/3.jpg'
+    ]
+  },
+  'kick-ass': {
+    cover: 'images/heroes/kick-ass/1.webp',
+    gallery: [
+      'images/heroes/kick-ass/1.webp',
+      'images/heroes/kick-ass/2.jpg',
+      'images/heroes/kick-ass/3.jpg'
+    ]
+  },
+  'hit-girl': {
+    cover: 'images/heroes/hit-girl/1.webp',
+    gallery: [
+      'images/heroes/hit-girl/1.webp',
+      'images/heroes/hit-girl/2.jpg',
+      'images/heroes/hit-girl/3.jpg'
+    ]
+  },
+  'invincible': {
+    cover: 'images/heroes/invincible/1.webp',
+    gallery: [
+      'images/heroes/invincible/1.webp',
+      'images/heroes/invincible/2.jpg',
+      'images/heroes/invincible/3.jpg'
+    ]
+  },
+  'omni-man': {
+    cover: 'images/heroes/omni-man/1.webp',
+    gallery: [
+      'images/heroes/omni-man/1.webp',
+      'images/heroes/omni-man/2.jpg',
+      'images/heroes/omni-man/3.jpg'
+    ]
+  },
+  'atom-eve': {
+    cover: 'images/heroes/atom-eve/1.webp',
+    gallery: [
+      'images/heroes/atom-eve/1.webp',
+      'images/heroes/atom-eve/2.jpg',
+      'images/heroes/atom-eve/3.jpg'
+    ]
+  },
+  'static-shock': {
+    cover: 'images/heroes/static-shock/1.webp',
+    gallery: [
+      'images/heroes/static-shock/1.webp',
+      'images/heroes/static-shock/2.jpg',
+      'images/heroes/static-shock/3.jpg'
+    ]
+  },
+  'big-daddy': {
+    cover: 'images/heroes/big-daddy/1.webp',
+    gallery: [
+      'images/heroes/big-daddy/1.webp',
+      'images/heroes/big-daddy/2.jpg',
+      'images/heroes/big-daddy/3.jpg'
+    ]
+  },
+  'green-hornet': {
+    cover: 'images/heroes/green-hornet/1.webp',
+    gallery: [
+      'images/heroes/green-hornet/1.webp',
+      'images/heroes/green-hornet/2.jpg',
+      'images/heroes/green-hornet/3.jpg'
+    ]
+  },
+  'kato': {
+    cover: 'images/heroes/kato/1.webp',
+    gallery: [
+      'images/heroes/kato/1.webp',
+      'images/heroes/kato/2.jpg',
+      'images/heroes/kato/3.jpg'
+    ]
+  },
+  'space-ghost': {
+    cover: 'images/heroes/space-ghost/1.webp',
+    gallery: [
+      'images/heroes/space-ghost/1.webp',
+      'images/heroes/space-ghost/2.jpg',
+      'images/heroes/space-ghost/3.jpg'
+    ]
+  },
+  'darkwing-duck': {
+    cover: 'images/heroes/darkwing-duck/1.webp',
+    gallery: [
+      'images/heroes/darkwing-duck/1.webp',
+      'images/heroes/darkwing-duck/2.jpg',
+      'images/heroes/darkwing-duck/3.jpg'
+    ]
+  },
+  'samurai-jack': {
+    cover: 'images/heroes/samurai-jack/1.webp',
+    gallery: [
+      'images/heroes/samurai-jack/1.webp',
+      'images/heroes/samurai-jack/2.jpg',
+      'images/heroes/samurai-jack/3.jpg'
+    ]
+  },
+  'ben-10': {
+    cover: 'images/heroes/ben-10/1.webp',
+    gallery: [
+      'images/heroes/ben-10/1.webp',
+      'images/heroes/ben-10/2.jpg',
+      'images/heroes/ben-10/3.jpg'
+    ]
+  },
+  'aang': {
+    cover: 'images/heroes/aang/1.webp',
+    gallery: [
+      'images/heroes/aang/1.webp',
+      'images/heroes/aang/2.jpg',
+      'images/heroes/aang/3.jpg'
+    ]
+  },
+  'korra': {
+    cover: 'images/heroes/korra/1.webp',
+    gallery: [
+      'images/heroes/korra/1.webp',
+      'images/heroes/korra/2.jpg',
+      'images/heroes/korra/3.jpg'
+    ]
+  },
+  'he-man': {
+    cover: 'images/heroes/he-man/1.webp',
+    gallery: [
+      'images/heroes/he-man/1.webp',
+      'images/heroes/he-man/2.jpg',
+      'images/heroes/he-man/3.jpg'
+    ]
+  },
+  'she-ra': {
+    cover: 'images/heroes/she-ra/1.webp',
+    gallery: [
+      'images/heroes/she-ra/1.webp',
+      'images/heroes/she-ra/2.jpg',
+      'images/heroes/she-ra/3.jpg'
+    ]
+  },
+  'lion-o': {
+    cover: 'images/heroes/lion-o/1.webp',
+    gallery: [
+      'images/heroes/lion-o/1.webp',
+      'images/heroes/lion-o/2.jpg',
+      'images/heroes/lion-o/3.jpg'
+    ]
+  },
+  'astro-boy': {
+    cover: 'images/heroes/astro-boy/1.webp',
+    gallery: [
+      'images/heroes/astro-boy/1.webp',
+      'images/heroes/astro-boy/2.jpg',
+      'images/heroes/astro-boy/3.jpg'
+    ]
+  },
+  'sailor-moon': {
+    cover: 'images/heroes/sailor-moon/1.webp',
+    gallery: [
+      'images/heroes/sailor-moon/1.webp',
+      'images/heroes/sailor-moon/2.jpg',
+      'images/heroes/sailor-moon/3.jpg'
+    ]
+  },
+  'goku': {
+    cover: 'images/heroes/goku/1.webp',
+    gallery: [
+      'images/heroes/goku/1.webp',
+      'images/heroes/goku/2.jpg',
+      'images/heroes/goku/3.jpg'
+    ]
+  },
+  'vegeta': {
+    cover: 'images/heroes/vegeta/1.webp',
+    gallery: [
+      'images/heroes/vegeta/1.webp',
+      'images/heroes/vegeta/2.jpg',
+      'images/heroes/vegeta/3.jpg'
+    ]
+  },
+  'one-punch-man': {
+    cover: 'images/heroes/one-punch-man/1.webp',
+    gallery: [
+      'images/heroes/one-punch-man/1.webp',
+      'images/heroes/one-punch-man/2.jpg',
+      'images/heroes/one-punch-man/3.jpg'
+    ]
+  }
+};
+
+const CANDIDATE_EXTS = ['webp', 'jpg', 'png', 'jpeg', 'avif'];
+
+    const coverCandidates = (id) =>
+      (IMAGE_OVERRIDES[id]?.cover)
+        ? [IMAGE_OVERRIDES[id].cover]
+        : CANDIDATE_EXTS.map(ext => `images/heroes/${id}/cover.${ext}`);
+
+    const galleryCandidates = (id, i) => {
+      if (IMAGE_OVERRIDES[id]?.gallery?.[i]) return [IMAGE_OVERRIDES[id].gallery[i]];
+      const idx = i + 1;
+      return CANDIDATE_EXTS.map(ext => `images/heroes/${id}/${idx}.${ext}`);
+    };
+
+    function probeAndSwap(img, candidates){
+  if (img.dataset.loaded === '1') return;
+  let k = 0;
+
+  function setFailBadge() {
+    // Optional: visible hint if nothing loaded
+    img.style.outline = '2px dashed #fbbf24';      // amber
+    img.title = 'Missing images:\n' + candidates.join('\n');
+  }
+
+  function next(){
+    if (k >= candidates.length) {
+      console.warn('[Heroverse] No image found for', img.alt, candidates);
+      setFailBadge();
+      return; // keep placeholder
+    }
+    const url = candidates[k++];
+    const test = new Image();
+    test.onload = () => {
+      console.info('[Heroverse] Loaded', url, 'for', img.alt);
+      img.src = url;
+      img.dataset.loaded = '1';
+      img.style.outline = ''; // clear badge if any
+    };
+    test.onerror = () => {
+      console.warn('[Heroverse] 404/failed:', url);
+      next();
+    };
+    test.src = url;
+  }
+  console.log('[Heroverse] Probing', img.alt, '=>', candidates);
+  next();
+}
+
+
+    function autoloadAll(scope=document){
+      scope.querySelectorAll('img[data-candidates]').forEach(img => {
+        const list = img.getAttribute('data-candidates').split('|').filter(Boolean);
+        if (list.length) probeAndSwap(img, list);
+      });
+    }
+
+    function collectGallerySources(container){
+      return Array.from(container.querySelectorAll('img.gallery-item')).map(img => img.src || PLACEHOLDER_SRC);
+    }
+
+    /* ---------- Data ---------- */
+    const M='Marvel', D='DC', O='Original', H='Hero', AH='Anti-hero';
+
+    const RAW = {
+      Marvel: [
+        'Spider-Man (Peter Parker)','Iron Man (Tony Stark)','Captain America (Steve Rogers)','Thor',
+        'Hulk (Bruce Banner)','Black Panther (T’Challa)','Doctor Strange (Stephen Strange)','Scarlet Witch (Wanda Maximoff)',
+        'Vision','Ant-Man (Scott Lang)','Wasp (Hope van Dyne / Janet van Dyne)','Hawkeye (Clint Barton)',
+        'Black Widow (Natasha Romanoff)','Falcon (Sam Wilson)','Winter Soldier (Bucky Barnes)','Star-Lord (Peter Quill)',
+        'Gamora','Drax the Destroyer','Rocket Raccoon','Groot','Mantis','Captain Marvel (Carol Danvers)','Wolverine (Logan)',
+        'Storm (Ororo Munroe)','Cyclops (Scott Summers)','Jean Grey','Professor X (Charles Xavier)','Beast (Hank McCoy)',
+        'Rogue','Nightcrawler (Kurt Wagner)','Deadpool (Wade Wilson)','Daredevil (Matt Murdock)','Luke Cage',
+        'Iron Fist (Danny Rand)','Jessica Jones','Punisher (Frank Castle)','Blade','Ghost Rider (Johnny Blaze)',
+        'Moon Knight (Marc Spector)','Silver Surfer'
+      ],
+      DC: [
+        'Superman (Clark Kent / Kal-El)','Batman (Bruce Wayne)','Wonder Woman (Diana Prince)','The Flash (Barry Allen)',
+        'Green Lantern (Hal Jordan)','Aquaman (Arthur Curry)','Cyborg (Victor Stone)','Green Arrow (Oliver Queen)',
+        'Supergirl (Kara Zor-El)','Batgirl (Barbara Gordon)','Nightwing (Dick Grayson)','Robin (Damian Wayne)',
+        'Shazam (Billy Batson)','Zatanna','Martian Manhunter (J’onn J’onzz)','Hawkman','Hawkgirl','Black Canary (Dinah Lance)',
+        'Constantine (John Constantine)','Blue Beetle (Jaime Reyes)','Booster Gold','Plastic Man','Firestorm',
+        'Atom (Ray Palmer)','Red Tornado','Doctor Fate','Huntress (Helena Bertinelli)','Power Girl','Vixen','Mister Miracle',
+        'Rorschach','Doctor Manhattan','Silk Spectre','Ozymandias'
+      ],
+      Original: [
+        'Spawn','Hellboy','The Tick','Kick-Ass (Dave Lizewski)','Hit-Girl (Mindy Macready)','Invincible (Mark Grayson)',
+        'Omni-Man','Atom Eve','Static Shock (Virgil Hawkins)','Big Daddy','Green Hornet','Kato','Space Ghost',
+        'Darkwing Duck','Samurai Jack','Ben 10 (Ben Tennyson)','Aang','Korra','He-Man (Prince Adam)','She-Ra (Adora)',
+        'Lion-O','Astro Boy','Sailor Moon (Usagi Tsukino)','Goku','Vegeta','One Punch Man (Saitama)'
+      ]
+    };
+
+    const POWER_HINTS = { 
+      'Spider-Man':'agility,spider-sense,strength','Iron Man':'tech,flight,energy','Captain America':'strength,agility',
+      'Thor':'strength,energy,flight,magic','Hulk':'strength','Black Panther':'agility,martial arts,tech',
+      'Doctor Strange':'magic,energy','Scarlet Witch':'magic,energy','Vision':'energy,flight,tech',
+      'Ant-Man':'tech,agility','Wasp':'tech,flight,agility','Hawkeye':'martial arts,agility,tech',
+      'Black Widow':'martial arts,agility,tech','Falcon':'flight,tech,agility','Winter Soldier':'martial arts,tech,strength',
+      'Star-Lord':'tech,agility','Gamora':'martial arts,agility,strength','Drax the Destroyer':'strength',
+      'Rocket Raccoon':'tech,agility','Groot':'strength,energy','Mantis':'magic,agility',
+      'Captain Marvel':'energy,flight,strength','Wolverine':'martial arts,agility,strength',
+      'Storm':'energy,flight,magic','Cyclops':'energy','Jean Grey':'magic,energy','Professor X':'magic',
+      'Beast':'strength,agility','Rogue':'energy,strength','Nightcrawler':'agility,magic','Deadpool':'martial arts,agility',
+      'Daredevil':'martial arts,agility','Luke Cage':'strength','Iron Fist':'martial arts,magic',
+      'Jessica Jones':'strength','Punisher':'martial arts,tech','Blade':'martial arts','Ghost Rider':'magic,energy',
+      'Moon Knight':'martial arts,magic','Silver Surfer':'energy,flight',
+      'Superman':'strength,flight,energy','Batman':'tech,martial arts,agility','Wonder Woman':'strength,agility,magic',
+      'The Flash':'speed,energy','Green Lantern':'energy,flight','Aquaman':'strength,magic','Cyborg':'tech,strength',
+      'Green Arrow':'martial arts,agility,tech','Supergirl':'strength,flight,energy','Batgirl':'martial arts,tech,agility',
+      'Nightwing':'martial arts,agility','Robin':'martial arts,agility','Shazam':'magic,strength,energy','Zatanna':'magic',
+      'Martian Manhunter':'magic,strength,energy,flight','Hawkman':'strength,flight','Hawkgirl':'strength,flight',
+      'Black Canary':'martial arts,energy','Constantine':'magic','Blue Beetle':'tech,flight,energy','Booster Gold':'tech,flight',
+      'Plastic Man':'magic,agility','Firestorm':'energy','Atom':'tech','Red Tornado':'energy','Doctor Fate':'magic,energy',
+      'Huntress':'martial arts,agility','Power Girl':'strength,flight,energy','Vixen':'magic,agility',
+      'Mister Miracle':'tech,agility','Rorschach':'martial arts','Doctor Manhattan':'energy,magic',
+      'Silk Spectre':'martial arts,agility','Ozymandias':'tech,martial arts',
+      'Spawn':'magic,energy','Hellboy':'strength,magic','The Tick':'strength','Kick-Ass':'martial arts',
+      'Hit-Girl':'martial arts,agility','Invincible':'strength,flight','Omni-Man':'strength,flight',
+      'Atom Eve':'energy,magic','Static Shock':'energy','Big Daddy':'martial arts,tech','Green Hornet':'tech,martial arts',
+      'Kato':'martial arts,agility','Space Ghost':'energy,flight','Darkwing Duck':'agility,tech',
+      'Samurai Jack':'martial arts','Ben 10':'tech,energy','Aang':'magic,agility','Korra':'magic,strength',
+      'He-Man':'strength,magic','She-Ra':'strength,magic','Lion-O':'strength,agility','Astro Boy':'tech,flight,energy',
+      'Sailor Moon':'magic,energy','Goku':'strength,energy,flight','Vegeta':'strength,energy,flight','One Punch Man':'strength,speed'
+    };
+
+    function parseNameAlias(s){
+      const m = s.match(/^(.*?)\s*\((.+?)\)\s*$/);
+      return m ? { name: m[1].trim(), alias: m[2].trim() } : { name: s.trim(), alias: '' };
+    }
+
+    const BASE =
+      []
+      .concat(RAW.Marvel.map(s => ({ ...parseNameAlias(s), universe: M })))
+      .concat(RAW.DC.map(s => ({ ...parseNameAlias(s), universe: D })))
+      .concat(RAW.Original.map(s => ({ ...parseNameAlias(s), universe: O })))
+      .map(h => {
+        const hint = (POWER_HINTS[h.name] || '').split(',').map(x=>x.trim()).filter(Boolean);
+        const id = makeId(h.name);
+        return {
+          id,
+          name: h.name,
+          alias: h.alias,
+          universe: h.universe,
+          alignment: H,
+          powerType: hint
+        };
+      });
+
+    const DETAILS = {
+      'iron-man': {
+        powers: ['Powered armor','AI-assisted targeting','Repulsors','Flight'],
+        weaknesses: ['Arc reactor dependency (classic)'],
+        allies: ['Avengers','Pepper Potts','War Machine'],
+        enemies: ['Mandarin','Ultron'],
+        appearances: ['Tales of Suspense','MCU: Iron Man'],
+        origin: 'Genius billionaire who built the Iron Man suit to escape captivity.'
+      },
+      'wonder-woman': {
+        powers: ['Super strength','Bracelets of Submission','Lasso of Truth','Combat skill'],
+        weaknesses: ['Bound by her own lasso (classic lore)'],
+        allies: ['Justice League','Steve Trevor'],
+        enemies: ['Ares','Cheetah'],
+        appearances: ['Wonder Woman (comics)','WW (2017 film)'],
+        origin: 'Amazonian princess from Themyscira, demi-god heritage.'
+      }
+    };
+
+    const DEFAULTS = {
+      powersFromType: {
+        strength: ['Super strength','Durability'],
+        speed: ['Super speed','Reflexes'],
+        magic: ['Mystic arts','Spellcasting'],
+        tech: ['Advanced technology','Gadgets'],
+        flight: ['Flight'],
+        energy: ['Energy projection'],
+        'martial arts': ['Expert combatant'],
+        agility: ['Enhanced agility'],
+        'spider-sense': ['Precognition-like spider-sense']
+      },
+      weaknessesFromType: {
+        magic: ['Anti-magic wards'],
+        tech: ['EMP vulnerability'],
+        speed: ['Energy depletion'],
+        strength: ['Overconfidence'],
+        flight: ['Aerial disorientation (rare)'],
+        energy: ['Power overload'],
+        'martial arts': ['Human vulnerabilities'],
+        agility: ['Fatigue'],
+        'spider-sense': ['Sensory overload']
+      },
+      alliesByUniverse: { Marvel: ['Avengers'], DC: ['Justice League'], Original: ['Allies vary'] },
+      enemiesByUniverse: { Marvel: ['Iconic rogues vary'], DC: ['Iconic rogues vary'], Original: ['Nemeses vary'] },
+      appearancesByUniverse: {
+        Marvel: ['Comics (Marvel)','Animated/Films (various)'],
+        DC: ['Comics (DC)','Animated/Films (various)'],
+        Original: ['Comics/Animation (various)']
+      },
+      originByUniverse: {
+        Marvel: 'Hero from the Marvel Universe; story varies by continuity.',
+        DC: 'Hero from the DC Universe; story varies by continuity.',
+        Original: 'Hero from indie/animated universes; story varies by series.'
+      }
+    };
+
+    const HEROES = BASE.map(h => {
+      const d = DETAILS[h.id] || {};
+      const typePowers = (h.powerType||[]).flatMap(t => DEFAULTS.powersFromType[t] || []);
+      const typeWeak = (h.powerType||[]).flatMap(t => DEFAULTS.weaknessesFromType[t] || []);
+      const gallerySeed = [0,1,2].map(i => galleryCandidates(h.id, i)[0]);
+      return {
+        ...h,
+        image: coverCandidates(h.id)[0],
+        powers: d.powers || [...new Set(typePowers)].slice(0,4),
+        weaknesses: d.weaknesses || [...new Set(typeWeak)].slice(0,3),
+        allies: d.allies || DEFAULTS.alliesByUniverse[h.universe] || ['Allies vary'],
+        enemies: d.enemies || DEFAULTS.enemiesByUniverse[h.universe] || ['Nemeses vary'],
+        appearances: d.appearances || DEFAULTS.appearancesByUniverse[h.universe] || ['Appearances vary'],
+        origin: d.origin || DEFAULTS.originByUniverse[h.universe],
+        gallery: gallerySeed
+      };
+    });
+
+    /* ---------- Render ---------- */
+    const elGrid = document.getElementById('grid');
+    const elSummary = document.getElementById('summary');
+    const elNoResults = document.getElementById('noResults');
+    const elSearch = document.getElementById('search');
+    const elUniverse = document.getElementById('universe');
+    const elAlignment = document.getElementById('alignment');
+    const elPowerType = document.getElementById('powerType');
+
+    function heroCard(hero){
+      const tags = [hero.universe, hero.alignment].filter(Boolean).map(t =>
+        `<span class="px-2 py-0.5 rounded-lg bg-white/10 border border-white/10 text-xs">${t}</span>`
+      ).join(' ');
+      const coverList = coverCandidates(hero.id);
+      return `
+        <article class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:-translate-y-0.5 hover:bg-white/10 transition comic-shadow">
+          <div class="card-img bg-white/5 overflow-hidden">
+            <img
+              loading="lazy"
+              src="${PLACEHOLDER_SRC}"
+              data-candidates="${coverList.join('|')}"
+              alt="${hero.name}"
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div class="p-4 text-center">
+            <h3 class="font-display text-2xl text-gold">${hero.name}</h3>
+            <p class="text-white/70">${hero.alias || ''}</p>
+            <p class="text-white/80 text-sm mt-2">Powers: ${(hero.powerType||[]).join(', ') || '—'}</p>
+            <div class="mt-2 flex gap-2 justify-center">${tags}</div>
+            <button class="inline-block mt-3 bg-primary px-4 py-2 rounded-xl hover:brightness-110" data-open="${hero.id}">View Profile</button>
+          </div>
+        </article>
+      `;
+    }
+
+    function applyFilters(){
+      const q = (elSearch.value || '').trim().toLowerCase();
+      const u = elUniverse.value;
+      const a = elAlignment.value;
+      const p = elPowerType.value;
+
+      let list = HEROES.filter(h=>{
+        const text = [
+          h.name, h.alias,
+          (h.powerType||[]).join(' '),
+          (h.powers||[]).join(' '),
+          (h.allies||[]).join(' '),
+          (h.enemies||[]).join(' ')
+        ].join(' ').toLowerCase();
+        const matchQ = !q || text.includes(q);
+        const matchU = (u==='all') || (h.universe===u);
+        const matchA = (a==='all') || (h.alignment===a);
+        const matchP = (p==='all') || (h.powerType||[]).includes(p);
+        return matchQ && matchU && matchA && matchP;
+      });
+
+      elSummary.textContent = `${list.length} result${list.length===1?'':'s'} • ${u==='all'?'All universes':u} • ${a==='all'?'All alignments':a} • ${p==='all'?'All powers':p}`;
+      elGrid.innerHTML = list.map(heroCard).join('');
+      elNoResults.classList.toggle('hidden', list.length>0);
+
+      document.querySelectorAll('[data-open]').forEach(btn=>{
+        btn.addEventListener('click', ()=> openProfile( HEROES.find(h=>h.id===btn.dataset.open) ));
+      });
+
+      autoloadAll(); // probe grid images
+    }
+
+    /* ---------- Modal ---------- */
+    const modal = document.getElementById('modal');
+    const modalBody = document.getElementById('modalBody');
+    modal.addEventListener('click', (e)=>{ if (e.target.dataset.close!==undefined) closeModal(); });
+    document.querySelectorAll('[data-close]').forEach(x=> x.addEventListener('click', closeModal));
+    function openModal(){ modal.classList.add('open'); document.body.style.overflow='hidden'; }
+    function closeModal(){ modal.classList.remove('open'); document.body.style.overflow=''; }
+
+    const listRow = (title, arr) => arr && arr.length
+      ? `<div><h4 class="font-semibold">${title}</h4><p class="text-white/80">${arr.join(', ')}</p></div>` : '';
+
+    function profileHTML(h){
+      const chips = [h.universe, h.alignment, ...(h.powerType||[])].filter(Boolean)
+        .map(x=>`<span class="px-2 py-1 rounded-lg bg-white/10 border border-white/10 text-xs">${x}</span>`).join(' ');
+
+      const coverList = coverCandidates(h.id);
+
+      const gallery = [0,1,2].map((i)=>{
+        const cands = galleryCandidates(h.id, i);
+        return `
+          <img
+            loading="lazy"
+            src="${PLACEHOLDER_SRC}"
+            data-candidates="${cands.join('|')}"
+            alt="${h.name} image ${i+1}"
+            class="gallery-item"
+            data-hero="${h.id}"
+            data-idx="${i}"
+          >
+        `;
+      }).join('');
+
+      return `
+        <div class="space-y-6">
+          <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <h2 class="font-display text-3xl text-gold">${h.name}</h2>
+              <p class="text-white/70">${h.alias || ''}</p>
+            </div>
+            <div class="flex flex-wrap gap-2">${chips}</div>
+          </header>
+
+          <div class="grid md:grid-cols-3 gap-6">
+            <div class="md:col-span-1">
+              <div class="bg-white/5 rounded-2xl overflow-hidden border border-white/10">
+                <img
+                  src="${PLACEHOLDER_SRC}"
+                  data-candidates="${coverList.join('|')}"
+                  alt="${h.name}"
+                  class="w-full profile-img object-cover bg-white/5"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+
+            <div class="md:col-span-2 space-y-5">
+              <div>
+                <h3 class="font-semibold">Origin</h3>
+                <p class="text-white/80">${h.origin || '—'}</p>
+              </div>
+
+              ${listRow('Powers & Abilities', h.powers)}
+              ${listRow('Weaknesses', h.weaknesses)}
+              ${listRow('Allies', h.allies)}
+              ${listRow('Enemies', h.enemies)}
+              ${listRow('Appearances', h.appearances)}
+
+              <section>
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="font-semibold">Image Gallery</h3>
+                  <button class="px-2 py-1 text-sm rounded bg-white/10 border border-white/20 hover:bg-white/20" data-open-full>Open full-screen</button>
+                </div>
+                <div class="gallery-row gallery-vert">${gallery}</div>
+                <p class="text-xs text-white/60 mt-2">Tip: Tap a thumbnail to open the full-screen viewer. Use ← → keys, wheel to zoom, drag to pan.</p>
+              </section>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function openProfile(hero){
+      modalBody.innerHTML = profileHTML(hero);
+      openModal();
+
+      autoloadAll(modalBody); // probe new images
+
+      setTimeout(() => {
+        modalBody.querySelectorAll('img[data-hero]').forEach(img=>{
+          img.addEventListener('click', () => {
+            openLightbox(collectGallerySources(modalBody), +img.getAttribute('data-idx') || 0, hero.name);
+          });
+        });
+        const btnFull = modalBody.querySelector('[data-open-full]');
+        if (btnFull) {
+          btnFull.addEventListener('click', ()=>{
+            openLightbox(collectGallerySources(modalBody), 0, hero.name);
+          });
+        }
+      }, 0);
+    }
+
+    /* ---------- Lightbox ---------- */
+    function initLightbox(){
+      const lightbox = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lbImg');
+      const lbPrev = document.getElementById('lbPrev');
+      const lbNext = document.getElementById('lbNext');
+      const lbClose = document.getElementById('lbClose');
+      const lbThumbs = document.getElementById('lbThumbs');
+      const lbCaption = document.getElementById('lbCaption');
+      const lbCount = document.getElementById('lbCount');
+      const thumbPrev = document.getElementById('thumbPrev');
+      const thumbNext = document.getElementById('thumbNext');
+      const lbStage = document.getElementById('lbStage');
+      const lbDownload = document.getElementById('lbDownload');
+      const lbReset = document.getElementById('lbReset');
+      const lbZoomBadge = document.getElementById('lbZoomBadge');
+
+      let items = []; let title = ''; let idx = 0;
+
+      function open(itemsIn, startIndex, titleIn){
+        items = itemsIn || []; idx = startIndex||0; title = titleIn||'';
+        if (!items.length) return;
+        render(); buildThumbs();
+        lightbox.classList.remove('hidden'); lightbox.classList.add('open');
+        document.body.style.overflow='hidden';
+        resetZoom();
+      }
+      function close(){ lightbox.classList.add('hidden'); lightbox.classList.remove('open'); document.body.style.overflow=''; }
+      function render(){
+        const src = items[idx] || PLACEHOLDER_SRC;
+        lbImg.onerror = () => { lbImg.onerror = null; lbImg.src = PLACEHOLDER_SRC; };
+        lbImg.src = src; lbImg.alt = `${title} image ${idx+1}`;
+        lbCaption.textContent = title || 'Gallery';
+        lbCount.textContent = `${idx+1} / ${items.length}`;
+        lbDownload.onclick = ()=> window.open(lbImg.src, '_blank');
+        highlightThumb();
+      }
+      function buildThumbs(){
+        lbThumbs.innerHTML = items.map((src,i)=>`
+          <button class="lb-thumb" data-i="${i}" title="Image ${i+1}">
+            <img src="${src}" alt="${title} thumbnail ${i+1}" />
+          </button>
+        `).join('');
+        lbThumbs.querySelectorAll('[data-i]').forEach(b=> b.onclick = ()=>{ idx = +b.dataset.i; render(); resetZoom(); ensureThumbVisible(); });
+      }
+      function highlightThumb(){ lbThumbs.querySelectorAll('.lb-thumb').forEach((n,i)=> n.classList.toggle('active', i===idx)); }
+      function ensureThumbVisible(){
+        const active = lbThumbs.querySelectorAll('.lb-thumb')[idx];
+        if (active) active.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+      }
+      function nav(d){ idx=(idx+d+items.length)%items.length; render(); resetZoom(); ensureThumbVisible(); }
+
+      lbPrev.onclick = ()=> nav(-1);
+      lbNext.onclick = ()=> nav(1);
+      lbClose.onclick = close;
+      lightbox.addEventListener('click', e=>{ if (e.target.hasAttribute('data-lb-close')) close(); });
+      thumbPrev.onclick = ()=> lbThumbs.scrollBy({left:-Math.round(lbThumbs.clientWidth*.9),behavior:'smooth'});
+      thumbNext.onclick = ()=> lbThumbs.scrollBy({left: Math.round(lbThumbs.clientWidth*.9),behavior:'smooth'});
+      window.addEventListener('keydown', e=>{ if (lightbox.classList.contains('hidden')) return; if (e.key==='Escape') close(); if (e.key==='ArrowRight') nav(1); if (e.key==='ArrowLeft') nav(-1); });
+
+      // zoom/pan
+      let scale=1, min=1, max=4, tx=0, ty=0, panning=false, sx=0, sy=0, lastTap=0;
+      function apply(){ lbImg.style.transform = `translate(${tx}px,${ty}px) scale(${scale})`; lbZoomBadge.textContent = `${Math.round(scale*100)}%`; lbZoomBadge.classList.toggle('hidden', scale===1); }
+      function resetZoom(){ scale=1; tx=0; ty=0; apply(); }
+      function clamp(){
+        const r=lbImg.getBoundingClientRect(), s=lbStage.getBoundingClientRect();
+        const w=r.width/scale, h=r.height/scale; const mx=Math.max(0,(w*scale-s.width)/2)+20; const my=Math.max(0,(h*scale-s.height)/2)+20;
+        tx=Math.min(mx,Math.max(-mx,tx)); ty=Math.min(my,Math.max(-my,ty));
+      }
+      function zoomAt(x,y,t){
+        const s=lbStage.getBoundingClientRect(); const cx=x-s.left-s.width/2; const cy=y-s.top-s.height/2;
+        const k=t/scale; tx = cx - (cx-tx)*k; ty = cy - (cy-ty)*k; scale=t; clamp(); apply();
+      }
+      lbImg.addEventListener('dblclick', e=>{ e.preventDefault(); scale===1 ? zoomAt(e.clientX,e.clientY,2) : resetZoom(); });
+      lbImg.addEventListener('pointerdown', e=>{
+        const now=Date.now(); if (now-lastTap<300){ e.preventDefault(); scale===1 ? zoomAt(e.clientX,e.clientY,2) : resetZoom(); } lastTap=now;
+        if (scale>1){ panning=true; sx=e.clientX-tx; sy=e.clientY-ty; lbImg.setPointerCapture(e.pointerId); lbImg.classList.add('grabbing'); }
+        else { lbImg.setPointerCapture(e.pointerId); lbImg.dataset.swipeX=e.clientX; }
+      });
+      lbImg.addEventListener('pointermove', e=>{ if(!panning) return; tx=e.clientX-sx; ty=e.clientY-sy; clamp(); apply(); });
+      lbImg.addEventListener('pointerup', e=>{
+        if (panning){ panning=false; lbImg.classList.remove('grabbing'); return; }
+        const start=parseFloat(lbImg.dataset.swipeX||'0'); const dx=e.clientX-start;
+        if (Math.abs(dx)>40 && scale===1){ nav(dx>0?-1:1); }
+      });
+      lbStage.addEventListener('wheel', e=>{ e.preventDefault(); const t=Math.min(max,Math.max(min, scale + (-Math.sign(e.deltaY)*0.2))); zoomAt(e.clientX,e.clientY,t); }, {passive:false});
+      lbReset.onclick = resetZoom;
+
+      return function openLightboxPublic(items, startIndex, title){ open(items, startIndex, title); };
+    }
+    const openLightbox = initLightbox();
+
+    /* ---------- Open profile & wiring ---------- */
+    function openProfile(hero){
+      modalBody.innerHTML = profileHTML(hero);
+      openModal();
+
+      autoloadAll(modalBody);
+
+      setTimeout(() => {
+        modalBody.querySelectorAll('img[data-hero]').forEach(img=>{
+          img.addEventListener('click', () => {
+            openLightbox(collectGallerySources(modalBody), +img.getAttribute('data-idx') || 0, hero.name);
+          });
+        });
+        const btnFull = modalBody.querySelector('[data-open-full]');
+        if (btnFull) {
+          btnFull.addEventListener('click', ()=>{
+            openLightbox(collectGallerySources(modalBody), 0, hero.name);
+          });
+        }
+      }, 0);
+    }
+
+    /* ---------- Wire up ---------- */
+    applyFilters();
+    [elSearch, elUniverse, elAlignment, elPowerType].forEach(el=>{
+      el.addEventListener('input', applyFilters);
+      el.addEventListener('change', applyFilters);
+    });
+    document.getElementById('clearFilters').addEventListener('click', ()=>{
+      elSearch.value=''; elUniverse.value='all'; elAlignment.value='all'; elPowerType.value='all'; applyFilters();
+    });
+    function openRandom(){
+      const h = HEROES[Math.floor(Math.random()*HEROES.length)];
+      openProfile(h);
+    }
+    const rb = document.getElementById('randomBtn'); if (rb) rb.addEventListener('click', openRandom);
+    const rb2 = document.getElementById('randomBtn2'); if (rb2) rb2.addEventListener('click', openRandom);
+  </script>
+
+  <!-- Back to top -->
+  <a id="toTop" href="#top"
+     class="hidden fixed bottom-4 right-4 z-50 rounded-xl bg-gold text-dark px-3 py-2 shadow-lg border border-white/20"
+     aria-label="Back to top">↑ Top</a>
+  <script>
     const toTop = document.getElementById('toTop');
     const toggleToTop = () => {
       if (window.scrollY > 400) { toTop.classList.remove('hidden'); }
@@ -434,74 +1669,6 @@
     };
     toggleToTop();
     window.addEventListener('scroll', toggleToTop, { passive: true });
-
-    /* ---------- Easter Egg 1: Triple-click logo => print dots overlay ---------- */
-    const brand = document.getElementById('brandLink');
-    let clicks = 0, clickTimer = null;
-    brand.addEventListener('click', (e)=>{
-      clicks++;
-      clearTimeout(clickTimer);
-      clickTimer = setTimeout(()=>{
-        if (clicks >= 3) {
-          document.body.classList.toggle('print-dots');
-        }
-        clicks = 0;
-      }, 350);
-      e.preventDefault();
-    });
-
-    /* ---------- Easter Egg 2: Konami Code => open Color Gauntlet ---------- */
-    const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
-    let seq = [];
-    window.addEventListener('keydown', (e)=>{
-      seq.push(e.key);
-      if (seq.length > KONAMI.length) seq.shift();
-      if (KONAMI.every((k,i)=>k===seq[i])) {
-        openGauntlet();
-      }
-    });
-
-    /* ---------- Accent color persistence ---------- */
-    const ACCENT_KEY = 'heroverse_accent_v1';
-    function applyAccent(token){
-      const root = document.documentElement;
-      const map = {
-        gold:'#FFD700',
-        hero:'#E50914',
-        primary:'#0055FF',
-        emerald:'#10B981',
-        amethyst:'#A855F7',
-        amber:'#F59E0B'
-      };
-      const val = map[token] || map.gold;
-      root.style.setProperty('--accent', val);
-      document.querySelectorAll('.text-gold').forEach(el=> el.style.color = val);
-      document.querySelectorAll('.bg-primary, .bg-hero').forEach(el=> el.style.backgroundColor = val);
-      document.querySelectorAll('.decoration-gold\\/60').forEach(el=> el.style.textDecorationColor = val+'99');
-      localStorage.setItem(ACCENT_KEY, token);
-    }
-    (function(){
-      const saved = localStorage.getItem(ACCENT_KEY);
-      if (saved) applyAccent(saved);
-    })();
-
-    /* ---------- Gauntlet modal ---------- */
-    const gauntlet = document.getElementById('gauntlet');
-    function openGauntlet(){
-      gauntlet.classList.add('open');
-      document.body.style.overflow='hidden';
-    }
-    function closeGauntlet(){
-      gauntlet.classList.remove('open');
-      document.body.style.overflow='';
-    }
-    gauntlet.addEventListener('click', (e)=>{ if (e.target.hasAttribute('data-close')) closeGauntlet(); });
-    gauntlet.querySelectorAll('[data-close]').forEach(btn=> btn.addEventListener('click', closeGauntlet));
-    gauntlet.querySelectorAll('.stone').forEach(stone=>{
-      stone.addEventListener('click', ()=> applyAccent(stone.dataset.accent));
-    });
-      /* Fill 'Last updated' in Changelog using document.lastModified */
-    
   </script>
 </body>
 </html>

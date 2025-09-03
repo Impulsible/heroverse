@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>About — Heroverse</title>
   <meta name="description" content="What Heroverse is about: purpose, inspiration, and credits for sources & tools." />
-  <meta name="author" content="Henry Osuagwu" />
+  <meta name="author" content="Henry Osuagwu">
 
-  <!-- Favicon & PWA icons (match heroes.html) -->
+  <!-- Favicon & PWA icons-->
   <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
   <link rel="icon" href="images/favicon.ico">
@@ -69,7 +69,7 @@
     }
     .grid-auto{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
 
-    /* Match heroes.html extras */
+
     .glow-hover:hover{text-shadow:0 0 10px rgba(255,215,0,.7),0 0 20px rgba(255,215,0,.5)}
     .active-nav{
       background:linear-gradient(90deg,#FFD70022,#E5091422);
@@ -104,10 +104,10 @@
 <body class="bg-dark text-white" id="top">
   <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 bg-gold text-dark px-3 py-2 rounded">Skip to content</a>
 
-  <!-- NAV (identical structure & classes to heroes.html) -->
+  <!-- NAV -->
   <header class="sticky top-0 z-40 bg-dark/70 backdrop-blur border-b border-white/10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
-      <a id="brandLink" href="index.html" class="flex items-center gap-3 select-none" title="Triple-click me 👀">
+      <a href="index.html" class="flex items-center gap-3">
         <span class="text-2xl sm:text-3xl font-display tracking-widest text-gold drop-shadow">Heroverse</span>
       </a>
 
@@ -127,7 +127,7 @@
       </nav>
     </div>
 
-    <!-- Mobile drawer (copied styling) -->
+    <!-- Mobile drawer -->
     <nav id="mobileNav" class="md:hidden hidden border-t border-gold/20 bg-gradient-to-b from-[#0b0f19] via-[#0c1324] to-[#0b0f19]">
       <div class="max-w-7xl mx-auto px-4 py-3 grid grid-cols-2 gap-3 text-sm">
         <a class="rounded-lg p-3 border border-red-400/40 bg-red-500/15 hover:bg-red-500/25 transition" href="heroes.html">Hall of Heroes</a>
@@ -142,69 +142,200 @@
     </nav>
   </header>
 
-  <main id="main" class="max-w-none">
-    <!-- HERO / SPLASH -->
-    <section class="relative overflow-hidden pt-16 sm:pt-20 pb-14 sm:pb-20">
-      <div class="absolute -top-32 -left-32 w-[42rem] h-[42rem] rounded-full blur-3xl opacity-30 bg-gradient-to-br from-hero via-gold to-primary pointer-events-none"></div>
-      <div class="absolute -bottom-40 -right-40 w-[46rem] h-[46rem] rounded-full blur-3xl opacity-20 bg-gradient-to-tr from-primary via-hero to-gold pointer-events-none"></div>
+<section class="relative overflow-hidden pt-16 sm:pt-20 pb-14 sm:pb-20">
+  <!-- ambient glows -->
+  <div class="absolute -top-32 -left-32 w-[42rem] h-[42rem] rounded-full blur-3xl opacity-25 bg-gradient-to-br from-hero via-gold to-primary pointer-events-none"></div>
+  <div class="absolute -bottom-40 -right-40 w-[46rem] h-[46rem] rounded-full blur-3xl opacity-20 bg-gradient-to-tr from-primary via-hero to-gold pointer-events-none"></div>
 
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div class="text-center reveal">
-          <h1 class="font-display text-5xl sm:text-6xl leading-tight tracking-tight">
-            The Story <span class="text-gold">behind</span> Heroverse
-          </h1>
-          <p class="mt-3 sm:mt-4 text-white/80 max-w-3xl mx-auto text-lg">
-            Built by fans for fans — a fast, gorgeous way to explore characters, teams and the arcs that shaped them.
-          </p>
-          <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a href="heroes.html" class="btn btn-primary w-full sm:w-auto">Browse Heroes</a>
-            <a href="contact.html" class="btn btn-ghost w-full sm:w-auto">Suggest a Feature</a>
-          </div>
-        </div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+    <!-- Title -->
+    <div class="text-center reveal">
+      <h1 class="font-display text-5xl sm:text-6xl leading-tight tracking-tight">
+        The Story <span class="text-gold">behind</span> Heroverse
+      </h1>
+      <p class="mt-3 sm:mt-4 text-white/80 max-w-3xl mx-auto text-lg">
+        Built by fans for fans — a fast, gorgeous way to explore characters, teams and the arcs that shaped them.
+      </p>
+      <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a href="heroes.html" class="inline-flex items-center justify-center rounded-xl bg-primary px-5 py-2.5 font-semibold hover:brightness-110 w-full sm:w-auto">Browse Heroes</a>
+        <a href="contact.html" class="inline-flex items-center justify-center rounded-xl border border-white/15 px-5 py-2.5 font-semibold hover:border-gold w-full sm:w-auto">Suggest a Feature</a>
       </div>
+    </div>
 
-      <div class="mt-10 sm:mt-14">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="grid md:grid-cols-12 gap-6 items-start">
-            <div class="md:col-span-7 reveal">
-              <h2 class="font-display text-3xl text-gold">Why Heroverse?</h2>
-              <ul class="mt-3 space-y-3">
-                <li class="flex gap-3">
-                  <span class="text-2xl">⚡</span>
-                  <div>
-                    <h3 class="font-semibold">Faster than a speedster</h3>
-                    <p class="text-white/75">Search, filter, compare — answers in seconds, not twenty open tabs.</p>
-                  </div>
-                </li>
-                <li class="flex gap-3">
-                  <span class="text-2xl">🎴</span>
-                  <div>
-                    <h3 class="font-semibold">Trading-card inspired</h3>
-                    <p class="text-white/75">Clean typography and bold imagery without clutter or click-maze.</p>
-                  </div>
-                </li>
-                <li class="flex gap-3">
-                  <span class="text-2xl">🧭</span>
-                  <div>
-                    <h3 class="font-semibold">Orientation, not spoilers</h3>
-                    <p class="text-white/75">Concise summaries to guide your reading — support the publishers.</p>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="md:col-span-5 reveal">
-              <div class="relative">
-                <div class="absolute -inset-1 rounded-3xl bg-gradient-to-tr from-gold/30 via-hero/20 to-primary/30 blur-xl"></div>
-                <img src="images/about/collage.jpg" alt="Heroverse collage"
-                     class="relative rounded-3xl w-full aspect-[4/3] object-cover border border-white/10"
-                     onerror="this.src='https://picsum.photos/seed/heroverse/1200/900'"/>
+    <!-- Why Heroverse -->
+    <div class="mt-10 sm:mt-14">
+      <div class="grid md:grid-cols-12 gap-6 items-start">
+        <!-- Left: features -->
+        <div class="md:col-span-7 reveal">
+          <h2 class="font-display text-3xl text-gold">Why Heroverse?</h2>
+
+          <!-- quick chips -->
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="px-3 py-1 rounded-full text-xs border border-white/15 bg-white/5">⚡ Fast UI</span>
+            <span class="px-3 py-1 rounded-full text-xs border border-white/15 bg-white/5">🧭 Spoiler-safe</span>
+            <span class="px-3 py-1 rounded-full text-xs border border-white/15 bg-white/5">♿ A11y-first</span>
+            <span class="px-3 py-1 rounded-full text-xs border border-white/15 bg-white/5">🌗 Theme aware</span>
+          </div>
+
+          <!-- feature grid -->
+          <div class="mt-5 grid sm:grid-cols-2 gap-4">
+            <article class="rounded-2xl border border-white/10 bg-white/5 p-4 hover:bg-white/10 transition">
+              <div class="flex items-start gap-3">
+                <span class="text-2xl">⚡</span>
+                <div>
+                  <h3 class="font-semibold">Faster than a speedster</h3>
+                  <p class="text-white/75 text-sm">Search, filter, compare — answers in seconds, not twenty open tabs.</p>
+                </div>
               </div>
-              <p class="text-xs text-white/60 mt-2 text-center">Placeholder image — replace with a custom collage.</p>
-            </div>
+            </article>
+
+            <article class="rounded-2xl border border-white/10 bg-white/5 p-4 hover:bg-white/10 transition">
+              <div class="flex items-start gap-3">
+                <span class="text-2xl">🎴</span>
+                <div>
+                  <h3 class="font-semibold">Trading-card aesthetics</h3>
+                  <p class="text-white/75 text-sm">Bold imagery, clean type, readable layouts with zero clutter.</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="rounded-2xl border border-white/10 bg-white/5 p-4 hover:bg-white/10 transition">
+              <div class="flex items-start gap-3">
+                <span class="text-2xl">🧭</span>
+                <div>
+                  <h3 class="font-semibold">Orientation, not spoilers</h3>
+                  <p class="text-white/75 text-sm">Concise summaries that guide your reading — support the publishers.</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="rounded-2xl border border-white/10 bg-white/5 p-4 hover:bg-white/10 transition">
+              <div class="flex items-start gap-3">
+                <span class="text-2xl">🔎</span>
+                <div>
+                  <h3 class="font-semibold">Smart discovery</h3>
+                  <p class="text-white/75 text-sm">Universe, era, power tags & aliases so you can find anyone fast.</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- Spoiler toggle (no JS needed) -->
+            <article class="rounded-2xl border border-white/10 bg-white/5 p-4 hover:bg-white/10 transition sm:col-span-2">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex items-start gap-3">
+                  <span class="text-2xl">🛡️</span>
+                  <div>
+                    <h3 class="font-semibold">Spoiler mode</h3>
+                    <p class="text-white/75 text-sm">Choose how deep story details reveal: Light • Medium • Full.</p>
+                  </div>
+                </div>
+                <!-- faux toggle -->
+                <div class="inline-flex items-center rounded-xl border border-white/15 bg-white/5 overflow-hidden">
+                  <button class="px-3 py-1 text-xs hover:bg-gold/20">Light</button>
+                  <button class="px-3 py-1 text-xs hover:bg-gold/20 border-l border-white/10">Medium</button>
+                  <button class="px-3 py-1 text-xs hover:bg-gold/20 border-l border-white/10">Full</button>
+                </div>
+              </div>
+            </article>
           </div>
+
+          <!-- “More reasons” accordion -->
+          <details class="mt-4 group">
+            <summary class="cursor-pointer list-none inline-flex items-center gap-2 text-white/80 hover:text-gold">
+              <span class="inline-block w-5 h-5 rounded-full border border-white/20 grid place-items-center group-open:rotate-90 transition">›</span>
+              More reasons
+            </summary>
+            <div class="mt-3 grid sm:grid-cols-2 gap-4 text-sm">
+              <div class="rounded-xl border border-white/10 bg-white/5 p-4">🧩 <span class="font-semibold">Cross-universe linking</span> — see equivalents & team ties.</div>
+              <div class="rounded-xl border border-white/10 bg-white/5 p-4">🗂️ <span class="font-semibold">Collections</span> — save arcs, eras, and reading orders.</div>
+              <div class="rounded-xl border border-white/10 bg-white/5 p-4">🧪 <span class="font-semibold">Labs / Roadmap</span> — try experimental features early.</div>
+              <div class="rounded-xl border border-white/10 bg-white/5 p-4">🌍 <span class="font-semibold">Global fan input</span> — votes & ideas shape what’s next.</div>
+            </div>
+          </details>
+
+          <!-- trust bar -->
+          <div class="mt-6 grid grid-cols-3 sm:grid-cols-6 gap-3 opacity-70">
+            <div class="rounded-lg border border-white/10 bg-white/5 py-2 text-center text-xs">Marvel*</div>
+            <div class="rounded-lg border border-white/10 bg-white/5 py-2 text-center text-xs">DC*</div>
+            <div class="rounded-lg border border-white/10 bg-white/5 py-2 text-center text-xs">Image*</div>
+            <div class="rounded-lg border border-white/10 bg-white/5 py-2 text-center text-xs">Dark Horse*</div>
+            <div class="rounded-lg border border-white/10 bg-white/5 py-2 text-center text-xs">IDW*</div>
+            <div class="rounded-lg border border-white/10 bg-white/5 py-2 text-center text-xs">Valiant*</div>
+          </div>
+          <p class="mt-1 text-[10px] text-white/50">*Fandom-oriented encyclopedia. Not affiliated.</p>
         </div>
+
+        <!-- Right: visual collage (trading-card spread) -->
+        <!-- Right: visual collage (masonry) -->
+<div class="md:col-span-5 reveal">
+  <!-- soft glow frame -->
+  <div class="relative rounded-3xl border border-white/10 bg-white/5 p-4 sm:p-5">
+    <div class="absolute -inset-1 rounded-3xl bg-gradient-to-tr from-gold/30 via-hero/20 to-primary/30 blur-xl pointer-events-none"></div>
+
+    <!-- Masonry container -->
+    <div id="heroverse-masonry" class="relative">
+      <div class="columns-1 sm:columns-2 gap-3 sm:gap-4">
+        <!-- card 1 -->
+        <figure class="masonry-item mb-3 sm:mb-4 rounded-2xl overflow-hidden border border-white/10 bg-white/5 shadow-lg shadow-black/30 hover:shadow-black/40 transition">
+          <img src="images/elizabeth1.webp" alt="Scarlet Witch"
+               class="w-full h-auto object-cover"
+               onerror="this.src='https://picsum.photos/seed/witch/800/1000'">
+          <figcaption class="px-3 py-2 text-sm bg-gradient-to-t from-black/60 to-transparent -mt-9 text-white">
+            Scarlet Witch
+          </figcaption>
+        </figure>
+
+        <!-- card 2 -->
+        <figure class="masonry-item mb-3 sm:mb-4 rounded-2xl overflow-hidden border border-white/10 bg-white/5 shadow-lg shadow-black/30 hover:shadow-black/40 transition">
+          <img src="images/ben.webp" alt="Doctor Strange"
+               class="w-full h-auto object-cover"
+               onerror="this.src='https://picsum.photos/seed/strange/800/900'">
+          <figcaption class="px-3 py-2 text-sm bg-gradient-to-t from-black/60 to-transparent -mt-9">Doctor Strange</figcaption>
+        </figure>
+
+        <!-- card 3 (taller) -->
+        <figure class="masonry-item mb-3 sm:mb-4 rounded-2xl overflow-hidden border border-white/10 bg-white/5 shadow-lg shadow-black/30 hover:shadow-black/40 transition">
+          <img src="images/matt.webp" alt="Daredevil"
+               class="w-full h-auto object-cover"
+               onerror="this.src='https://picsum.photos/seed/daredevil/800/1100'">
+          <figcaption class="px-3 py-2 text-sm bg-gradient-to-t from-black/60 to-transparent -mt-9">Daredevil</figcaption>
+        </figure>
+
+        <!-- card 4 -->
+        <figure class="masonry-item mb-3 sm:mb-4 rounded-2xl overflow-hidden border border-white/10 bg-white/5 shadow-lg shadow-black/30 hover:shadow-black/40 transition">
+          <img src="images/oliver.webp" alt="Green Arrow"
+               class="w-full h-auto object-cover"
+               onerror="this.src='https://picsum.photos/seed/arrow/800/950'">
+          <figcaption class="px-3 py-2 text-sm bg-gradient-to-t from-black/60 to-transparent -mt-9">Green Arrow</figcaption>
+        </figure>
+
+        <!-- card 5 (wide-ish) -->
+        <figure class="masonry-item mb-3 sm:mb-4 rounded-2xl overflow-hidden border border-white/10 bg-white/5 shadow-lg shadow-black/30 hover:shadow-black/40 transition">
+          <img src="images/scar.webp" alt="Black Widow"
+               class="w-full h-auto object-cover"
+               onerror="this.src='https://picsum.photos/seed/widow/900/800'">
+          <figcaption class="px-3 py-2 text-sm bg-gradient-to-t from-black/60 to-transparent -mt-9">Black Widow</figcaption>
+        </figure>
+          <figure class="masonry-item mb-3 sm:mb-4 rounded-2xl overflow-hidden border border-white/10 bg-white/5 shadow-lg shadow-black/30 hover:shadow-black/40 transition">
+          <img src="images/toby.webp" alt="Tobey Maguire Spider-Man"
+               class="w-full h-auto object-cover"
+               onerror="this.src='https://picsum.photos/seed/widow/900/800'">
+          <figcaption class="px-3 py-2 text-sm bg-gradient-to-t from-black/60 to-transparent -mt-9">Tobey Maguire Spider-Man</figcaption>
+        </figure>
+        <!-- add more figures as you like… -->
       </div>
-    </section>
+    </div>
+
+    <!-- scoped styles for masonry -->
+    <style>
+      #heroverse-masonry .masonry-item { break-inside: avoid; }
+      #heroverse-masonry img { display:block; width:100%; height:auto; }
+    </style>
+  </div>
+</div>
+
+</section>
+
 
     <!-- DESIGN PRINCIPLES STRIPE -->
     <section class="py-10 sm:py-14 bg-gradient-to-r from-[#0f1320] via-[#12172a] to-[#0f1320] border-y border-white/10">
@@ -274,7 +405,7 @@
     <section class="py-12 sm:py-16">
       <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-5 gap-8 items-center">
         <div class="md:col-span-2 order-last md:order-first reveal">
-          <img src="images/contributors/henry.jpg" alt="Henry Osuagwu portrait"
+          <img src="images/Profile.jpg" alt="Henry Osuagwu portrait"
                class="rounded-3xl w-full aspect-[3/4] object-cover border border-white/10"
                onerror="this.src='https://picsum.photos/seed/henry-portrait/720/960'"/>
         </div>
@@ -501,16 +632,183 @@
 
     /* ---------- Random Quote modal (Option 3) ---------- */
     (function(){
-      const quotes = [
-        { q: "With great power comes great responsibility.", a: "Spider-Man" },
-        { q: "I am vengeance. I am the night. I am Batman!", a: "Batman" },
-        { q: "Truth is... I am Iron Man.", a: "Tony Stark" },
-        { q: "Hope is the light that lifts us out of darkness.", a: "Superman" },
-        { q: "Higher, further, faster.", a: "Captain Marvel" },
-        { q: "It’s not who I am underneath, but what I do that defines me.", a: "Batman" },
-        { q: "I can do this all day.", a: "Captain America" },
-        { q: "Wakanda forever!", a: "T’Challa" }
-      ];
+     const quotes = [
+  // Spider-Man
+  { q: "With great power comes great responsibility.", a: "Spider-Man" },
+  { q: "I’m just your friendly neighborhood Spider-Man.", a: "Spider-Man" },
+
+  // Batman
+  { q: "I am vengeance. I am the night. I am Batman!", a: "Batman" },
+  { q: "It’s not who I am underneath, but what I do that defines me.", a: "Batman" },
+  { q: "I wear a mask. I wear it to protect the ones I love.", a: "Batman" },
+
+  // Iron Man
+  { q: "Truth is... I am Iron Man.", a: "Tony Stark" },
+  { q: "I love you 3000.", a: "Tony Stark" },
+  { q: "I am Iron Man.", a: "Tony Stark" },
+
+  // Superman
+  { q: "Hope is the light that lifts us out of darkness.", a: "Superman" },
+  { q: "The world is too small for someone like me.", a: "Superman" },
+
+  // Captain Marvel
+  { q: "Higher, further, faster.", a: "Captain Marvel" },
+  { q: "I don’t need you to tell me what I’m worth.", a: "Captain Marvel" },
+
+  // Captain America
+  { q: "I can do this all day.", a: "Captain America" },
+  { q: "I’m just a kid from Brooklyn.", a: "Captain America" },
+
+  // T’Challa (Black Panther)
+  { q: "Wakanda forever!", a: "T’Challa" },
+  { q: "The more you know who you are, and what you want, the less you let things upset you.", a: "T’Challa" },
+
+  // Peacemaker
+  { q: "Eat peace, motherfucker!!", a: "Peacemaker" },
+
+  // Green Lantern
+  { q: "In brightest day, in blackest night, no evil shall escape my sight.", a: "Green Lantern" },
+  { q: "I am the green lantern. You’re gonna love my green glow.", a: "Green Lantern" },
+
+  // Green Arrow
+  { q: "I’m not the hero Gotham deserves, but the hero it needs.", a: "Green Arrow" },
+  { q: "You can’t be a hero if you’re not willing to sacrifice.", a: "Green Arrow" },
+
+  // Martian Manhunter
+  { q: "The future is worth it. All the pain. All the tears. The future is worth the fight.", a: "Martian Manhunter" },
+  { q: "The mind of a hero is always fighting against the enemy.", a: "Martian Manhunter" },
+
+  // Wonder Woman
+  { q: "I fight for those who cannot fight for themselves.", a: "Wonder Woman" },
+  { q: "I’m not going to let you die, Diana.", a: "Wonder Woman" },
+
+  // The Flash
+  { q: "Life doesn’t give us purpose. We give life purpose.", a: "The Flash" },
+  { q: "The speed force is not just a power. It’s a gift.", a: "The Flash" },
+
+  // Aquaman
+  { q: "I am the protector of the seas.", a: "Aquaman" },
+  { q: "I am the King of Atlantis!", a: "Aquaman" },
+
+  // Thanos
+  { q: "I am inevitable.", a: "Thanos" },
+  { q: "The hardest choices require the strongest wills.", a: "Thanos" },
+  { q: "You should have gone for the head.", a: "Thanos" },
+
+  // Loki
+  { q: "I am Loki, of Asgard, and I am burdened with glorious purpose.", a: "Loki" },
+  { q: "I do what I want, when I want, and you can’t stop me.", a: "Loki" },
+
+  // Joker
+  { q: "Why so serious?", a: "Joker" },
+  { q: "Introduce a little anarchy.", a: "Joker" },
+  { q: "Madness is like gravity, all it takes is a little push.", a: "Joker" },
+
+  // Harley Quinn
+  { q: "I’m a trained psychiatrist. I’m trained to listen. You know, if you wanna talk.", a: "Harley Quinn" },
+  { q: "I’m crazy, not stupid!", a: "Harley Quinn" },
+
+  // Deadpool
+  { q: "You’re probably thinking, 'Why the red suit?'", a: "Deadpool" },
+  { q: "I’m not the hero. I’m the anti-hero.", a: "Deadpool" },
+
+  // The Punisher
+  { q: "I am the one who punishes.", a: "The Punisher" },
+  { q: "You’ll never see me coming.", a: "The Punisher" },
+
+  // The Riddler
+  { q: "Riddle me this, Batman.", a: "The Riddler" },
+  { q: "I’m a man of intellect, of wit. No one can outthink me.", a: "The Riddler" },
+
+  // Two-Face
+  { q: "You know what’s wrong with this city? It’s me.", a: "Two-Face" },
+  { q: "You either die a hero, or you live long enough to see yourself become the villain.", a: "Two-Face" },
+
+  // Magneto
+  { q: "I am the master of magnetism.", a: "Magneto" },
+  { q: "We are the future. The humans are the past.", a: "Magneto" },
+
+  // Doctor Doom
+  { q: "I am Doom! I do not fear the future.", a: "Doctor Doom" },
+  { q: "Victory is mine, and you will see why.", a: "Doctor Doom" },
+
+  // Thanos
+  { q: "I’m inevitable.", a: "Thanos" },
+  { q: "The end is just the beginning.", a: "Thanos" },
+
+  // Bane
+  { q: "You merely adopted the dark. I was born in it.", a: "Bane" },
+  { q: "Victory is my destiny.", a: "Bane" },
+
+  // Hela
+  { q: "I am the Goddess of Death!", a: "Hela" },
+  { q: "You will kneel before me!", a: "Hela" },
+
+  // Ultron
+  { q: "I’m going to show you something beautiful. Everyone screaming for mercy.", a: "Ultron" },
+  { q: "I am peace. I am your salvation.", a: "Ultron" },
+
+  // Red Skull
+  { q: "The war is over, Captain. I’m going to finish it.", a: "Red Skull" },
+  { q: "I am not your enemy. I am the leader of the Red Hand.", a: "Red Skull" },
+
+  // Venom
+  { q: "We are Venom!", a: "Venom" },
+  { q: "You’ve got a friend in me, human.", a: "Venom" },
+
+  // Shredder
+  { q: "You’re nothing but a bunch of fools!", a: "Shredder" },
+  { q: "You will bow to me, turtles!", a: "Shredder" },
+
+  // Sandman
+  { q: "I did what I had to do. I had no choice.", a: "Sandman" },
+  { q: "You don’t know what it’s like, to be me.", a: "Sandman" },
+
+  // Kingpin
+  { q: "I run this city!", a: "Kingpin" },
+  { q: "You’re nothing compared to me!", a: "Kingpin" },
+
+  // Lex Luthor
+  { q: "I am the smartest man alive.", a: "Lex Luthor" },
+  { q: "Superman is not the hero this city needs.", a: "Lex Luthor" },
+
+  // Rorschach
+  { q: "The world is a beautiful place, and worth fighting for.", a: "Rorschach" },
+  { q: "I’m not locked in here with you. You’re locked in here with me.", a: "Rorschach" },
+
+  // The Watcher
+  { q: "I watch. I observe. I do not intervene.", a: "The Watcher" },
+  { q: "This is the fate of your world.", a: "The Watcher" },
+
+  // Daredevil
+  { q: "I walk in the dark to protect the light.", a: "Daredevil" },
+  { q: "I’m not afraid of the dark. I am the dark.", a: "Daredevil" },
+
+  // Moon Knight
+  { q: "I am Khonshu’s fist and judgment.", a: "Moon Knight" },
+  { q: "You can’t stop me. Not with that attitude.", a: "Moon Knight" },
+
+  // Cyclops
+  { q: "I don’t fight for peace. I fight for survival.", a: "Cyclops" },
+  { q: "Lead, or get out of my way.", a: "Cyclops" },
+
+  // Wolverine
+  { q: "I’m the best there is at what I do.", a: "Wolverine" },
+  { q: "You’re going to need a bigger knife.", a: "Wolverine" },
+
+  // Deadshot
+  { q: "I never miss.", a: "Deadshot" },
+  { q: "It’s just business, nothing personal.", a: "Deadshot" },
+
+  // The Thing
+  { q: "It’s clobberin’ time!", a: "The Thing" },
+  { q: "You can’t break me. I’m already broken.", a: "The Thing" },
+
+  // Doctor Strange
+  { q: "The bill comes due. Always.", a: "Doctor Strange" },
+  { q: "I’m not afraid of what’s coming.", a: "Doctor Strange" }
+];
+
 
       const modal = document.getElementById('quoteModal');
       const quoteBtn = document.getElementById('quoteBtn');
