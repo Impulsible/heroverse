@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>About — Heroverse</title>
-  <meta name="description" content="What Heroverse is about: purpose, inspiration, and credits for sources & tools." />
+  <meta name="description" content="What Heroverse is about: purpose, inspiration, and credits for sources & tools.">
   <meta name="author" content="Henry Osuagwu">
 
   <!-- Favicon & PWA icons-->
@@ -264,9 +264,7 @@
           </div>
           <p class="mt-1 text-[10px] text-white/50">*Fandom-oriented encyclopedia. Not affiliated.</p>
         </div>
-
-        <!-- Right: visual collage (trading-card spread) -->
-        <!-- Right: visual collage (masonry) -->
+        
 <div class="md:col-span-5 reveal">
   <!-- soft glow frame -->
   <div class="relative rounded-3xl border border-white/10 bg-white/5 p-4 sm:p-5">
@@ -434,25 +432,86 @@
       </div>
     </section>
 
-    <!-- EXTRA: Fun Stat Row -->
-    <section class="py-10 sm:py-14 border-t border-white/10">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid md:grid-cols-3 gap-6 text-center reveal">
-          <div>
-            <div class="text-4xl font-bold text-gold counter" data-count="120">0</div>
-            <p class="text-white/70 mt-1">Heroes indexed</p>
-          </div>
-          <div>
-            <div class="text-4xl font-bold text-gold counter" data-count="45">0</div>
-            <p class="text-white/70 mt-1">Teams tracked</p>
-          </div>
-          <div>
-            <div class="text-4xl font-bold text-gold counter" data-count="300">0</div>
-            <p class="text-white/70 mt-1">Story arcs</p>
-          </div>
-        </div>
+   <!-- FUN STATS -->
+<section class="py-10 sm:py-14 border-t border-white/10">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid md:grid-cols-3 gap-6 text-center reveal">
+      <div class="rounded-2xl border border-white/10 bg-white/[.06] p-6">
+        <div class="text-4xl font-bold text-gold counter" data-count="100">0</div>
+        <p class="text-white/70 mt-1">Heroes indexed</p>
       </div>
-    </section>
+      <div class="rounded-2xl border border-white/10 bg-white/[.06] p-6">
+        <div class="text-4xl font-bold text-gold counter" data-count="45">0</div>
+        <p class="text-white/70 mt-1">Teams tracked</p>
+      </div>
+      <div class="rounded-2xl border border-white/10 bg-white/[.06] p-6">
+        <div class="text-4xl font-bold text-gold counter" data-count="40">0</div>
+        <p class="text-white/70 mt-1">Story arcs</p>
+      </div>
+
+      <!-- NEW extras -->
+      <div class="rounded-2xl border border-white/10 bg-white/[.06] p-6">
+        <div class="text-4xl font-bold text-gold counter" data-count="100">0</div>
+        <p class="text-white/70 mt-1">Villains logged</p>
+      </div>
+      <div class="rounded-2xl border border-white/10 bg-white/[.06] p-6">
+        <div class="text-4xl font-bold text-gold counter" data-count="20">0</div>
+        <p class="text-white/70 mt-1">News posts</p>
+      </div>
+      <div class="rounded-2xl border border-white/10 bg-white/[.06] p-6">
+        <div class="text-4xl font-bold text-gold counter" data-count="60">0</div>
+        <p class="text-white/70 mt-1">Fan theories</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Counter animation (drop this once, near the bottom of the page) -->
+<script>
+(function () {
+  var nodes = document.querySelectorAll('.counter');
+  if (!nodes.length) return;
+
+  function animate(el) {
+    var end = parseInt(el.getAttribute('data-count'), 10) || 0;
+    var dur = parseInt(el.getAttribute('data-duration'), 10) || 1200; // ms
+    var prefix = el.getAttribute('data-prefix') || '';
+    var suffix = el.getAttribute('data-suffix') || '';
+    var startTime = null;
+
+    function step(ts) {
+      if (!startTime) startTime = ts;
+      var p = Math.min(1, (ts - startTime) / dur);
+      var val = Math.floor(end * p);
+      el.textContent = prefix + val.toLocaleString() + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  var prefersReduced =
+    window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // If no IO support or reduced motion, animate immediately
+  if (!('IntersectionObserver' in window) || prefersReduced) {
+    for (var i = 0; i < nodes.length; i++) animate(nodes[i]);
+    return;
+  }
+
+  var io = new IntersectionObserver(function (entries, obs) {
+    for (var i = 0; i < entries.length; i++) {
+      var e = entries[i];
+      if (e.isIntersecting) {
+        animate(e.target);
+        obs.unobserve(e.target);
+      }
+    }
+  }, { threshold: 0.6 });
+
+  for (var j = 0; j < nodes.length; j++) io.observe(nodes[j]);
+})();
+</script>
+
   </main>
 
   <!-- FOOTER (matched embellishment) -->

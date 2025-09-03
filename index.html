@@ -89,13 +89,8 @@
     .carousel-slide.active { position: relative; opacity: 1; transform: scale(1); }
 
     .glow-hover:hover { text-shadow: 0 0 10px rgba(255,215,0,.7), 0 0 20px rgba(255,215,0,.5); }
-.q-quote { 
-  overflow-wrap: anywhere;
-  word-break: normal;
-  white-space: normal;
-}
-.q-box { min-height: 0; height: auto; }
-
+    .q-quote { overflow-wrap: anywhere; word-break: normal; white-space: normal; }
+    .q-box { min-height: 0; height: auto; }
   </style>
 </head>
 <body id="top" class="bg-dark text-white">
@@ -373,64 +368,50 @@
     <script src="assets/news-data.js"></script>
     <script>
       (function(){
-        const items = window.HeroverseNews && typeof window.HeroverseNews.pickRandom === 'function'
-          ? window.HeroverseNews.pickRandom(3)
-          : [];
-        const container = document.getElementById('featuredNews');
+        // Use global NEWS_ITEMS via helper
+        var ok = (window.HeroverseNews && typeof window.HeroverseNews.pickRandom === 'function' && Array.isArray(window.NEWS_ITEMS));
+        var items = ok ? window.HeroverseNews.pickRandom(3) : [];
+        var container = document.getElementById('featuredNews');
+        if (!container) return;
+
         if (Array.isArray(items) && items.length) {
-          container.innerHTML = items.map(n => `
-            <article class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:translate-y-[-2px] hover:bg-white/10 transition comic-shadow reveal">
-              <img loading="lazy" src="${n.img}" alt="${n.title}" class="w-full h-40 sm:h-48 object-cover">
-              <div class="p-4">
-                <h3 class="font-semibold">${n.title}</h3>
-                <p class="text-white/70 text-sm mt-1">${n.summary}</p>
-                <a href="news.html#${n.id}" class="inline-block mt-3 text-gold hover:underline">Read more →</a>
-              </div>
-            </article>
-          `).join('');
+          container.innerHTML = items.map(function(n){
+            var label = n.sourceName || 'Watch teaser';
+            var href  = n.src || '#';
+            return ''+
+              '<article class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:translate-y-[-2px] hover:bg-white/10 transition comic-shadow reveal">'+
+                '<img loading="lazy" src="'+(n.img||'')+'" alt="'+(n.alt||n.title||'')+'" class="w-full h-48 sm:h-56 object-cover">'+
+                '<div class="p-4">'+
+                  '<h3 class="font-semibold">'+(n.title||'')+'</h3>'+
+                  '<p class="text-white/70 text-sm mt-1">'+(n.summary||'')+'</p>'+
+                  '<a href="'+href+'" target="_blank" rel="noopener noreferrer" class="inline-block mt-3 text-gold hover:underline">'+label+' ↗</a>'+
+                '</div>'+
+              '</article>';
+          }).join('');
+          return;
         }
+
+        // Fallback placeholders (no Read more, no lightbox)
+        console.warn('HeroverseNews not loaded — showing placeholders');
+        var placeholders = [
+          { id:'placeholder-1', img:'https://picsum.photos/seed/hero-news1/1200/675', title:'News module not loaded', summary:'Ensure assets/news-data.js exposes window.NEWS_ITEMS & HeroverseNews.' },
+          { id:'placeholder-2', img:'https://picsum.photos/seed/hero-news2/1200/675', title:'Using fallback content', summary:'This is a graceful placeholder so the layout still looks great.' },
+          { id:'placeholder-3', img:'https://picsum.photos/seed/hero-news3/1200/675', title:'How to fix quickly', summary:'Check the assets/news-data.js path and object shape.' }
+        ];
+        container.innerHTML = placeholders.map(function(n){
+          return ''+
+            '<article class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:translate-y-[-2px] hover:bg-white/10 transition comic-shadow reveal">'+
+              '<img loading="lazy" src="'+n.img+'" alt="'+n.title+'" class="w-full h-48 sm:h-56 object-cover">'+
+              '<div class="p-4">'+
+                '<h3 class="font-semibold">'+n.title+'</h3>'+
+                '<p class="text-white/70 text-sm mt-1">'+n.summary+'</p>'+
+                '<a href="news.html" class="inline-block mt-3 text-gold hover:underline">Watch teaser ↗</a>'+
+              '</div>'+
+            '</article>';
+        }).join('');
       })();
     </script>
 
-    <!-- News robust fallback -->
-    <script>
-  (function () {
-    const container = document.getElementById('featuredNews');
-    if (container && container.children.length === 0) {
-      console.warn('HeroverseNews not loaded — showing placeholders');
-      const placeholders = [
-        {
-          id: 'placeholder-1',
-          img: 'https://picsum.photos/seed/hero-news1/640/360',
-          title: 'News module not loaded',
-          summary: 'Ensure assets/news-data.js is present and exposes window.HeroverseNews.'
-        },
-        {
-          id: 'placeholder-2',
-          img: 'https://picsum.photos/seed/hero-news2/640/360',
-          title: 'Using fallback content',
-          summary: 'This is a graceful placeholder so the layout still looks great.'
-        },
-        {
-          id: 'placeholder-3',
-          img: 'https://picsum.photos/seed/hero-news3/640/360',
-          title: 'How to fix quickly',
-          summary: 'Check the <script src="assets/news-data.js"><\\/script> path and object shape.'
-        }
-      ];
-      container.innerHTML = placeholders.map(n => `
-        <article class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:translate-y-[-2px] hover:bg-white/10 transition comic-shadow reveal">
-          <img loading="lazy" src="${n.img}" alt="${n.title}" class="w-full h-40 sm:h-48 object-cover">
-          <div class="p-4">
-            <h3 class="font-semibold">${n.title}</h3>
-            <p class="text-white/70 text-sm mt-1">${n.summary}</p>
-            <a href="news.html#${n.id}" class="inline-block mt-3 text-gold hover:underline">Read more →</a>
-          </div>
-        </article>
-      `).join('');
-    }
-  })();
-</script>
     <!-- CTA -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 sm:pb-16">
       <div class="bg-gradient-to-r from-primary/30 via-hero/30 to-gold/30 rounded-3xl p-7 sm:p-8 md:p-10 comic-shadow reveal">
